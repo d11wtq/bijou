@@ -1,6 +1,7 @@
-package runtime
+package runtime_test
 
 import (
+	. "github.com/d11wtq/bijou/runtime"
 	"strings"
 	"testing"
 )

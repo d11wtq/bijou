@@ -1,6 +1,9 @@
-package runtime
+package runtime_test
 
-import "testing"
+import (
+	. "github.com/d11wtq/bijou/runtime"
+	"testing"
+)
 
 func TestScopeGetUndefined(t *testing.T) {
 	env := NewScope(nil)
