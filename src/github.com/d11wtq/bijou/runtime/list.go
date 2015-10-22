@@ -12,11 +12,13 @@ type List struct {
 var EmptyList = (*List)(nil)
 
 func (lst *List) Eval(env Env) (Value, error) {
-	if lst == nil {
-		return lst, nil
+	if lst == EmptyList {
+		return EmptyList, nil
 	}
 
 	switch lst.Data {
+	case Symbol("if"):
+		return lst.Next.EvalIf(env)
 	case Symbol("do"):
 		return lst.Next.EvalDo(env)
 	}
@@ -30,7 +32,7 @@ func (lst *List) Type() Type {
 
 // Get the first element of this list
 func (lst *List) Head() Value {
-	if lst == nil {
+	if lst == EmptyList {
 		return Nil
 	}
 
@@ -39,8 +41,8 @@ func (lst *List) Head() Value {
 
 // Get the next sequence of this list
 func (lst *List) Tail() *List {
-	if lst == nil {
-		return lst
+	if lst == EmptyList {
+		return EmptyList
 	}
 
 	return lst.Next
@@ -51,8 +53,9 @@ func (lst *List) Cons(head Value) *List {
 	return &List{head, lst}
 }
 
+// Evaluate every element of this list and return the last value
 func (lst *List) EvalDo(env Env) (res Value, err error) {
-	for x := lst; x != nil; x = x.Next {
+	for x := lst; x != EmptyList; x = x.Next {
 		res, err = x.Data.Eval(env)
 		if err != nil {
 			return
@@ -60,4 +63,27 @@ func (lst *List) EvalDo(env Env) (res Value, err error) {
 	}
 
 	return
+}
+
+// Evaluate the elements of this list as the 'if' special form
+func (lst *List) EvalIf(env Env) (Value, error) {
+	if lst == EmptyList {
+		return Nil, nil // FIXME: Untested. Should we error?
+	}
+
+	if condition, err := lst.Data.Eval(env); err != nil {
+		return nil, err
+	} else {
+		body := lst.Next
+
+		if body != EmptyList {
+			if condition != Nil {
+				return body.Data.Eval(env)
+			} else {
+				return body.Next.EvalDo(env)
+			}
+		}
+	}
+
+	return Nil, nil
 }
