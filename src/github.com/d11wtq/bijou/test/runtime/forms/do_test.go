@@ -67,7 +67,7 @@ func TestDoWithEmptyBody(t *testing.T) {
 		t.Fatalf(`expected err == nil, got %s`, err)
 	}
 
-	if v != nil {
+	if v != Nil {
 		t.Fatalf(`expected v == nil, got %s`, v)
 	}
 }

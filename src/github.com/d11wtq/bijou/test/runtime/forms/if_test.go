@@ -44,6 +44,24 @@ func TestIfWithFailValue(t *testing.T) {
 	}
 }
 
+func TestIfWithAbsentFailValue(t *testing.T) {
+	pass := test.NewFakeValue(Int(1))
+	form := EmptyList.Cons(pass).Cons(Nil).Cons(Symbol("if"))
+
+	v, err := form.Eval(test.FakeEnv())
+	if err != nil {
+		t.Fatalf(`expected err == nil, got %s`, err)
+	}
+
+	if v != Nil {
+		t.Fatalf(`expected v == Nil, got %s`, v)
+	}
+
+	if pass.Evaluated {
+		t.Fatalf(`expected pass.Evaluated == false, got true`)
+	}
+}
+
 func TestIfWithErrorInCondition(t *testing.T) {
 	cond := test.NewFakeValue(Symbol("bad"))
 	pass := test.NewFakeValue(Int(1))
