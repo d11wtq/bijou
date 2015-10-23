@@ -1,6 +1,6 @@
 package runtime
 
-// Process the elements on the 'do' special form
+// Process the elements of the 'do' special form
 func EvalDo(env Env, lst *List) (res Value, err error) {
 	res = Nil
 	for x := lst; x != EmptyList; x = x.Next {

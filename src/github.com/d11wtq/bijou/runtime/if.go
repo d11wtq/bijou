@@ -2,7 +2,7 @@ package runtime
 
 // Process the elements of the 'if' special form
 func EvalIf(env Env, lst *List) (Value, error) {
-	cond, body := lst, lst.Next
+	cond, body := lst, lst.Tail()
 
 	if cond == EmptyList {
 		return nil, &RuntimeError{"Missing condition in if"}
@@ -20,6 +20,6 @@ func EvalIf(env Env, lst *List) (Value, error) {
 	if success != Nil {
 		return body.Data.Eval(env)
 	} else {
-		return EvalDo(env, body.Next)
+		return EvalDo(env, body.Tail())
 	}
 }

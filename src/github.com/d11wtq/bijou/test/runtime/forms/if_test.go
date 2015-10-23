@@ -3,8 +3,41 @@ package forms_test
 import (
 	. "github.com/d11wtq/bijou/runtime"
 	"github.com/d11wtq/bijou/test"
+	"strings"
 	"testing"
 )
+
+func TestIfWithoutCondition(t *testing.T) {
+	form := EmptyList.Cons(Symbol("if"))
+	errmsg := "missing condition"
+
+	v, err := form.Eval(test.FakeEnv())
+	if err == nil {
+		t.Fatalf(`expected err != nil, got nil`)
+	} else if !strings.Contains(strings.ToLower(err.Error()), errmsg) {
+		t.Fatalf(`expected err to match "%s", got: %s`, errmsg, err)
+	}
+
+	if v != nil {
+		t.Fatalf(`expected v == nil, got %s`, v)
+	}
+}
+
+func TestIfWithoutPassValue(t *testing.T) {
+	form := EmptyList.Cons(Int(1)).Cons(Symbol("if"))
+	errmsg := "missing body"
+
+	v, err := form.Eval(test.FakeEnv())
+	if err == nil {
+		t.Fatalf(`expected err != nil, got nil`)
+	} else if !strings.Contains(strings.ToLower(err.Error()), errmsg) {
+		t.Fatalf(`expected err to match "%s", got: %s`, errmsg, err)
+	}
+
+	if v != nil {
+		t.Fatalf(`expected v == nil, got %s`, v)
+	}
+}
 
 func TestIfWithPassValue(t *testing.T) {
 	pass := test.NewFakeValue(Int(1))
@@ -44,7 +77,7 @@ func TestIfWithFailValue(t *testing.T) {
 	}
 }
 
-func TestIfWithAbsentFailValue(t *testing.T) {
+func TestIfWithoutFailValue(t *testing.T) {
 	pass := test.NewFakeValue(Int(1))
 	form := EmptyList.Cons(pass).Cons(Nil).Cons(Symbol("if"))
 
@@ -87,6 +120,46 @@ func TestIfWithErrorInCondition(t *testing.T) {
 
 	if fail.Evaluated {
 		t.Fatalf(`expected fail.Evaluated == false, got true`)
+	}
+}
+
+func TestIfWithErrorInPassValue(t *testing.T) {
+	cond := test.NewFakeValue(Int(1))
+	pass := test.NewFakeValue(Symbol("bad"))
+	fail := test.NewFakeValue(Int(2))
+	form := EmptyList.Cons(fail).Cons(pass).Cons(cond).Cons(Symbol("if"))
+
+	v, err := form.Eval(test.FakeEnv())
+	if err == nil {
+		t.Fatalf(`expected err =! nil, got nil`)
+	}
+
+	if err != pass.Error {
+		t.Fatalf(`expected err == pass.Error, got %s`, err)
+	}
+
+	if v != nil {
+		t.Fatalf(`expected v == nil, got %s`, v)
+	}
+}
+
+func TestIfWithErrorInFailValue(t *testing.T) {
+	cond := test.NewFakeValue(Nil)
+	pass := test.NewFakeValue(Int(1))
+	fail := test.NewFakeValue(Symbol("bad"))
+	form := EmptyList.Cons(fail).Cons(pass).Cons(cond).Cons(Symbol("if"))
+
+	v, err := form.Eval(test.FakeEnv())
+	if err == nil {
+		t.Fatalf(`expected err =! nil, got nil`)
+	}
+
+	if err != fail.Error {
+		t.Fatalf(`expected err == fail.Error, got %s`, err)
+	}
+
+	if v != nil {
+		t.Fatalf(`expected v == nil, got %s`, v)
 	}
 }
 
