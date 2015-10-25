@@ -14,7 +14,8 @@ func TestIfWithoutCondition(t *testing.T) {
 	v, err := form.Eval(test.FakeEnv())
 	if err == nil {
 		t.Fatalf(`expected err != nil, got nil`)
-	} else if !strings.Contains(strings.ToLower(err.Error()), errmsg) {
+	}
+	if !strings.Contains(strings.ToLower(err.Error()), errmsg) {
 		t.Fatalf(`expected err to match "%s", got: %s`, errmsg, err)
 	}
 
@@ -30,7 +31,8 @@ func TestIfWithoutPassValue(t *testing.T) {
 	v, err := form.Eval(test.FakeEnv())
 	if err == nil {
 		t.Fatalf(`expected err != nil, got nil`)
-	} else if !strings.Contains(strings.ToLower(err.Error()), errmsg) {
+	}
+	if !strings.Contains(strings.ToLower(err.Error()), errmsg) {
 		t.Fatalf(`expected err to match "%s", got: %s`, errmsg, err)
 	}
 

@@ -7,15 +7,24 @@ import (
 	"testing"
 )
 
-func TestFnType(t *testing.T) {
-	fn := NewFn(EmptyList, EmptyList, test.FakeEnv())
-	if fn.Type() != FnType {
-		t.Fatalf(`expected fn.Type() == FnType, got %s`, fn.Type())
+func TestFuncType(t *testing.T) {
+	fn := &Func{
+		Params: EmptyList,
+		Body:   EmptyList,
+		Env:    test.FakeEnv(),
+	}
+
+	if fn.Type() != FuncType {
+		t.Fatalf(`expected fn.Type() == FuncType, got %s`, fn.Type())
 	}
 }
 
-func TestFnEvalToSelf(t *testing.T) {
-	fn := NewFn(EmptyList, EmptyList, test.FakeEnv())
+func TestFuncEvalToSelf(t *testing.T) {
+	fn := &Func{
+		Params: EmptyList,
+		Body:   EmptyList,
+		Env:    test.FakeEnv(),
+	}
 
 	v, err := fn.Eval(test.FakeEnv())
 	if err != nil {
@@ -27,10 +36,14 @@ func TestFnEvalToSelf(t *testing.T) {
 	}
 }
 
-func TestFnApplyReturnsLastEvaluatedExpression(t *testing.T) {
+func TestFuncApplyReturnsLastEvaluatedExpression(t *testing.T) {
 	params := EmptyList
 	body := EmptyList.Cons(Int(42)).Cons(Int(7))
-	fn := NewFn(params, body, test.FakeEnv())
+	fn := &Func{
+		Params: params,
+		Body:   body,
+		Env:    test.FakeEnv(),
+	}
 
 	v, err := fn.Apply(EmptyList)
 	if err != nil {
@@ -42,12 +55,16 @@ func TestFnApplyReturnsLastEvaluatedExpression(t *testing.T) {
 	}
 }
 
-func TestFnApplyUsesClosedEnvironment(t *testing.T) {
+func TestFuncApplyUsesClosedEnvironment(t *testing.T) {
 	params := EmptyList
 	body := EmptyList.Cons(Symbol("foo")).Cons(Int(7))
 	env := test.FakeEnv()
 	env.Def("foo", Int(99))
-	fn := NewFn(params, body, env)
+	fn := &Func{
+		Params: params,
+		Body:   body,
+		Env:    env,
+	}
 
 	v, err := fn.Apply(EmptyList)
 	if err != nil {
@@ -59,12 +76,16 @@ func TestFnApplyUsesClosedEnvironment(t *testing.T) {
 	}
 }
 
-func TestFnApplyExtendsEnvironmentWithArgs(t *testing.T) {
+func TestFuncApplyExtendsEnvironmentWithArgs(t *testing.T) {
 	params := EmptyList.Cons(Symbol("x"))
 	body := EmptyList.Cons(Symbol("x")).Cons(Int(7))
 	env := test.FakeEnv()
 	env.Def("foo", Int(99))
-	fn := NewFn(params, body, env)
+	fn := &Func{
+		Params: params,
+		Body:   body,
+		Env:    env,
+	}
 	args := EmptyList.Cons(Int(21))
 
 	v, err := fn.Apply(args)
@@ -77,11 +98,15 @@ func TestFnApplyExtendsEnvironmentWithArgs(t *testing.T) {
 	}
 }
 
-func TestFnApplyValidatesTooFewArgs(t *testing.T) {
+func TestFuncApplyValidatesTooFewArgs(t *testing.T) {
 	params := EmptyList.Cons(Symbol("y")).Cons(Symbol("x"))
 	body := EmptyList
 	env := test.FakeEnv()
-	fn := NewFn(params, body, env)
+	fn := &Func{
+		Params: params,
+		Body:   body,
+		Env:    env,
+	}
 	args := EmptyList.Cons(Int(21))
 
 	v, err := fn.Apply(args)
@@ -103,11 +128,15 @@ func TestFnApplyValidatesTooFewArgs(t *testing.T) {
 	}
 }
 
-func TestFnApplyValidatesTooManyArgs(t *testing.T) {
+func TestFuncApplyValidatesTooManyArgs(t *testing.T) {
 	params := EmptyList.Cons(Symbol("y")).Cons(Symbol("x"))
 	body := EmptyList
 	env := test.FakeEnv()
-	fn := NewFn(params, body, env)
+	fn := &Func{
+		Params: params,
+		Body:   body,
+		Env:    env,
+	}
 	args := EmptyList.Cons(Int(21)).Cons(Int(9)).Cons(Int(2))
 
 	v, err := fn.Apply(args)
@@ -126,5 +155,35 @@ func TestFnApplyValidatesTooManyArgs(t *testing.T) {
 
 	if v != nil {
 		t.Fatalf(`expected v == nil, got %s`, v)
+	}
+}
+
+func TestFuncApplyShortCirtcuitsOnError(t *testing.T) {
+	v1 := test.NewFakeValue(Symbol("xx"))
+	v2 := test.NewFakeValue(Symbol("yy"))
+
+	params := EmptyList.Cons(Symbol("y")).Cons(Symbol("x"))
+	body := EmptyList.Cons(v2).Cons(v1)
+	fn := &Func{
+		Params: params,
+		Body:   body,
+		Env:    test.FakeEnv(),
+	}
+	args := EmptyList.Cons(Int(21)).Cons(Int(9))
+
+	v, err := fn.Apply(args)
+	if err == nil {
+		t.Fatalf(`expected err != nil, got nil`)
+	}
+	if err != v1.Error {
+		t.Fatalf(`expected err == v1.Error, got %s`, err)
+	}
+
+	if v != nil {
+		t.Fatalf(`expected v == nil, got %s`, v)
+	}
+
+	if v2.Evaluated {
+		t.Fatalf(`expected v2.Evaluated == false, got true`)
 	}
 }

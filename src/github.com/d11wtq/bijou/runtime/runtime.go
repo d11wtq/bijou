@@ -15,7 +15,7 @@ const (
 	// Linked lists
 	ListType
 	// Functions
-	FnType
+	FuncType
 )
 
 // Program runtime value

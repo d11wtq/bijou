@@ -21,9 +21,11 @@ func (lst *List) Eval(env Env) (Value, error) {
 		return EvalIf(env, lst.Next)
 	case Symbol("do"):
 		return EvalDo(env, lst.Next)
+	case Symbol("fn"):
+		return EvalFn(env, lst.Next)
+	default:
+		return EvalCall(env, lst)
 	}
-
-	return lst, nil
 }
 
 func (lst *List) Type() Type {

@@ -1,71 +1,18 @@
 package runtime
 
-import (
-	"fmt"
-)
+// Process the elements of the 'fn' special form
+func EvalFn(env Env, lst *List) (Value, error) {
+	if lst == EmptyList {
+		return nil, &RuntimeError{"Missing parameter list in if"}
+	}
+	params, ok := lst.Data.(*List)
+	if ok == false {
+		return nil, &RuntimeError{"Invalid parameter list type"}
+	}
 
-// Function data type
-type Fn struct {
-	// Parameter list
-	Params *List
-	// Function body expressions
-	Body *List
-	// Closed environment
-	Env Env
-}
-
-// Create a new Fn object
-func NewFn(params, body *List, env Env) *Fn {
-	return &Fn{
+	return &Func{
 		Params: params,
-		Body:   body,
+		Body:   lst.Next,
 		Env:    env,
-	}
-}
-
-func (fn *Fn) Type() Type {
-	return FnType
-}
-
-func (fn *Fn) Eval(env Env) (Value, error) {
-	return fn, nil
-}
-
-// Apply this function with the given arguments
-func (fn *Fn) Apply(args *List) (Value, error) {
-	env := fn.Env.Extend()
-	params := fn.Params
-	processed := uint(0)
-
-	for params != EmptyList && args != EmptyList {
-		env.Def(string(params.Data.(Symbol)), args.Data)
-		processed += 1
-		params, args = params.Tail(), args.Tail()
-	}
-
-	if params != EmptyList || args != EmptyList {
-		return nil, BadArity(processed, params, args)
-	}
-
-	return EvalDo(env, fn.Body)
-}
-
-// Return an ArgumentError, inspecting unprocessed arguments
-func BadArity(processed uint, params *List, args *List) error {
-	numParams, numArgs := processed, processed
-	for params != EmptyList {
-		numParams += 1
-		params = params.Tail()
-	}
-	for args != EmptyList {
-		numArgs += 1
-		args = args.Tail()
-	}
-	return &ArgumentError{
-		fmt.Sprintf(
-			"wrong number of arguments (wanted %d, got %d)",
-			numParams,
-			numArgs,
-		),
-	}
+	}, nil
 }
