@@ -28,7 +28,7 @@ func TestSymbolEvalUndefined(t *testing.T) {
 func TestSymbolEvalToValue(t *testing.T) {
 	sym := Symbol("test")
 	env := FakeEnv()
-	env.Def(Symbol("test"), Int(42))
+	env.Def("test", Int(42))
 	if v, err := sym.Eval(env); err != nil {
 		t.Fatalf(`expected err == nil, got %s`, err)
 	} else if v != Int(42) {

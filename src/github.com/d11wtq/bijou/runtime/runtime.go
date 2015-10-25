@@ -15,7 +15,7 @@ const (
 	// Linked lists
 	ListType
 	// Functions
-	FuncType
+	FnType
 )
 
 // Program runtime value
@@ -26,12 +26,24 @@ type Value interface {
 	Type() Type
 }
 
+// Abstract sequence interface
+type Seq interface {
+	// Seq is a first-class Value too
+	Value
+	// Get the value at the end of the Seq
+	Head() Value
+	// Pop off the value at the end of the Seq
+	Tail() Seq
+	// Add a new value at the end of the Seq
+	Cons(v Value) Seq
+}
+
 // Runtime environment
 type Env interface {
 	// Define a new symbol
-	Def(Symbol, Value)
+	Def(string, Value)
 	// Lookup a variable
-	Get(Symbol) (Value, bool)
+	Get(string) (Value, bool)
 	// Introduce a new scope
 	Extend() Env
 }

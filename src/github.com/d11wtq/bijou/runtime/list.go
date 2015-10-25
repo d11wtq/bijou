@@ -1,6 +1,6 @@
 package runtime
 
-// List data type
+// List data type (Seq)
 type List struct {
 	// Value head at this element of the list
 	Data Value

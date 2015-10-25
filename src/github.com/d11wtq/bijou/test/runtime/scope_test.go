@@ -7,7 +7,7 @@ import (
 
 func TestScopeGetUndefined(t *testing.T) {
 	env := NewScope(nil)
-	if v, ok := env.Get(Symbol("test")); ok {
+	if v, ok := env.Get("test"); ok {
 		t.Fatalf(`expected ok == false, got true`)
 	} else if v != nil {
 		t.Fatalf(`expected v == nil, got %s`, v)
@@ -16,8 +16,8 @@ func TestScopeGetUndefined(t *testing.T) {
 
 func TestScopeDefAndGet(t *testing.T) {
 	env := NewScope(nil)
-	env.Def(Symbol("test"), Symbol("example"))
-	if v, ok := env.Get(Symbol("test")); ok == false {
+	env.Def("test", Symbol("example"))
+	if v, ok := env.Get("test"); ok == false {
 		t.Fatalf(`expected ok == true, got false`)
 	} else if v != Symbol("example") {
 		t.Fatalf(`expected v == Symbol("example"), got %s`, v)
@@ -26,9 +26,9 @@ func TestScopeDefAndGet(t *testing.T) {
 
 func TestScopeDefAndGetViaParent(t *testing.T) {
 	parent := NewScope(nil)
-	parent.Def(Symbol("test"), Symbol("example"))
+	parent.Def("test", Symbol("example"))
 	env := NewScope(parent)
-	if v, ok := env.Get(Symbol("test")); ok == false {
+	if v, ok := env.Get("test"); ok == false {
 		t.Fatalf(`expected ok == true, got false`)
 	} else if v != Symbol("example") {
 		t.Fatalf(`expected v == Symbol("example"), got %s`, v)
@@ -37,11 +37,11 @@ func TestScopeDefAndGetViaParent(t *testing.T) {
 
 func TestScopeDefAndGetExtendMasking(t *testing.T) {
 	parent := NewScope(nil)
-	parent.Def(Symbol("test"), Symbol("example"))
+	parent.Def("test", Symbol("example"))
 	env := parent.Extend()
-	env.Def(Symbol("test"), Symbol("other"))
+	env.Def("test", Symbol("other"))
 
-	if v, ok := env.Get(Symbol("test")); ok == false {
+	if v, ok := env.Get("test"); ok == false {
 		t.Fatalf(`expected ok == true, got false`)
 	} else if v != Symbol("other") {
 		t.Fatalf(`expected v == Symbol("other"), got %s`, v)
@@ -50,11 +50,11 @@ func TestScopeDefAndGetExtendMasking(t *testing.T) {
 
 func TestScopeDefAndGetExtendImmutable(t *testing.T) {
 	parent := NewScope(nil)
-	parent.Def(Symbol("test"), Symbol("example"))
+	parent.Def("test", Symbol("example"))
 	env := parent.Extend()
-	env.Def(Symbol("test"), Symbol("other"))
+	env.Def("test", Symbol("other"))
 
-	if v, ok := parent.Get(Symbol("test")); ok == false {
+	if v, ok := parent.Get("test"); ok == false {
 		t.Fatalf(`expected ok == true, got false`)
 	} else if v != Symbol("example") {
 		t.Fatalf(`expected v == Symbol("example"), got %s`, v)

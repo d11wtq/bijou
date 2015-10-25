@@ -8,7 +8,7 @@ import (
 type Symbol string
 
 func (s Symbol) Eval(env Env) (Value, error) {
-	if v, ok := env.Get(s); ok {
+	if v, ok := env.Get(string(s)); ok {
 		return v, nil
 	} else {
 		return v, &RuntimeError{fmt.Sprintf("Undefined variable %s", s)}
