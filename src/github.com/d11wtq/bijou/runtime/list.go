@@ -54,3 +54,11 @@ func (lst *List) Tail() *List {
 func (lst *List) Cons(head Value) *List {
 	return &List{head, lst}
 }
+
+func (lst *List) Reverse() *List {
+	acc := EmptyList
+	for x := lst; x != EmptyList; x = x.Next {
+		acc = acc.Cons(x.Data)
+	}
+	return acc
+}
