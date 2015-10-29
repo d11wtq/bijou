@@ -8,7 +8,7 @@ import (
 func TestReadWithAnInt(t *testing.T) {
 	v, s, err := Read("42")
 	if err != nil {
-		t.Fatalf(`expected err != nil, got %s`, err)
+		t.Fatalf(`expected err == nil, got %s`, err)
 	}
 	if s != "" {
 		t.Fatalf(`expected s == '', got %s`, s)
@@ -22,7 +22,7 @@ func TestReadWithAnInt(t *testing.T) {
 func TestReadWithAnIntFollowedByWhitespace(t *testing.T) {
 	v, s, err := Read("42   ")
 	if err != nil {
-		t.Fatalf(`expected err != nil, got %s`, err)
+		t.Fatalf(`expected err == nil, got %s`, err)
 	}
 	if s != "   " {
 		t.Fatalf(`expected s == '   ', got %s`, s)
@@ -36,7 +36,7 @@ func TestReadWithAnIntFollowedByWhitespace(t *testing.T) {
 func TestReadWithAnIntPrecededByWhitespace(t *testing.T) {
 	v, s, err := Read("   42")
 	if err != nil {
-		t.Fatalf(`expected err != nil, got %s`, err)
+		t.Fatalf(`expected err == nil, got %s`, err)
 	}
 	if s != "" {
 		t.Fatalf(`expected s == '', got %s`, s)
@@ -50,7 +50,7 @@ func TestReadWithAnIntPrecededByWhitespace(t *testing.T) {
 func TestReadWithAnEmptyList(t *testing.T) {
 	v, s, err := Read("()")
 	if err != nil {
-		t.Fatalf(`expected err != nil, got %s`, err)
+		t.Fatalf(`expected err == nil, got %s`, err)
 	}
 	if s != "" {
 		t.Fatalf(`expected s == '', got %s`, s)
@@ -64,7 +64,7 @@ func TestReadWithAnEmptyList(t *testing.T) {
 func TestReadWithAnEmptyListFollowedByWhitespace(t *testing.T) {
 	v, s, err := Read("()   ")
 	if err != nil {
-		t.Fatalf(`expected err != nil, got %s`, err)
+		t.Fatalf(`expected err == nil, got %s`, err)
 	}
 	if s != "   " {
 		t.Fatalf(`expected s == '', got %s`, s)
@@ -78,7 +78,7 @@ func TestReadWithAnEmptyListFollowedByWhitespace(t *testing.T) {
 func TestReadWithAnIntList(t *testing.T) {
 	v, s, err := Read("(42 7)")
 	if err != nil {
-		t.Fatalf(`expected err != nil, got %s`, err)
+		t.Fatalf(`expected err == nil, got %s`, err)
 	}
 	if s != "" {
 		t.Fatalf(`expected s == '', got %s`, s)
@@ -103,7 +103,7 @@ func TestReadWithAnIntList(t *testing.T) {
 func TestReadWithANestedList(t *testing.T) {
 	v, s, err := Read("((42) 7)")
 	if err != nil {
-		t.Fatalf(`expected err != nil, got %s`, err)
+		t.Fatalf(`expected err == nil, got %s`, err)
 	}
 	if s != "" {
 		t.Fatalf(`expected s == '', got %s`, s)
@@ -128,5 +128,18 @@ func TestReadWithANestedList(t *testing.T) {
 			`expected lst.Tail().Head() == Int(7), got %s`,
 			lst.Tail().Head(),
 		)
+	}
+}
+
+func TestReadWithAnUnterminatedList(t *testing.T) {
+	v, s, err := Read("(42 7")
+	if err == nil {
+		t.Fatalf(`expected err != nil, got nil`)
+	}
+	if s != "(42 7" {
+		t.Fatalf(`expected s == '(42 7', got %s`, s)
+	}
+	if v != nil {
+		t.Fatalf(`expected v == nil, got %s`, v)
 	}
 }

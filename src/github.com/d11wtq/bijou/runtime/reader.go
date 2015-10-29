@@ -42,28 +42,29 @@ func ReadInt(s string) (Value, string, error) {
 
 func ReadList(s1 string) (Value, string, error) {
 	lst := EmptyList
+	// skip over the '('
 	s2 := s1[1:]
 
+OuterLoop:
 	for {
-	InnerLoop:
-		for i, r := range s2 { // skip over the '('
+		for i, r := range s2 {
 			switch {
 			case unicode.IsSpace(r):
 				// ignore
 			case (r == ')'):
 				// skip over the ')'
-				return lst.Reverse(), s2[i+1:], nil // FIXME: Optimize
+				return lst.Reverse(), s2[i+1:], nil
 			default:
-				v, s, err := Read(s2[i:])
+				v, rem, err := Read(s2[i:])
 				if err != nil {
 					return nil, s1, err
 				}
-				lst = lst.Cons(v)
-				s2 = s
-				break InnerLoop
+				lst = lst.Cons(v) // FIXME: Optimize for append
+				s2 = rem
+				continue OuterLoop
 			}
 		}
-	}
 
-	return Nil, s1, nil
+		return nil, s1, &RuntimeError{"Unexpected EOF while reading"}
+	}
 }

@@ -53,3 +53,17 @@ func TestListConsAddsANewHead(t *testing.T) {
 		)
 	}
 }
+
+func TestListReverse(t *testing.T) {
+	list := EmptyList.Cons(Int(42)).Cons(Int(7))
+	rev := list.Reverse()
+
+	if rev.Head() != Int(42) {
+		t.Fatalf(`expected list.Head() == Int(42), got %s`, rev.Head())
+	} else if rev.Tail().Head() != Int(7) {
+		t.Fatalf(
+			`expected rev.Tail().Head() == Int(7), got %s`,
+			rev.Tail().Head(),
+		)
+	}
+}
