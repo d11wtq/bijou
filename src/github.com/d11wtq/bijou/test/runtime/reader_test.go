@@ -201,3 +201,38 @@ func TestReadWithASymbolFollowedByADelimiter(t *testing.T) {
 		t.Fatalf(`expected v == Symbol("xyz"), got %s`, v)
 	}
 }
+
+func TestReadSrcWithNoErrors(t *testing.T) {
+	lst, err := ReadSrc(`  abc (x) 42  `)
+	if err != nil {
+		t.Fatalf(`expected err == nil, got %s`, err)
+	}
+
+	if lst.Head() != Symbol("abc") {
+		t.Fatalf(`expected lst.Head() == Symbol("abc"), got %s`, lst.Head())
+	}
+
+	lst2, ok := lst.Tail().Head().(*List)
+	if ok == false {
+		t.Fatalf(`expected lst.Tail().Head().(*List), but is not a *List`)
+	}
+	if lst2.Head() != Symbol("x") {
+		t.Fatalf(`expected lst2.Head() == Symbol("x"), got %s`, lst2.Head())
+	}
+	if lst.Tail().Tail().Head() != Int(42) {
+		t.Fatalf(
+			`expected lst.Tail().Tail().Head() == Int(42), got %s`,
+			lst.Tail().Tail().Head(),
+		)
+	}
+}
+
+func TestReadSrcWithErrors(t *testing.T) {
+	lst, err := ReadSrc(`  abc (x  `)
+	if err == nil {
+		t.Fatalf(`expected err != nil, got nil`)
+	}
+	if lst != nil {
+		t.Fatalf(`expected lst == nil, got %s`, lst)
+	}
+}

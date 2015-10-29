@@ -23,6 +23,8 @@ func (lst *List) Eval(env Env) (Value, error) {
 		return EvalDo(env, lst.Next)
 	case Symbol("fn"):
 		return EvalFn(env, lst.Next)
+	case Symbol("def"):
+		return EvalDef(env, lst.Next)
 	default:
 		return EvalCall(env, lst)
 	}

@@ -30,19 +30,6 @@ func Read(s string) (Value, string, error) {
 	return nil, s, &RuntimeError{"Unexpected EOF while reading"}
 }
 
-// Read an atom string from the input string, returning it and the remainder
-func ReadAtom(s string) (string, string) {
-	acc, rem := s[0:], s[len(s):]
-	for i, r := range s {
-		if unicode.IsSpace(r) || unicode.Is(Delim, r) {
-			acc, rem = s[0:i], s[i:]
-			break
-		}
-	}
-
-	return acc, rem
-}
-
 // Read an input string and convert it to an Int type
 func ReadInt(s string) (Value, string, error) {
 	atom, rem := ReadAtom(s)
@@ -87,4 +74,42 @@ OuterLoop:
 
 		return nil, s1, &RuntimeError{"Unexpected EOF while reading"}
 	}
+}
+
+// Read an atom string from the input string, returning it and the remainder
+func ReadAtom(s string) (string, string) {
+	acc, rem := s[0:], s[len(s):]
+	for i, r := range s {
+		if unicode.IsSpace(r) || unicode.Is(Delim, r) {
+			acc, rem = s[0:i], s[i:]
+			break
+		}
+	}
+
+	return acc, rem
+}
+
+// Read all forms in the input string and return a list of Values
+func ReadSrc(s string) (*List, error) {
+	lst := EmptyList
+
+OuterLoop:
+	for s != "" {
+		for i, r := range s {
+			switch {
+			case unicode.IsSpace(r):
+				// ignore
+			default:
+				v, rem, err := Read(s[i:])
+				if err != nil {
+					return nil, err
+				}
+				lst = lst.Cons(v)
+				s = rem
+				continue OuterLoop
+			}
+		}
+		break
+	}
+	return lst.Reverse(), nil
 }
