@@ -5,9 +5,15 @@ import (
 	"unicode"
 )
 
+// Unicode RangeTable definining the delimiters
+var Delim = &unicode.RangeTable{
+	R16: []unicode.Range16{
+		{'(', ')', 1},
+	},
+}
+
 // Read an input string and convert it to an internal Value type
 func Read(s string) (Value, string, error) {
-Loop:
 	for i, r := range s {
 		switch {
 		case unicode.IsSpace(r):
@@ -17,29 +23,42 @@ Loop:
 		case (r == '('):
 			return ReadList(s[i:])
 		default:
-			break Loop
+			return ReadSymbol(s[i:])
 		}
 	}
-	return Nil, s[:0], nil
+	return nil, s, &RuntimeError{"Unexpected EOF while reading"}
 }
 
-// Read an input string and convert it to an Int type
-func ReadInt(s string) (Value, string, error) {
+// Read an atom string from the input string, returning it and the remainder
+func ReadAtom(s string) (string, string) {
 	acc, rem := s[0:], s[len(s):]
 	for i, r := range s {
-		if !unicode.IsDigit(r) {
+		if unicode.IsSpace(r) || unicode.Is(Delim, r) {
 			acc, rem = s[0:i], s[i:]
 			break
 		}
 	}
 
-	n, err := strconv.ParseInt(acc, 10, 64)
+	return acc, rem
+}
+
+// Read an input string and convert it to an Int type
+func ReadInt(s string) (Value, string, error) {
+	atom, rem := ReadAtom(s)
+	n, err := strconv.ParseInt(atom, 10, 64)
 	if err != nil {
 		return nil, s, err
 	}
 	return Int(n), rem, nil
 }
 
+// Read an input string and convert it to a Symbol type
+func ReadSymbol(s string) (Value, string, error) {
+	atom, rem := ReadAtom(s)
+	return Symbol(atom), rem, nil
+}
+
+// Read an input string and convert it to a *List type
 func ReadList(s1 string) (Value, string, error) {
 	lst := EmptyList
 	// skip over the '('
@@ -59,7 +78,7 @@ OuterLoop:
 				if err != nil {
 					return nil, s1, err
 				}
-				lst = lst.Cons(v) // FIXME: Optimize for append
+				lst = lst.Cons(v)
 				s2 = rem
 				continue OuterLoop
 			}

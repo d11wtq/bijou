@@ -143,3 +143,42 @@ func TestReadWithAnUnterminatedList(t *testing.T) {
 		t.Fatalf(`expected v == nil, got %s`, v)
 	}
 }
+
+func TestReadWithASymbol(t *testing.T) {
+	v, s, err := Read("xyz")
+	if err != nil {
+		t.Fatalf(`expected err == nil, got %s`, err)
+	}
+	if s != "" {
+		t.Fatalf(`expected s == '', got %s`, s)
+	}
+	if v != Symbol("xyz") {
+		t.Fatalf(`expected v == Symbol("xyz"), got %s`, v)
+	}
+}
+
+func TestReadWithASymbolFollowedByWhitespace(t *testing.T) {
+	v, s, err := Read("xyz   ")
+	if err != nil {
+		t.Fatalf(`expected err == nil, got %s`, err)
+	}
+	if s != "   " {
+		t.Fatalf(`expected s == '', got %s`, s)
+	}
+	if v != Symbol("xyz") {
+		t.Fatalf(`expected v == Symbol("xyz"), got %s`, v)
+	}
+}
+
+func TestReadWithASymbolFollowedByADelimiter(t *testing.T) {
+	v, s, err := Read("xyz)")
+	if err != nil {
+		t.Fatalf(`expected err == nil, got %s`, err)
+	}
+	if s != ")" {
+		t.Fatalf(`expected s == ')', got %s`, s)
+	}
+	if v != Symbol("xyz") {
+		t.Fatalf(`expected v == Symbol("xyz"), got %s`, v)
+	}
+}
