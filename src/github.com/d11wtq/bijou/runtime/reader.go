@@ -1,6 +1,7 @@
 package runtime
 
 import (
+	"fmt"
 	"strconv"
 	"unicode"
 )
@@ -47,7 +48,7 @@ func ReadInt(s string) (Value, string, error) {
 	atom, rem := ReadAtom(s)
 	n, err := strconv.ParseInt(atom, 10, 64)
 	if err != nil {
-		return nil, s, err
+		return nil, s, &RuntimeError{fmt.Sprintf("%s: Invalid syntax", atom)}
 	}
 	return Int(n), rem, nil
 }

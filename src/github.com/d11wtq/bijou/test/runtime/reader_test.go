@@ -2,6 +2,7 @@ package runtime_test
 
 import (
 	. "github.com/d11wtq/bijou/runtime"
+	"strings"
 	"testing"
 )
 
@@ -44,6 +45,24 @@ func TestReadWithAnIntPrecededByWhitespace(t *testing.T) {
 
 	if v != Int(42) {
 		t.Fatalf(`expected v == Int(42), got %s`, v)
+	}
+}
+
+func TestReadWithAnIntNonsense(t *testing.T) {
+	v, s, err := Read("42wat")
+	if err == nil {
+		t.Fatalf(`expected err != nil, got nil`)
+	}
+	msg := "42wat"
+	if !strings.Contains(err.Error(), msg) {
+		t.Fatalf(`expected err to match "%s", got %s`, err)
+	}
+	if s != "42wat" {
+		t.Fatalf(`expected s == '42wat', got %s`, s)
+	}
+
+	if v != nil {
+		t.Fatalf(`expected v == nil, got %s`, v)
 	}
 }
 
