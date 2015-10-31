@@ -26,16 +26,11 @@ type Value interface {
 	Type() Type
 }
 
-// Abstract sequence interface
-type Seq interface {
-	// Seq is a first-class Value too
+// Value that can be invoked
+type Callable interface {
 	Value
-	// Get the value at the end of the Seq
-	Head() Value
-	// Pop off the value at the end of the Seq
-	Tail() Seq
-	// Add a new value at the end of the Seq
-	Cons(v Value) Seq
+	// FIXME: *List here is too specific
+	Call(args *List) (Value, error)
 }
 
 // Runtime environment

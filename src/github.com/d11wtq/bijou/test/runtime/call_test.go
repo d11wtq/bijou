@@ -50,13 +50,14 @@ func TestFunctionCallWithArguments(t *testing.T) {
 	}
 	env := test.FakeEnv()
 	env.Def("example", fn)
-	form := EmptyList.Cons(Int(1)).Cons(Symbol("example"))
+	env.Def("x", Int(42))
+	form := EmptyList.Cons(Symbol("x")).Cons(Symbol("example"))
 	v, err := form.Eval(env)
 	if err != nil {
 		t.Fatalf(`expected err == nil, got %s`, err)
 	}
 
-	if v != Int(1) {
+	if v != Int(42) {
 		t.Fatalf(`expected v == Int(42), got %s`, v)
 	}
 }

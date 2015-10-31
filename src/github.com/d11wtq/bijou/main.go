@@ -2,17 +2,18 @@ package main
 
 import (
 	"fmt"
+	"github.com/d11wtq/bijou/core"
 	"github.com/d11wtq/bijou/runtime"
 )
 
 func main() {
-	env := runtime.NewScope(nil)
+	env := core.RootEnv()
 	src := `
 	(def forty-two
 	  (fn () 42))
 
 	(if (forty-two)
-	  7
+	  (head (list 1 2 3))
 	  8)
 	`
 
@@ -26,5 +27,6 @@ func main() {
 		fmt.Println(err)
 		return
 	}
+	// FIXME: There is a bug with evaluation of args
 	fmt.Println(res)
 }

@@ -7,10 +7,15 @@ func EvalCall(env Env, lst *List) (Value, error) {
 		return nil, err
 	}
 
-	fn, ok := callee.(*Func)
+	fn, ok := callee.(Callable)
 	if ok == false {
 		return nil, &RuntimeError{"Attempted to call non-function"}
 	}
 
-	return fn.Apply(lst.Next)
+	args, err := EvalEach(env, lst.Next)
+	if err != nil {
+		return nil, err
+	}
+
+	return fn.Call(args)
 }

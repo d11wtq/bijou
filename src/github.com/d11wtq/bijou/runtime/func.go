@@ -22,8 +22,8 @@ func (fn *Func) Eval(env Env) (Value, error) {
 	return fn, nil
 }
 
-// Apply this function with the given arguments
-func (fn *Func) Apply(args *List) (Value, error) {
+// Call this function with the given arguments
+func (fn *Func) Call(args *List) (Value, error) {
 	env := fn.Env.Extend()
 	params := fn.Params
 	processed := uint(0)
