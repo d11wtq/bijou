@@ -9,12 +9,17 @@ import (
 func main() {
 	env := core.RootEnv()
 	src := `
-	(def forty-two
-	  (fn () 42))
+	(def any?
+	  (fn (x) x))
 
-	(if (forty-two)
-	  (head (list 1 2 3))
-	  8)
+	(def coalesce
+	  (fn (x)
+	    (if (any? x)
+		  (if (head x)
+		    (head x)
+			(coalesce (tail x))))))
+
+	(coalesce (list nil nil nil 42 nil 7))
 	`
 
 	app, err := runtime.ReadSrc(src)

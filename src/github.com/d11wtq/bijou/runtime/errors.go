@@ -1,5 +1,9 @@
 package runtime
 
+import (
+	"fmt"
+)
+
 // Generic runtime error
 type RuntimeError struct {
 	// Contextual error message (user-friendly)
@@ -18,4 +22,14 @@ type ArgumentError struct {
 
 func (e *ArgumentError) Error() string {
 	return e.Message
+}
+
+func BadArity(wanted, received int) error {
+	return &ArgumentError{
+		fmt.Sprintf(
+			"wrong number of arguments (wanted %d, got %d)",
+			wanted,
+			received,
+		),
+	}
 }

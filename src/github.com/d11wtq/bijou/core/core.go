@@ -15,6 +15,7 @@ func init() {
 
 	// functions
 	root.Def("list", GoFunc(List))
+	root.Def("cons", GoFunc(Cons))
 	root.Def("head", GoFunc(Head))
 	root.Def("tail", GoFunc(Tail))
 }

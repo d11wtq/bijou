@@ -10,8 +10,8 @@ func example(args *runtime.List) (runtime.Value, error) {
 	return args, nil
 }
 
-func TestNativeFunc(t *testing.T) {
-	fn := core.NativeFunc(example)
+func TestGoFunc(t *testing.T) {
+	fn := core.GoFunc(example)
 
 	if fn.Type() != runtime.FuncType {
 		t.Fatalf(`expected fn.Type() == FuncType, got %s`, fn.Type())

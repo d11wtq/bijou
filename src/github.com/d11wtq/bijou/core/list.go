@@ -9,15 +9,45 @@ func List(args *runtime.List) (runtime.Value, error) {
 	return args, nil
 }
 
+// Return a new list appending a new head to a given list
+func Cons(args *runtime.List) (runtime.Value, error) {
+	var hd runtime.Value
+	var tl runtime.Value
+	if err := ReadArgs(args, &hd, &tl); err != nil {
+		return nil, err
+	}
+	lst, ok := tl.(*runtime.List)
+	if ok == false {
+		return nil, &runtime.RuntimeError{"Bad data type: list required"}
+	}
+
+	return lst.Cons(hd), nil
+}
+
 // Return the head of the given list
 func Head(args *runtime.List) (runtime.Value, error) {
-	// FIXME: Validate arity, extract args easier
-	// FIXME: Need a way to register functions with a fixed number of args
-	// FIXME: Needs to do the BadArity error
-	return args.Head().(*runtime.List).Head(), nil
+	var lst runtime.Value
+	if err := ReadArgs(args, &lst); err != nil {
+		return nil, err
+	}
+	lst2, ok := lst.(*runtime.List)
+	if ok == false {
+		return nil, &runtime.RuntimeError{"Bad data type: list required"}
+	}
+
+	return lst2.Head(), nil
 }
 
 // Return the tail of the given list
 func Tail(args *runtime.List) (runtime.Value, error) {
-	return args.Head().(*runtime.List).Tail(), nil
+	var lst runtime.Value
+	if err := ReadArgs(args, &lst); err != nil {
+		return nil, err
+	}
+	lst2, ok := lst.(*runtime.List)
+	if ok == false {
+		return nil, &runtime.RuntimeError{"Bad data type: list required"}
+	}
+
+	return lst2.Tail(), nil
 }

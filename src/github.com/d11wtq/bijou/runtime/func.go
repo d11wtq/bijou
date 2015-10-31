@@ -1,9 +1,5 @@
 package runtime
 
-import (
-	"fmt"
-)
-
 // Function data type
 type Func struct {
 	// Parameter list
@@ -26,7 +22,7 @@ func (fn *Func) Eval(env Env) (Value, error) {
 func (fn *Func) Call(args *List) (Value, error) {
 	env := fn.Env.Extend()
 	params := fn.Params
-	processed := uint(0)
+	processed := 0
 
 	for params != EmptyList && args != EmptyList {
 		env.Def(string(params.Data.(Symbol)), args.Data)
@@ -35,28 +31,22 @@ func (fn *Func) Call(args *List) (Value, error) {
 	}
 
 	if params != EmptyList || args != EmptyList {
-		return nil, BadArity(processed, params, args)
+		return nil, HandleBadArity(processed, params, args)
 	}
 
 	return EvalDo(env, fn.Body)
 }
 
 // Return an ArgumentError, inspecting unprocessed arguments
-func BadArity(processed uint, params *List, args *List) error {
+func HandleBadArity(processed int, params *List, args *List) error {
 	numParams, numArgs := processed, processed
 	for params != EmptyList {
 		numParams += 1
-		params = params.Tail()
+		params = params.Next
 	}
 	for args != EmptyList {
 		numArgs += 1
-		args = args.Tail()
+		args = args.Next
 	}
-	return &ArgumentError{
-		fmt.Sprintf(
-			"wrong number of arguments (wanted %d, got %d)",
-			numParams,
-			numArgs,
-		),
-	}
+	return BadArity(numParams, numArgs)
 }
