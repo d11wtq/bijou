@@ -6,10 +6,14 @@ type NilObj struct{}
 // Representation of nil
 var Nil = (*NilObj)(nil)
 
-func (*NilObj) Type() Type {
+func (v *NilObj) Eq(other Value) bool {
+	return v == other
+}
+
+func (v *NilObj) Type() Type {
 	return NilType
 }
 
-func (*NilObj) Eval(env Env) (Value, error) {
+func (v *NilObj) Eval(env Env) (Value, error) {
 	return Nil, nil
 }

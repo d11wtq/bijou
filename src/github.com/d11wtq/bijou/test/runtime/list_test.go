@@ -12,6 +12,66 @@ func TestListType(t *testing.T) {
 	}
 }
 
+func TestListEqWithEmptyLists(t *testing.T) {
+	if !EmptyList.Eq(EmptyList) {
+		t.Fatalf(`expected EmptyList.Eq(EmptyList), got false`)
+	}
+}
+
+func TestListEqWithOneEmptyList(t *testing.T) {
+	a := EmptyList
+	b := EmptyList.Cons(Int(42))
+
+	if a.Eq(b) {
+		t.Fatalf(`expected !a.Eq(b), got true`)
+	}
+	if b.Eq(a) {
+		t.Fatalf(`expected !b.Eq(a), got true`)
+	}
+}
+
+func TestListEqWithEquivalentLists(t *testing.T) {
+	a := EmptyList.Cons(Int(42)).Cons(Int(7))
+	b := EmptyList.Cons(Int(42)).Cons(Int(7))
+
+	if !a.Eq(b) {
+		t.Fatalf(`expected a.Eq(b), got false`)
+	}
+	if !b.Eq(a) {
+		t.Fatalf(`expected b.Eq(a), got false`)
+	}
+}
+
+func TestListEqWithEquivalentListsRecursive(t *testing.T) {
+	a := EmptyList.
+		Cons(Int(42)).
+		Cons(EmptyList.Cons(Int(1))).
+		Cons(Int(7))
+	b := EmptyList.
+		Cons(Int(42)).
+		Cons(EmptyList.Cons(Int(1))).
+		Cons(Int(7))
+
+	if !a.Eq(b) {
+		t.Fatalf(`expected a.Eq(b), got false`)
+	}
+	if !b.Eq(a) {
+		t.Fatalf(`expected b.Eq(a), got false`)
+	}
+}
+
+func TestListEqWithDifferentLengths(t *testing.T) {
+	a := EmptyList.Cons(Int(42)).Cons(Int(7))
+	b := EmptyList.Cons(Int(7))
+
+	if a.Eq(b) {
+		t.Fatalf(`expected !a.Eq(b), got true`)
+	}
+	if b.Eq(a) {
+		t.Fatalf(`expected !b.Eq(a), got true`)
+	}
+}
+
 func TestListEmptyListEvalItself(t *testing.T) {
 	var list *List = nil
 

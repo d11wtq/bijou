@@ -36,6 +36,15 @@ func TestSymbolEvalToValue(t *testing.T) {
 	}
 }
 
+func TestSymbolEq(t *testing.T) {
+	if !Symbol("a").Eq(Symbol("a")) {
+		t.Fatalf(`expected Symbol("a").Eq(Symbol("a")), got false`)
+	}
+	if Symbol("a").Eq(Symbol("b")) {
+		t.Fatalf(`expected !Symbol("a").Eq(Symbol("b")), got true`)
+	}
+}
+
 func TestSymbolCastToNative(t *testing.T) {
 	sym := Symbol("test")
 	if string(sym) != "test" {

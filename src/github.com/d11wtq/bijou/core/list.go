@@ -11,8 +11,7 @@ func List(args *runtime.List) (runtime.Value, error) {
 
 // Return a new list appending a new head to a given list
 func Cons(args *runtime.List) (runtime.Value, error) {
-	var hd runtime.Value
-	var tl runtime.Value
+	var hd, tl runtime.Value
 	if err := ReadArgs(args, &hd, &tl); err != nil {
 		return nil, err
 	}

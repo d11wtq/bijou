@@ -6,6 +6,8 @@ type Type uint8
 const (
 	// Empty value, nil
 	NilType Type = iota
+	// Boolean true/false
+	BooleanType
 	// Unique symbols; variable names, function names
 	SymbolType
 	// Integers
@@ -20,6 +22,8 @@ const (
 
 // Program runtime value
 type Value interface {
+	// Equality comparison
+	Eq(Value) bool
 	// Eval to the lowest level value
 	Eval(env Env) (Value, error)
 	// Eval to the lowest level value

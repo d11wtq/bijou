@@ -13,9 +13,20 @@ func TestNilType(t *testing.T) {
 
 func TestNilEvalToSelf(t *testing.T) {
 	env := FakeEnv()
-	if v, err := Nil.Eval(env); err != nil {
+	v, err := Nil.Eval(env)
+	if err != nil {
 		t.Fatalf(`expected err == nil, got %s`, err)
-	} else if v != Nil {
+	}
+	if v != Nil {
 		t.Fatalf(`expected v == Nil, got %s`, v)
+	}
+}
+
+func TestNilEq(t *testing.T) {
+	if !Nil.Eq(Nil) {
+		t.Fatalf(`expected Nil.Eq(Nil), got false`)
+	}
+	if Nil.Eq(Int(42)) {
+		t.Fatalf(`expected !Nil.Eq(Int(42)), got true`)
 	}
 }

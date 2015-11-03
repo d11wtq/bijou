@@ -12,8 +12,13 @@ func init() {
 
 	// primitives
 	root.Def("nil", runtime.Nil)
+	root.Def("true", runtime.True)
+	root.Def("false", runtime.False)
 
-	// functions
+	// comparison functions
+	root.Def("=", GoFunc(Eq))
+
+	// list functions
 	root.Def("list", GoFunc(List))
 	root.Def("cons", GoFunc(Cons))
 	root.Def("head", GoFunc(Head))

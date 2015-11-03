@@ -11,6 +11,28 @@ type List struct {
 // Representation of the empty list
 var EmptyList = (*List)(nil)
 
+func (lst *List) Eq(other Value) bool {
+	if other, ok := other.(*List); ok == true {
+		for {
+			if lst == EmptyList && other == EmptyList {
+				return true
+			}
+
+			if lst == EmptyList || other == EmptyList {
+				return false
+			}
+
+			if !lst.Data.Eq(other.Data) {
+				return false
+			}
+
+			lst, other = lst.Next, other.Next
+		}
+	} else {
+		return false
+	}
+}
+
 func (lst *List) Eval(env Env) (Value, error) {
 	if lst == EmptyList {
 		return EmptyList, nil

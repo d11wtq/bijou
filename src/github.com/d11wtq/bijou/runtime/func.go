@@ -10,6 +10,10 @@ type Func struct {
 	Env Env
 }
 
+func (fn *Func) Eq(other Value) bool {
+	return fn == other
+}
+
 func (fn *Func) Type() Type {
 	return FuncType
 }

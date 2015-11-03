@@ -22,6 +22,15 @@ func TestIntEvalToSelf(t *testing.T) {
 	}
 }
 
+func TestIntEq(t *testing.T) {
+	if !Int(42).Eq(Int(42)) {
+		t.Fatalf(`expected Int(42).Eq(Int(42)), got false`)
+	}
+	if Int(7).Eq(Int(42)) {
+		t.Fatalf(`expected !Int(7).Eq(Int(42)), got true`)
+	}
+}
+
 func TestIntCastToNative(t *testing.T) {
 	i := Int(42)
 	if int(i) != 42 {

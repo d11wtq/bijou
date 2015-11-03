@@ -9,17 +9,17 @@ import (
 func main() {
 	env := core.RootEnv()
 	src := `
-	(def any?
-	  (fn (x) x))
-
 	(def coalesce
 	  (fn (x)
-	    (if (any? x)
+	    (if (= () x)
+		  nil
 		  (if (head x)
 		    (head x)
-			(coalesce (tail x))))))
+		    (coalesce (tail x))))))
 
-	(coalesce (list nil nil nil 42 nil 7))
+	(coalesce (list nil nil nil nil nil nil))
+	(= (list 42 ()) (list 42 ()))
+	true
 	`
 
 	app, err := runtime.ReadSrc(src)
@@ -32,6 +32,5 @@ func main() {
 		fmt.Println(err)
 		return
 	}
-	// FIXME: There is a bug with evaluation of args
 	fmt.Println(res)
 }

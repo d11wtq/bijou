@@ -26,6 +26,10 @@ func NewFakeValue(v Value) *FakeValue {
 	return &FakeValue{Delegate: v}
 }
 
+func (v *FakeValue) Eq(other Value) bool {
+	return v.Delegate.Eq(other)
+}
+
 func (v *FakeValue) Type() Type {
 	return v.Delegate.Type()
 }

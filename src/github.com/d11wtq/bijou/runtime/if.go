@@ -17,7 +17,7 @@ func EvalIf(env Env, lst *List) (Value, error) {
 		return nil, err
 	}
 
-	if success != Nil {
+	if success != Nil && success != False {
 		return body.Data.Eval(env)
 	} else {
 		return EvalDo(env, body.Tail())
