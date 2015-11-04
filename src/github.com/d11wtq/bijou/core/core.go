@@ -15,6 +15,9 @@ func init() {
 	root.Def("true", runtime.True)
 	root.Def("false", runtime.False)
 
+	// logical functions
+	root.Def("not", GoFunc(Not))
+
 	// comparison functions
 	root.Def("=", GoFunc(Eq))
 

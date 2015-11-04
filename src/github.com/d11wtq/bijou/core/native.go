@@ -9,12 +9,13 @@ type CallableFunc (func(*runtime.List) (runtime.Value, error))
 
 // Wrapper for a runtime-compatible go func
 type FuncWrapper struct {
-	Func CallableFunc
+	Func  CallableFunc
+	Macro bool
 }
 
 // Create a runtime-compatible go func
 func GoFunc(fn CallableFunc) runtime.Callable {
-	return &FuncWrapper{fn}
+	return &FuncWrapper{fn, false}
 }
 
 // Equality comparison (Value interface method)
@@ -30,6 +31,11 @@ func (w *FuncWrapper) Type() runtime.Type {
 // Evaluate this fn to a runtime value (Value interface method)
 func (w *FuncWrapper) Eval(env runtime.Env) (runtime.Value, error) {
 	return w, nil
+}
+
+// True if arguments should not be evaluated (Callable interface method)
+func (w *FuncWrapper) IsMacro() bool {
+	return w.Macro
 }
 
 // Invoke this function and return a value (Callable interface method)

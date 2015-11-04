@@ -7,43 +7,51 @@ import (
 	"testing"
 )
 
-func TestFuncType(t *testing.T) {
-	fn := &Func{
-		Params: EmptyList,
-		Body:   EmptyList,
-		Env:    test.FakeEnv(),
+func TestMacroType(t *testing.T) {
+	mc := &Macro{
+		Func{
+			Params: EmptyList,
+			Body:   EmptyList,
+			Env:    test.FakeEnv(),
+		},
 	}
 
-	if fn.Type() != FuncType {
-		t.Fatalf(`expected fn.Type() == FuncType, got %s`, fn.Type())
+	if mc.Type() != MacroType {
+		t.Fatalf(`expected mc.Type() == MacroType, got %s`, mc.Type())
 	}
 }
 
-func TestFuncIsNotMacro(t *testing.T) {
-	fn := &Func{
-		Params: EmptyList,
-		Body:   EmptyList,
-		Env:    test.FakeEnv(),
+func TestMacroIsMacro(t *testing.T) {
+	mc := &Macro{
+		Func{
+			Params: EmptyList,
+			Body:   EmptyList,
+			Env:    test.FakeEnv(),
+		},
 	}
 
-	if fn.IsMacro() {
-		t.Fatalf(`expected fn.IsMacro() == false, got true`)
+	if !mc.IsMacro() {
+		t.Fatalf(`expected mc.IsMacro() == true, got false`)
 	}
 }
 
-func TestFuncEq(t *testing.T) {
-	a := &Func{
-		Params: EmptyList,
-		Body:   EmptyList,
-		Env:    test.FakeEnv(),
+func TestMacroEq(t *testing.T) {
+	a := &Macro{
+		Func{
+			Params: EmptyList,
+			Body:   EmptyList,
+			Env:    test.FakeEnv(),
+		},
 	}
-	b := &Func{
-		Params: EmptyList,
-		Body:   EmptyList,
-		Env:    test.FakeEnv(),
+	b := &Macro{
+		Func{
+			Params: EmptyList,
+			Body:   EmptyList,
+			Env:    test.FakeEnv(),
+		},
 	}
 
-	if a.Eq(b) { // operationally equivalent functions are not the same
+	if a.Eq(b) { // operationally equivalent macros are not the same
 		t.Fatalf(`expected !a.Eq(b), got true`)
 	}
 	if b.Eq(a) {
@@ -58,33 +66,37 @@ func TestFuncEq(t *testing.T) {
 	}
 }
 
-func TestFuncEvalToSelf(t *testing.T) {
-	fn := &Func{
-		Params: EmptyList,
-		Body:   EmptyList,
-		Env:    test.FakeEnv(),
+func TestMacroEvalToSelf(t *testing.T) {
+	mc := &Macro{
+		Func{
+			Params: EmptyList,
+			Body:   EmptyList,
+			Env:    test.FakeEnv(),
+		},
 	}
 
-	v, err := fn.Eval(test.FakeEnv())
+	v, err := mc.Eval(test.FakeEnv())
 	if err != nil {
 		t.Fatalf(`expected err == nil, got %s`, err)
 	}
 
-	if v != fn {
-		t.Fatalf(`expected v == fn, got %s`, v)
+	if v != mc {
+		t.Fatalf(`expected v == mc, got %s`, v)
 	}
 }
 
-func TestFuncCallReturnsLastEvaluatedExpression(t *testing.T) {
+func TestMacroCallReturnsLastEvaluatedExpression(t *testing.T) {
 	params := EmptyList
 	body := EmptyList.Cons(Int(42)).Cons(Int(7))
-	fn := &Func{
-		Params: params,
-		Body:   body,
-		Env:    test.FakeEnv(),
+	mc := &Macro{
+		Func{
+			Params: params,
+			Body:   body,
+			Env:    test.FakeEnv(),
+		},
 	}
 
-	v, err := fn.Call(EmptyList)
+	v, err := mc.Call(EmptyList)
 	if err != nil {
 		t.Fatalf(`expected err == nil, got %s`, err)
 	}
@@ -94,18 +106,20 @@ func TestFuncCallReturnsLastEvaluatedExpression(t *testing.T) {
 	}
 }
 
-func TestFuncCallUsesClosedEnvironment(t *testing.T) {
+func TestMacroCallUsesClosedEnvironment(t *testing.T) {
 	params := EmptyList
 	body := EmptyList.Cons(Symbol("foo")).Cons(Int(7))
 	env := test.FakeEnv()
 	env.Def("foo", Int(99))
-	fn := &Func{
-		Params: params,
-		Body:   body,
-		Env:    env,
+	mc := &Macro{
+		Func{
+			Params: params,
+			Body:   body,
+			Env:    env,
+		},
 	}
 
-	v, err := fn.Call(EmptyList)
+	v, err := mc.Call(EmptyList)
 	if err != nil {
 		t.Fatalf(`expected err == nil, got %s`, err)
 	}
@@ -115,19 +129,21 @@ func TestFuncCallUsesClosedEnvironment(t *testing.T) {
 	}
 }
 
-func TestFuncCallExtendsEnvironmentWithArgs(t *testing.T) {
+func TestMacroCallExtendsEnvironmentWithArgs(t *testing.T) {
 	params := EmptyList.Cons(Symbol("x"))
 	body := EmptyList.Cons(Symbol("x")).Cons(Int(7))
 	env := test.FakeEnv()
 	env.Def("foo", Int(99))
-	fn := &Func{
-		Params: params,
-		Body:   body,
-		Env:    env,
+	mc := &Macro{
+		Func{
+			Params: params,
+			Body:   body,
+			Env:    env,
+		},
 	}
 	args := EmptyList.Cons(Int(21))
 
-	v, err := fn.Call(args)
+	v, err := mc.Call(args)
 	if err != nil {
 		t.Fatalf(`expected err == nil, got %s`, err)
 	}
@@ -137,18 +153,20 @@ func TestFuncCallExtendsEnvironmentWithArgs(t *testing.T) {
 	}
 }
 
-func TestFuncCallValidatesTooFewArgs(t *testing.T) {
+func TestMacroCallValidatesTooFewArgs(t *testing.T) {
 	params := EmptyList.Cons(Symbol("y")).Cons(Symbol("x"))
 	body := EmptyList
 	env := test.FakeEnv()
-	fn := &Func{
-		Params: params,
-		Body:   body,
-		Env:    env,
+	mc := &Macro{
+		Func{
+			Params: params,
+			Body:   body,
+			Env:    env,
+		},
 	}
 	args := EmptyList.Cons(Int(21))
 
-	v, err := fn.Call(args)
+	v, err := mc.Call(args)
 	if err == nil {
 		t.Fatalf(`expected err != nil, got nil`)
 	}
@@ -167,18 +185,20 @@ func TestFuncCallValidatesTooFewArgs(t *testing.T) {
 	}
 }
 
-func TestFuncCallValidatesTooManyArgs(t *testing.T) {
+func TestMacroCallValidatesTooManyArgs(t *testing.T) {
 	params := EmptyList.Cons(Symbol("y")).Cons(Symbol("x"))
 	body := EmptyList
 	env := test.FakeEnv()
-	fn := &Func{
-		Params: params,
-		Body:   body,
-		Env:    env,
+	mc := &Macro{
+		Func{
+			Params: params,
+			Body:   body,
+			Env:    env,
+		},
 	}
 	args := EmptyList.Cons(Int(21)).Cons(Int(9)).Cons(Int(2))
 
-	v, err := fn.Call(args)
+	v, err := mc.Call(args)
 	if err == nil {
 		t.Fatalf(`expected err != nil, got nil`)
 	}
@@ -197,20 +217,22 @@ func TestFuncCallValidatesTooManyArgs(t *testing.T) {
 	}
 }
 
-func TestFuncCallShortCirtcuitsOnError(t *testing.T) {
+func TestMacroCallShortCirtcuitsOnError(t *testing.T) {
 	v1 := test.NewFakeValue(Symbol("xx"))
 	v2 := test.NewFakeValue(Symbol("yy"))
 
 	params := EmptyList.Cons(Symbol("y")).Cons(Symbol("x"))
 	body := EmptyList.Cons(v2).Cons(v1)
-	fn := &Func{
-		Params: params,
-		Body:   body,
-		Env:    test.FakeEnv(),
+	mc := &Macro{
+		Func{
+			Params: params,
+			Body:   body,
+			Env:    test.FakeEnv(),
+		},
 	}
 	args := EmptyList.Cons(Int(21)).Cons(Int(9))
 
-	v, err := fn.Call(args)
+	v, err := mc.Call(args)
 	if err == nil {
 		t.Fatalf(`expected err != nil, got nil`)
 	}

@@ -9,17 +9,26 @@ import (
 func main() {
 	env := core.RootEnv()
 	src := `
+	(def unless
+	  (macro (cond then)
+	    (list (quote if)
+		      (list (quote not) cond)
+			  then)))
+
+	(def or
+	  (macro (a b)
+	    (list (quote if)
+		      a
+			  a
+			  b)))
+
 	(def coalesce
 	  (fn (x)
-	    (if (= () x)
-		  nil
-		  (if (head x)
-		    (head x)
-		    (coalesce (tail x))))))
+	    (unless (= () x)
+		  (or (head x)
+		      (coalesce (tail x))))))
 
-	(coalesce (list nil nil nil nil nil nil))
-	(= (list 42 ()) (list 42 ()))
-	true
+	(coalesce (list nil nil 42 nil nil nil))
 	`
 
 	app, err := runtime.ReadSrc(src)

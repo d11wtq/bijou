@@ -7,15 +7,24 @@ func EvalCall(env Env, lst *List) (Value, error) {
 		return nil, err
 	}
 
-	fn, ok := callee.(Callable)
+	callable, ok := callee.(Callable)
 	if ok == false {
-		return nil, &RuntimeError{"Attempted to call non-function"}
+		return nil, &RuntimeError{"Attempted to call non-callable value"}
 	}
 
-	args, err := EvalEach(env, lst.Next)
-	if err != nil {
-		return nil, err
-	}
+	args, err := lst.Next, nil
 
-	return fn.Call(args)
+	if callable.IsMacro() {
+		v, err := callable.Call(args)
+		if err != nil {
+			return nil, err
+		}
+		return v.Eval(env)
+	} else {
+		args, err = EvalEach(env, lst.Next)
+		if err != nil {
+			return nil, err
+		}
+		return callable.Call(args)
+	}
 }

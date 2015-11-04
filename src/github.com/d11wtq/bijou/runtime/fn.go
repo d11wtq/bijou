@@ -3,7 +3,7 @@ package runtime
 // Process the elements of the 'fn' special form
 func EvalFn(env Env, lst *List) (Value, error) {
 	if lst == EmptyList {
-		return nil, &RuntimeError{"Missing parameter list in if"}
+		return nil, &RuntimeError{"Missing parameter list in fn"}
 	}
 	params, ok := lst.Data.(*List)
 	if ok == false {

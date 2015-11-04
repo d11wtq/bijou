@@ -18,6 +18,8 @@ const (
 	ListType
 	// Functions
 	FuncType
+	// Macros
+	MacroType
 )
 
 // Program runtime value
@@ -33,8 +35,10 @@ type Value interface {
 // Value that can be invoked
 type Callable interface {
 	Value
-	// FIXME: *List here is too specific
-	Call(args *List) (Value, error)
+	// Invoke this value with the given arguments
+	Call(args *List) (Value, error) // FIXME: *List
+	// True if arguments should not be evaluated
+	IsMacro() bool
 }
 
 // Runtime environment

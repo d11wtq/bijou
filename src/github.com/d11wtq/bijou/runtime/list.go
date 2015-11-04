@@ -39,12 +39,16 @@ func (lst *List) Eval(env Env) (Value, error) {
 	}
 
 	switch lst.Data {
+	case Symbol("quote"):
+		return EvalQuote(env, lst.Next)
 	case Symbol("if"):
 		return EvalIf(env, lst.Next)
 	case Symbol("do"):
 		return EvalDo(env, lst.Next)
 	case Symbol("fn"):
 		return EvalFn(env, lst.Next)
+	case Symbol("macro"):
+		return EvalMacro(env, lst.Next)
 	case Symbol("def"):
 		return EvalDef(env, lst.Next)
 	default:
