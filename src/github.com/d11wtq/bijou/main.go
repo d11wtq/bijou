@@ -35,6 +35,21 @@ func main() {
 	    z))
 
 	(tail (test 1 2 3 4 5))
+
+
+	"This is an example string.
+
+	It spans several lines.
+
+	It supports tabs:
+
+	a\tb\tc\td
+
+	It allows escaped strings:
+
+	\"Like this\"
+
+	Neat!"
 	`
 
 	app, err := runtime.ReadSrc(src)

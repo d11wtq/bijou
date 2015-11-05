@@ -66,6 +66,90 @@ func TestReadWithAnIntNonsense(t *testing.T) {
 	}
 }
 
+func TestReadWithAnEmptyString(t *testing.T) {
+	v, s, err := Read(`""`)
+	if err != nil {
+		t.Fatalf(`expected err == nil, got %s`, err)
+	}
+	if s != "" {
+		t.Fatalf(`expected s == '', got %s`, s)
+	}
+
+	if v != String("") {
+		t.Fatalf(`expected v == String(""), got %s`, v)
+	}
+}
+
+func TestReadWithASimpleString(t *testing.T) {
+	v, s, err := Read(`"hello, world!"`)
+	if err != nil {
+		t.Fatalf(`expected err == nil, got %s`, err)
+	}
+	if s != "" {
+		t.Fatalf(`expected s == '', got %s`, s)
+	}
+
+	if v != String("hello, world!") {
+		t.Fatalf(`expected v == String("hello, world!"), got %s`, v)
+	}
+}
+
+func TestReadWithAStringSplitAcrossLines(t *testing.T) {
+	v, s, err := Read("\"hello,\nnew line!\"")
+	if err != nil {
+		t.Fatalf(`expected err == nil, got %s`, err)
+	}
+	if s != "" {
+		t.Fatalf(`expected s == '', got %s`, s)
+	}
+
+	if v != String("hello,\nnew line!") {
+		t.Fatalf(`expected v == String("hello,\nnew line!"), got %s`, v)
+	}
+}
+
+func TestReadWithAStringContainingEscapedQuotes(t *testing.T) {
+	v, s, err := Read(`"hello, \"beautiful\"!"`)
+	if err != nil {
+		t.Fatalf(`expected err == nil, got %s`, err)
+	}
+	if s != "" {
+		t.Fatalf(`expected s == '', got %s`, s)
+	}
+
+	if v != String(`hello, "beautiful"!`) {
+		t.Fatalf(`expected v == String('hello, "beautiful"!'), got %s`, v)
+	}
+}
+
+func TestReadWithAStringContainingEscapedBackslashes(t *testing.T) {
+	v, s, err := Read(`"hello, \\\"beautiful\"!"`)
+	if err != nil {
+		t.Fatalf(`expected err == nil, got %s`, err)
+	}
+	if s != "" {
+		t.Fatalf(`expected s == '', got %s`, s)
+	}
+
+	if v != String(`hello, \"beautiful"!`) {
+		t.Fatalf(`expected v == String('hello, \"beautiful"!'), got %s`, v)
+	}
+}
+
+func TestReadWithAStringContainingLineFeedEscapes(t *testing.T) {
+	v, s, err := Read(`"hello,\nnew line!"`)
+	if err != nil {
+		t.Fatalf(`expected err == nil, got %s`, err)
+	}
+	if s != "" {
+		t.Fatalf(`expected s == '', got %s`, s)
+	}
+
+	if v != String("hello,\nnew line!") {
+		t.Fatalf(`expected v == String("hello,\nnew line!"), got %s`, v)
+	}
+}
+
 func TestReadWithAnEmptyList(t *testing.T) {
 	v, s, err := Read("()")
 	if err != nil {

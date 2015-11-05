@@ -13,6 +13,11 @@ var Delim = &unicode.RangeTable{
 	},
 }
 
+// Handle the unexpected EOF error generation
+func UnexpectedEOF(s string) (Value, string, error) {
+	return nil, s, &RuntimeError{"Unexpected EOF while reading"}
+}
+
 // Read an input string and convert it to an internal Value type
 func Read(s string) (Value, string, error) {
 	for i, r := range s {
@@ -23,11 +28,13 @@ func Read(s string) (Value, string, error) {
 			return ReadInt(s[i:])
 		case (r == '('):
 			return ReadList(s[i:])
+		case (r == '"'):
+			return ReadString(s[i:])
 		default:
 			return ReadSymbol(s[i:])
 		}
 	}
-	return nil, s, &RuntimeError{"Unexpected EOF while reading"}
+	return UnexpectedEOF(s)
 }
 
 // Read an input string and convert it to an Int type
@@ -44,6 +51,45 @@ func ReadInt(s string) (Value, string, error) {
 func ReadSymbol(s string) (Value, string, error) {
 	atom, rem := ReadAtom(s)
 	return Symbol(atom), rem, nil
+}
+
+// Read an input string and convert it to a String type
+func ReadString(s1 string) (Value, string, error) {
+	buf := make([]rune, 0, len(s1))
+
+	// skip over the '"'
+	s2 := s1[1:]
+
+	escaped := false
+
+OuterLoop:
+	for i, r := range s2 {
+		if escaped {
+			escaped = false
+
+			switch r {
+			case 'r':
+				r = '\r'
+			case 'n':
+				r = '\n'
+			case 't':
+				r = '\t'
+			}
+		} else {
+			switch r {
+			case '\\':
+				escaped = true
+				continue OuterLoop
+			case '"':
+				// skip over the '"'
+				return String(buf), s2[i+1:], nil
+			}
+		}
+
+		buf = append(buf, r)
+	}
+
+	return UnexpectedEOF(s1)
 }
 
 // Read an input string and convert it to a *List type
@@ -72,7 +118,7 @@ OuterLoop:
 			}
 		}
 
-		return nil, s1, &RuntimeError{"Unexpected EOF while reading"}
+		return UnexpectedEOF(s1)
 	}
 }
 
