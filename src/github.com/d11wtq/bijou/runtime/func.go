@@ -32,10 +32,6 @@ func (fn *Func) Call(args *List) (Value, error) {
 
 	seen := 0
 	for params := fn.Params; params != EmptyList; params = params.Next {
-		if args == EmptyList {
-			return nil, BadArity(seen+params.Length(), seen)
-		}
-
 		key := params.Data.(Symbol)
 
 		if key == Symbol("&") {
@@ -45,8 +41,11 @@ func (fn *Func) Call(args *List) (Value, error) {
 				env.Def(string(key), args)
 			}
 
-			args = EmptyList
-			break
+			return EvalDo(env, fn.Body)
+		}
+
+		if args == EmptyList {
+			return nil, BadArity(seen+params.Length(), seen)
 		}
 
 		env.Def(string(key), args.Data)

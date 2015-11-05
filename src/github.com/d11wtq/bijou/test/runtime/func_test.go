@@ -223,6 +223,32 @@ func TestFuncCallWithVariadicArgs(t *testing.T) {
 	}
 }
 
+func TestFuncCallWithEmptyVariadicArgs(t *testing.T) {
+	params := EmptyList.Cons(Symbol("y")).Cons(Symbol("&")).Cons(Symbol("x"))
+	body := EmptyList.Cons(Symbol("y"))
+	env := test.FakeEnv()
+	fn := &Func{
+		Params: params,
+		Body:   body,
+		Env:    env,
+	}
+	args := EmptyList.Cons(Int(1))
+
+	v, err := fn.Call(args)
+	if err != nil {
+		t.Fatalf(`expected err == nil, got %s`, err)
+	}
+
+	y, ok := v.(*List)
+	if ok == false {
+		t.Fatalf(`expected v.(*List), but not a *List`)
+	}
+
+	if y != EmptyList {
+		t.Fatalf(`expected y == EmptyList, got %s`, y)
+	}
+}
+
 func TestFuncCallWithIgnoredVariadicArgs(t *testing.T) {
 	params := EmptyList.Cons(Symbol("&")).Cons(Symbol("x"))
 	body := EmptyList.Cons(Symbol("x"))
