@@ -29,32 +29,34 @@ func (fn *Func) IsMacro() bool {
 // Call this function with the given arguments
 func (fn *Func) Call(args *List) (Value, error) {
 	env := fn.Env.Extend()
-	params := fn.Params
-	processed := 0
 
-	for params != EmptyList && args != EmptyList {
-		env.Def(string(params.Data.(Symbol)), args.Data)
-		processed += 1
-		params, args = params.Tail(), args.Tail()
+	seen := 0
+	for params := fn.Params; params != EmptyList; params = params.Next {
+		if args == EmptyList {
+			return nil, BadArity(seen+params.Length(), seen)
+		}
+
+		key := params.Data.(Symbol)
+
+		if key == Symbol("&") {
+			// variadic; consume everything
+			if params.Next != EmptyList {
+				key = params.Next.Data.(Symbol)
+				env.Def(string(key), args)
+			}
+
+			args = EmptyList
+			break
+		}
+
+		env.Def(string(key), args.Data)
+		args = args.Next
+		seen += 1
 	}
 
-	if params != EmptyList || args != EmptyList {
-		return nil, HandleBadArity(processed, params, args)
+	if args != EmptyList {
+		return nil, BadArity(seen, seen+args.Length())
 	}
 
 	return EvalDo(env, fn.Body)
-}
-
-// Return an ArgumentError, inspecting unprocessed arguments
-func HandleBadArity(processed int, params *List, args *List) error {
-	numParams, numArgs := processed, processed
-	for params != EmptyList {
-		numParams += 1
-		params = params.Next
-	}
-	for args != EmptyList {
-		numArgs += 1
-		args = args.Next
-	}
-	return BadArity(numParams, numArgs)
 }

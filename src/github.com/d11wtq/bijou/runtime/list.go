@@ -91,3 +91,12 @@ func (lst *List) Reverse() *List {
 	}
 	return acc
 }
+
+// Return the length of this list
+func (lst *List) Length() int {
+	acc := 0
+	for x := lst; x != EmptyList; x = x.Next {
+		acc += 1
+	}
+	return acc
+}

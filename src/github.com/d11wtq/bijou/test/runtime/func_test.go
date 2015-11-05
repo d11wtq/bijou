@@ -197,6 +197,53 @@ func TestFuncCallValidatesTooManyArgs(t *testing.T) {
 	}
 }
 
+func TestFuncCallWithVariadicArgs(t *testing.T) {
+	params := EmptyList.Cons(Symbol("y")).Cons(Symbol("&")).Cons(Symbol("x"))
+	body := EmptyList.Cons(Symbol("y"))
+	env := test.FakeEnv()
+	fn := &Func{
+		Params: params,
+		Body:   body,
+		Env:    env,
+	}
+	args := EmptyList.Cons(Int(4)).Cons(Int(3)).Cons(Int(2)).Cons(Int(1))
+
+	v, err := fn.Call(args)
+	if err != nil {
+		t.Fatalf(`expected err == nil, got %s`, err)
+	}
+
+	y, ok := v.(*List)
+	if ok == false {
+		t.Fatalf(`expected v.(*List), but not a *List`)
+	}
+
+	if y.Data != Int(2) {
+		t.Fatalf(`expected y.Data == Int(2), got %s`, y.Data)
+	}
+}
+
+func TestFuncCallWithIgnoredVariadicArgs(t *testing.T) {
+	params := EmptyList.Cons(Symbol("&")).Cons(Symbol("x"))
+	body := EmptyList.Cons(Symbol("x"))
+	env := test.FakeEnv()
+	fn := &Func{
+		Params: params,
+		Body:   body,
+		Env:    env,
+	}
+	args := EmptyList.Cons(Int(4)).Cons(Int(3)).Cons(Int(2)).Cons(Int(1))
+
+	v, err := fn.Call(args)
+	if err != nil {
+		t.Fatalf(`expected err == nil, got %s`, err)
+	}
+
+	if v != Int(1) {
+		t.Fatalf(`expected v == Int(1), got %s`, v)
+	}
+}
+
 func TestFuncCallShortCirtcuitsOnError(t *testing.T) {
 	v1 := test.NewFakeValue(Symbol("xx"))
 	v2 := test.NewFakeValue(Symbol("yy"))

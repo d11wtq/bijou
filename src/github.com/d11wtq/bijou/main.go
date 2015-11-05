@@ -29,6 +29,12 @@ func main() {
 		      (coalesce (tail x))))))
 
 	(coalesce (list nil nil 42 nil nil nil))
+
+	(def test
+	  (fn (x y & z)
+	    z))
+
+	(tail (test 1 2 3 4 5))
 	`
 
 	app, err := runtime.ReadSrc(src)
