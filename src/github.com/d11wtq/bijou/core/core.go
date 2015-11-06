@@ -32,6 +32,7 @@ func init() {
 	// sequence functions
 	root.Def("head", GoFunc(Head))
 	root.Def("tail", GoFunc(Tail))
+	root.Def("empty?", GoFunc(Empty))
 }
 
 // Get the initial root scope

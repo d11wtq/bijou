@@ -69,3 +69,25 @@ func TestTailReturnsTailOfSequence(t *testing.T) {
 		t.Fatalf(`expected v == String("oo"), got %s`, v)
 	}
 }
+
+func TestEmptySequence(t *testing.T) {
+	args := runtime.EmptyList.Cons(
+		runtime.EmptyList.Cons(runtime.Int(42)),
+	)
+	v, err := core.Empty(test.FakeEnv(), args)
+	if err != nil {
+		t.Fatalf(`expected err == nil, got %s`, err)
+	}
+	if v != runtime.False {
+		t.Fatalf(`expected v == False, got %s`, v)
+	}
+
+	args = runtime.EmptyList.Cons(runtime.EmptyList)
+	v, err = core.Empty(test.FakeEnv(), args)
+	if err != nil {
+		t.Fatalf(`expected err == nil, got %s`, err)
+	}
+	if v != runtime.True {
+		t.Fatalf(`expected v == True, got %s`, v)
+	}
+}

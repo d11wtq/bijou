@@ -22,37 +22,13 @@ func main() {
 			  a
 			  b)))
 
-	(def coalesce
-	  (fn (x)
-	    (unless (= () x)
-		  (or (head x)
-		      (coalesce (tail x))))))
+	(def some
+	  (fn (s)
+	    (unless (empty? s)
+		  (or (head s)
+		      (some (tail s))))))
 
-	(coalesce (list nil nil 42 nil nil nil))
-
-	(def test
-	  (fn (x y & z)
-	    z))
-
-	(tail (test 1 2 3 4 5))
-
-
-	"This is an example string.
-
-	It spans several lines.
-
-	It supports tabs:
-
-	a\tb\tc\td
-
-	It allows escaped strings:
-
-	\"Like this\"
-
-	Neat!"
-
-	(head "example")
-	(tail "example")
+	(some (list nil nil 42 nil nil nil))
 	`
 
 	app, err := runtime.ReadSrc(src)

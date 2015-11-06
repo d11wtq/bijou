@@ -6,13 +6,9 @@ import (
 
 // Return the head of the given sequence
 func Head(env runtime.Env, args *runtime.List) (runtime.Value, error) {
-	var lst runtime.Value
-	if err := ReadArgs(args, &lst); err != nil {
+	var seq runtime.Sequence
+	if err := ReadSequence(args, &seq); err != nil {
 		return nil, err
-	}
-	seq, ok := lst.(runtime.Sequence)
-	if ok == false {
-		return nil, &runtime.RuntimeError{"Bad data type: sequence required"}
 	}
 
 	return seq.Head(), nil
@@ -20,14 +16,34 @@ func Head(env runtime.Env, args *runtime.List) (runtime.Value, error) {
 
 // Return the tail of the given sequence
 func Tail(env runtime.Env, args *runtime.List) (runtime.Value, error) {
-	var lst runtime.Value
-	if err := ReadArgs(args, &lst); err != nil {
+	var seq runtime.Sequence
+	if err := ReadSequence(args, &seq); err != nil {
 		return nil, err
-	}
-	seq, ok := lst.(runtime.Sequence)
-	if ok == false {
-		return nil, &runtime.RuntimeError{"Bad data type: sequence required"}
 	}
 
 	return seq.Tail(), nil
+}
+
+// Return true if the sequence is empty
+func Empty(env runtime.Env, args *runtime.List) (runtime.Value, error) {
+	var seq runtime.Sequence
+	if err := ReadSequence(args, &seq); err != nil {
+		return nil, err
+	}
+	return runtime.Boolean(seq.Empty()), nil
+}
+
+// Read the sequence argument from args
+func ReadSequence(args *runtime.List, ptr *runtime.Sequence) error {
+	var v runtime.Value
+	err := ReadArgs(args, &v)
+	if err != nil {
+		return err
+	}
+	seq, ok := v.(runtime.Sequence)
+	if ok == false {
+		return &runtime.RuntimeError{"Bad data type: sequence required"}
+	}
+	*ptr = seq
+	return nil
 }
