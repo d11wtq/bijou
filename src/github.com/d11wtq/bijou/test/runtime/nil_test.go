@@ -30,3 +30,21 @@ func TestNilEq(t *testing.T) {
 		t.Fatalf(`expected !Nil.Eq(Int(42)), got true`)
 	}
 }
+
+func TestNilHead(t *testing.T) {
+	if Nil.Head() != Nil {
+		t.Fatalf(`expected Nil.Head() == Nil, got %s`, Nil.Head())
+	}
+}
+
+func TestNilTail(t *testing.T) {
+	if Nil.Tail() != Nil {
+		t.Fatalf(`expected Nil.Tail() == Nil, got %s`, Nil.Tail())
+	}
+}
+
+func TestNilEmpty(t *testing.T) {
+	if Nil.Empty() == false {
+		t.Fatalf(`expected Nil.Empty() == true, got false`)
+	}
+}

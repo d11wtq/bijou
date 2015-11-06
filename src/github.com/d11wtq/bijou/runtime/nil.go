@@ -17,3 +17,15 @@ func (v *NilObj) Type() Type {
 func (v *NilObj) Eval(env Env) (Value, error) {
 	return Nil, nil
 }
+
+func (v *NilObj) Head() Value {
+	return v
+}
+
+func (v *NilObj) Tail() Sequence {
+	return v
+}
+
+func (v *NilObj) Empty() bool {
+	return true
+}
