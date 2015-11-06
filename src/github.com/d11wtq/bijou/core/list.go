@@ -22,31 +22,3 @@ func Cons(env runtime.Env, args *runtime.List) (runtime.Value, error) {
 
 	return lst.Cons(hd), nil
 }
-
-// Return the head of the given list
-func Head(env runtime.Env, args *runtime.List) (runtime.Value, error) {
-	var lst runtime.Value
-	if err := ReadArgs(args, &lst); err != nil {
-		return nil, err
-	}
-	lst2, ok := lst.(*runtime.List)
-	if ok == false {
-		return nil, &runtime.RuntimeError{"Bad data type: list required"}
-	}
-
-	return lst2.Head(), nil
-}
-
-// Return the tail of the given list
-func Tail(env runtime.Env, args *runtime.List) (runtime.Value, error) {
-	var lst runtime.Value
-	if err := ReadArgs(args, &lst); err != nil {
-		return nil, err
-	}
-	lst2, ok := lst.(*runtime.List)
-	if ok == false {
-		return nil, &runtime.RuntimeError{"Bad data type: list required"}
-	}
-
-	return lst2.Tail(), nil
-}

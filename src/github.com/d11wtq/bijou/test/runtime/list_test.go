@@ -101,6 +101,16 @@ func TestListEmptyListHasNoTailOrHead(t *testing.T) {
 	}
 }
 
+func TestListEmpty(t *testing.T) {
+	if v := EmptyList.Empty(); v == false {
+		t.Fatalf(`expected EmptyList.Empty(), got false`)
+	}
+
+	if v := EmptyList.Cons(Int(42)).Empty(); v == true {
+		t.Fatalf(`expected !EmptyList.Cons(Int(42)).Empty(), got true`)
+	}
+}
+
 func TestListConsAddsANewHead(t *testing.T) {
 	list := EmptyList.Cons(Int(42)).Cons(Int(7))
 

@@ -28,6 +28,8 @@ func init() {
 	// list functions
 	root.Def("list", GoFunc(List))
 	root.Def("cons", GoFunc(Cons))
+
+	// sequence functions
 	root.Def("head", GoFunc(Head))
 	root.Def("tail", GoFunc(Tail))
 }

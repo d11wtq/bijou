@@ -41,6 +41,17 @@ type Callable interface {
 	IsMacro() bool
 }
 
+// Data structures that can be looped over
+type Sequence interface {
+	Value
+	// Take the first element of the sequence
+	Head() Value
+	// Get everything except the first element
+	Tail() Sequence
+	// True if there are no elements in the sequence
+	Empty() bool
+}
+
 // Runtime environment
 type Env interface {
 	// Define a new symbol

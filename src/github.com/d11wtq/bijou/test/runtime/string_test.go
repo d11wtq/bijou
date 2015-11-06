@@ -30,3 +30,33 @@ func TestStringEq(t *testing.T) {
 		t.Fatalf(`expected !String("foo").Eq(String("bar")), got true`)
 	}
 }
+
+func TestStringHead(t *testing.T) {
+	if v := String("foo").Head(); v != String("f") {
+		t.Fatalf(`expected String("foo").Head() == String("f"), got`, v)
+	}
+
+	if v := String("").Head(); v != Nil {
+		t.Fatalf(`expected String("").Head() == Nil, got`, v)
+	}
+}
+
+func TestStringTail(t *testing.T) {
+	if v := String("foo").Tail(); v != String("oo") {
+		t.Fatalf(`expected String("foo").Tail() == String("oo"), got`, v)
+	}
+
+	if v := String("").Tail(); v != String("") {
+		t.Fatalf(`expected String("").Tail() == String(""), got`, v)
+	}
+}
+
+func TestStringEmpty(t *testing.T) {
+	if v := String("foo").Empty(); v == true {
+		t.Fatalf(`expected !String("foo").Empty(), got true`)
+	}
+
+	if v := String("").Empty(); v == false {
+		t.Fatalf(`expected String("").Empty(), got false`)
+	}
+}

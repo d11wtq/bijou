@@ -50,6 +50,9 @@ func main() {
 	\"Like this\"
 
 	Neat!"
+
+	(head "example")
+	(tail "example")
 	`
 
 	app, err := runtime.ReadSrc(src)

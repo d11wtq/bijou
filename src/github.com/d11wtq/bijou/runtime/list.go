@@ -70,12 +70,17 @@ func (lst *List) Head() Value {
 }
 
 // Get the next sequence of this list
-func (lst *List) Tail() *List {
+func (lst *List) Tail() Sequence {
 	if lst == EmptyList {
 		return EmptyList
 	}
 
 	return lst.Next
+}
+
+// Return true if this is the empty list
+func (lst *List) Empty() bool {
+	return lst == EmptyList
 }
 
 // Append a new element to the head of the list

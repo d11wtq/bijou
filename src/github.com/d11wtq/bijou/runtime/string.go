@@ -14,3 +14,23 @@ func (s String) Eval(env Env) (Value, error) {
 func (s String) Type() Type {
 	return StringType
 }
+
+func (s String) Head() Value {
+	if s.Empty() {
+		return Nil
+	}
+
+	return s[:1]
+}
+
+func (s String) Tail() Sequence {
+	if s.Empty() {
+		return s
+	}
+
+	return s[1:]
+}
+
+func (s String) Empty() bool {
+	return len(s) == 0
+}
