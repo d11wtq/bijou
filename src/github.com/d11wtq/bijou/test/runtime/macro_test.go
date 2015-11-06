@@ -96,7 +96,7 @@ func TestMacroCallReturnsLastEvaluatedExpression(t *testing.T) {
 		},
 	}
 
-	v, err := mc.Call(EmptyList)
+	v, err := mc.Call(test.FakeEnv(), EmptyList)
 	if err != nil {
 		t.Fatalf(`expected err == nil, got %s`, err)
 	}
@@ -119,7 +119,7 @@ func TestMacroCallUsesClosedEnvironment(t *testing.T) {
 		},
 	}
 
-	v, err := mc.Call(EmptyList)
+	v, err := mc.Call(test.FakeEnv(), EmptyList)
 	if err != nil {
 		t.Fatalf(`expected err == nil, got %s`, err)
 	}
@@ -143,7 +143,7 @@ func TestMacroCallExtendsEnvironmentWithArgs(t *testing.T) {
 	}
 	args := EmptyList.Cons(Int(21))
 
-	v, err := mc.Call(args)
+	v, err := mc.Call(test.FakeEnv(), args)
 	if err != nil {
 		t.Fatalf(`expected err == nil, got %s`, err)
 	}
@@ -166,7 +166,7 @@ func TestMacroCallValidatesTooFewArgs(t *testing.T) {
 	}
 	args := EmptyList.Cons(Int(21))
 
-	v, err := mc.Call(args)
+	v, err := mc.Call(test.FakeEnv(), args)
 	if err == nil {
 		t.Fatalf(`expected err != nil, got nil`)
 	}
@@ -198,7 +198,7 @@ func TestMacroCallValidatesTooManyArgs(t *testing.T) {
 	}
 	args := EmptyList.Cons(Int(21)).Cons(Int(9)).Cons(Int(2))
 
-	v, err := mc.Call(args)
+	v, err := mc.Call(test.FakeEnv(), args)
 	if err == nil {
 		t.Fatalf(`expected err != nil, got nil`)
 	}
@@ -232,7 +232,7 @@ func TestMacroCallShortCirtcuitsOnError(t *testing.T) {
 	}
 	args := EmptyList.Cons(Int(21)).Cons(Int(9))
 
-	v, err := mc.Call(args)
+	v, err := mc.Call(test.FakeEnv(), args)
 	if err == nil {
 		t.Fatalf(`expected err != nil, got nil`)
 	}

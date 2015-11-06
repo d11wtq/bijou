@@ -15,7 +15,7 @@ func EvalCall(env Env, lst *List) (Value, error) {
 	args, err := lst.Next, nil
 
 	if callable.IsMacro() {
-		v, err := callable.Call(args)
+		v, err := callable.Call(env, args)
 		if err != nil {
 			return nil, err
 		}
@@ -25,6 +25,6 @@ func EvalCall(env Env, lst *List) (Value, error) {
 		if err != nil {
 			return nil, err
 		}
-		return callable.Call(args)
+		return callable.Call(env, args)
 	}
 }

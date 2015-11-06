@@ -5,7 +5,7 @@ import (
 )
 
 // Logical equality
-func Eq(args *runtime.List) (runtime.Value, error) {
+func Eq(env runtime.Env, args *runtime.List) (runtime.Value, error) {
 	if args != runtime.EmptyList {
 		for args.Next != runtime.EmptyList {
 			if !args.Data.Eq(args.Next.Data) {

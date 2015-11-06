@@ -3,10 +3,11 @@ package core_test
 import (
 	"github.com/d11wtq/bijou/core"
 	"github.com/d11wtq/bijou/runtime"
+	"github.com/d11wtq/bijou/test"
 	"testing"
 )
 
-func example(args *runtime.List) (runtime.Value, error) {
+func example(env runtime.Env, args *runtime.List) (runtime.Value, error) {
 	return args, nil
 }
 
@@ -21,7 +22,7 @@ func TestGoFunc(t *testing.T) {
 	}
 
 	args := runtime.EmptyList.Cons(runtime.Int(42))
-	v2, err2 := fn.Call(args)
+	v2, err2 := fn.Call(test.FakeEnv(), args)
 	if err2 != nil {
 		t.Fatalf(`expected err2 == nil, got %s`, err2)
 	}

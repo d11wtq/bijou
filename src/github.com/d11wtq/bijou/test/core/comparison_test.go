@@ -3,12 +3,13 @@ package core_test
 import (
 	"github.com/d11wtq/bijou/core"
 	"github.com/d11wtq/bijou/runtime"
+	"github.com/d11wtq/bijou/test"
 	"testing"
 )
 
 func TestEqWithoutArgs(t *testing.T) {
 	args := runtime.EmptyList
-	v, err := core.Eq(args)
+	v, err := core.Eq(test.FakeEnv(), args)
 	if err != nil {
 		t.Fatalf(`expected err == nil, got %s`, err)
 	}
@@ -19,7 +20,7 @@ func TestEqWithoutArgs(t *testing.T) {
 
 func TestEqWithOneArg(t *testing.T) {
 	args := runtime.EmptyList.Cons(runtime.Int(42))
-	v, err := core.Eq(args)
+	v, err := core.Eq(test.FakeEnv(), args)
 	if err != nil {
 		t.Fatalf(`expected err == nil, got %s`, err)
 	}
@@ -30,7 +31,7 @@ func TestEqWithOneArg(t *testing.T) {
 
 func TestEqWithTwoEqualArgs(t *testing.T) {
 	args := runtime.EmptyList.Cons(runtime.Int(42)).Cons(runtime.Int(42))
-	v, err := core.Eq(args)
+	v, err := core.Eq(test.FakeEnv(), args)
 	if err != nil {
 		t.Fatalf(`expected err == nil, got %s`, err)
 	}
@@ -42,7 +43,7 @@ func TestEqWithTwoEqualArgs(t *testing.T) {
 func TestEqWithTwoUnequalArgs(t *testing.T) {
 	args := runtime.EmptyList.Cons(runtime.Int(42)).Cons(runtime.Int(7))
 
-	v, err := core.Eq(args)
+	v, err := core.Eq(test.FakeEnv(), args)
 	if err != nil {
 		t.Fatalf(`expected err == nil, got %s`, err)
 	}
@@ -57,7 +58,7 @@ func TestEqWithManyEqualArgs(t *testing.T) {
 		Cons(runtime.Int(42)).
 		Cons(runtime.Int(42))
 
-	v, err := core.Eq(args)
+	v, err := core.Eq(test.FakeEnv(), args)
 	if err != nil {
 		t.Fatalf(`expected err == nil, got %s`, err)
 	}
@@ -72,7 +73,7 @@ func TestEqWithManyUnequalArgs(t *testing.T) {
 		Cons(runtime.Int(42)).
 		Cons(runtime.Int(42))
 
-	v, err := core.Eq(args)
+	v, err := core.Eq(test.FakeEnv(), args)
 	if err != nil {
 		t.Fatalf(`expected err == nil, got %s`, err)
 	}

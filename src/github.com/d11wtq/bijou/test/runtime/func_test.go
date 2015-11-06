@@ -84,7 +84,7 @@ func TestFuncCallReturnsLastEvaluatedExpression(t *testing.T) {
 		Env:    test.FakeEnv(),
 	}
 
-	v, err := fn.Call(EmptyList)
+	v, err := fn.Call(test.FakeEnv(), EmptyList)
 	if err != nil {
 		t.Fatalf(`expected err == nil, got %s`, err)
 	}
@@ -105,7 +105,7 @@ func TestFuncCallUsesClosedEnvironment(t *testing.T) {
 		Env:    env,
 	}
 
-	v, err := fn.Call(EmptyList)
+	v, err := fn.Call(test.FakeEnv(), EmptyList)
 	if err != nil {
 		t.Fatalf(`expected err == nil, got %s`, err)
 	}
@@ -127,7 +127,7 @@ func TestFuncCallExtendsEnvironmentWithArgs(t *testing.T) {
 	}
 	args := EmptyList.Cons(Int(21))
 
-	v, err := fn.Call(args)
+	v, err := fn.Call(test.FakeEnv(), args)
 	if err != nil {
 		t.Fatalf(`expected err == nil, got %s`, err)
 	}
@@ -148,7 +148,7 @@ func TestFuncCallValidatesTooFewArgs(t *testing.T) {
 	}
 	args := EmptyList.Cons(Int(21))
 
-	v, err := fn.Call(args)
+	v, err := fn.Call(test.FakeEnv(), args)
 	if err == nil {
 		t.Fatalf(`expected err != nil, got nil`)
 	}
@@ -178,7 +178,7 @@ func TestFuncCallValidatesTooManyArgs(t *testing.T) {
 	}
 	args := EmptyList.Cons(Int(21)).Cons(Int(9)).Cons(Int(2))
 
-	v, err := fn.Call(args)
+	v, err := fn.Call(test.FakeEnv(), args)
 	if err == nil {
 		t.Fatalf(`expected err != nil, got nil`)
 	}
@@ -208,7 +208,7 @@ func TestFuncCallWithVariadicArgs(t *testing.T) {
 	}
 	args := EmptyList.Cons(Int(4)).Cons(Int(3)).Cons(Int(2)).Cons(Int(1))
 
-	v, err := fn.Call(args)
+	v, err := fn.Call(test.FakeEnv(), args)
 	if err != nil {
 		t.Fatalf(`expected err == nil, got %s`, err)
 	}
@@ -234,7 +234,7 @@ func TestFuncCallWithEmptyVariadicArgs(t *testing.T) {
 	}
 	args := EmptyList.Cons(Int(1))
 
-	v, err := fn.Call(args)
+	v, err := fn.Call(test.FakeEnv(), args)
 	if err != nil {
 		t.Fatalf(`expected err == nil, got %s`, err)
 	}
@@ -260,7 +260,7 @@ func TestFuncCallWithIgnoredVariadicArgs(t *testing.T) {
 	}
 	args := EmptyList.Cons(Int(4)).Cons(Int(3)).Cons(Int(2)).Cons(Int(1))
 
-	v, err := fn.Call(args)
+	v, err := fn.Call(test.FakeEnv(), args)
 	if err != nil {
 		t.Fatalf(`expected err == nil, got %s`, err)
 	}
@@ -283,7 +283,7 @@ func TestFuncCallShortCirtcuitsOnError(t *testing.T) {
 	}
 	args := EmptyList.Cons(Int(21)).Cons(Int(9))
 
-	v, err := fn.Call(args)
+	v, err := fn.Call(test.FakeEnv(), args)
 	if err == nil {
 		t.Fatalf(`expected err != nil, got nil`)
 	}

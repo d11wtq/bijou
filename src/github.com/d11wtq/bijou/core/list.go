@@ -5,12 +5,12 @@ import (
 )
 
 // Basic list function, returns variadic args as a *List
-func List(args *runtime.List) (runtime.Value, error) {
+func List(env runtime.Env, args *runtime.List) (runtime.Value, error) {
 	return args, nil
 }
 
 // Return a new list appending a new head to a given list
-func Cons(args *runtime.List) (runtime.Value, error) {
+func Cons(env runtime.Env, args *runtime.List) (runtime.Value, error) {
 	var hd, tl runtime.Value
 	if err := ReadArgs(args, &hd, &tl); err != nil {
 		return nil, err
@@ -24,7 +24,7 @@ func Cons(args *runtime.List) (runtime.Value, error) {
 }
 
 // Return the head of the given list
-func Head(args *runtime.List) (runtime.Value, error) {
+func Head(env runtime.Env, args *runtime.List) (runtime.Value, error) {
 	var lst runtime.Value
 	if err := ReadArgs(args, &lst); err != nil {
 		return nil, err
@@ -38,7 +38,7 @@ func Head(args *runtime.List) (runtime.Value, error) {
 }
 
 // Return the tail of the given list
-func Tail(args *runtime.List) (runtime.Value, error) {
+func Tail(env runtime.Env, args *runtime.List) (runtime.Value, error) {
 	var lst runtime.Value
 	if err := ReadArgs(args, &lst); err != nil {
 		return nil, err

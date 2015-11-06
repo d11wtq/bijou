@@ -5,7 +5,7 @@ import (
 )
 
 // Signature of a runtime-compatible go func
-type CallableFunc (func(*runtime.List) (runtime.Value, error))
+type CallableFunc (func(runtime.Env, *runtime.List) (runtime.Value, error))
 
 // Wrapper for a runtime-compatible go func
 type FuncWrapper struct {
@@ -39,8 +39,8 @@ func (w *FuncWrapper) IsMacro() bool {
 }
 
 // Invoke this function and return a value (Callable interface method)
-func (w *FuncWrapper) Call(args *runtime.List) (runtime.Value, error) {
-	return w.Func(args)
+func (w *FuncWrapper) Call(env runtime.Env, args *runtime.List) (runtime.Value, error) {
+	return w.Func(env, args)
 }
 
 // Read the expected number of arguments into the slice of pointers ptrs
@@ -55,12 +55,7 @@ func ReadArgs(args *runtime.List, ptrs ...*runtime.Value) error {
 	}
 
 	if args != runtime.EmptyList {
-		n := len(ptrs)
-		for args != runtime.EmptyList {
-			n += 1
-			args = args.Next
-		}
-		return runtime.BadArity(len(ptrs), n)
+		return runtime.BadArity(len(ptrs), len(ptrs)+args.Length())
 	}
 
 	return nil

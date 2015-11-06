@@ -5,7 +5,7 @@ import (
 )
 
 // Logical not
-func Not(args *runtime.List) (runtime.Value, error) {
+func Not(env runtime.Env, args *runtime.List) (runtime.Value, error) {
 	var v runtime.Value
 	if err := ReadArgs(args, &v); err != nil {
 		return nil, err

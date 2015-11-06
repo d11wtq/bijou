@@ -3,12 +3,13 @@ package core_test
 import (
 	"github.com/d11wtq/bijou/core"
 	"github.com/d11wtq/bijou/runtime"
+	"github.com/d11wtq/bijou/test"
 	"testing"
 )
 
 func TestNot(t *testing.T) {
 	args := runtime.EmptyList
-	v, err := core.Not(args)
+	v, err := core.Not(test.FakeEnv(), args)
 	if err == nil {
 		t.Fatalf(`expected err != nil, got nil`)
 	}
@@ -17,7 +18,7 @@ func TestNot(t *testing.T) {
 	}
 
 	args = runtime.EmptyList.Cons(runtime.Int(0))
-	v, err = core.Not(args)
+	v, err = core.Not(test.FakeEnv(), args)
 	if err != nil {
 		t.Fatalf(`expected err == nil, got %s`, err)
 	}
@@ -26,7 +27,7 @@ func TestNot(t *testing.T) {
 	}
 
 	args = runtime.EmptyList.Cons(runtime.Int(42))
-	v, err = core.Not(args)
+	v, err = core.Not(test.FakeEnv(), args)
 	if err != nil {
 		t.Fatalf(`expected err == nil, got %s`, err)
 	}
@@ -35,7 +36,7 @@ func TestNot(t *testing.T) {
 	}
 
 	args = runtime.EmptyList.Cons(runtime.True)
-	v, err = core.Not(args)
+	v, err = core.Not(test.FakeEnv(), args)
 	if err != nil {
 		t.Fatalf(`expected err == nil, got %s`, err)
 	}
@@ -44,7 +45,7 @@ func TestNot(t *testing.T) {
 	}
 
 	args = runtime.EmptyList.Cons(runtime.False)
-	v, err = core.Not(args)
+	v, err = core.Not(test.FakeEnv(), args)
 	if err != nil {
 		t.Fatalf(`expected err == nil, got %s`, err)
 	}
@@ -53,7 +54,7 @@ func TestNot(t *testing.T) {
 	}
 
 	args = runtime.EmptyList.Cons(runtime.Nil)
-	v, err = core.Not(args)
+	v, err = core.Not(test.FakeEnv(), args)
 	if err != nil {
 		t.Fatalf(`expected err == nil, got %s`, err)
 	}
@@ -62,7 +63,7 @@ func TestNot(t *testing.T) {
 	}
 
 	args = runtime.EmptyList.Cons(runtime.EmptyList)
-	v, err = core.Not(args)
+	v, err = core.Not(test.FakeEnv(), args)
 	if err != nil {
 		t.Fatalf(`expected err == nil, got %s`, err)
 	}
@@ -71,7 +72,7 @@ func TestNot(t *testing.T) {
 	}
 
 	args = runtime.EmptyList.Cons(runtime.Int(0)).Cons(runtime.Int(1))
-	v, err = core.Not(args)
+	v, err = core.Not(test.FakeEnv(), args)
 	if err == nil {
 		t.Fatalf(`expected err != nil, got nil`)
 	}

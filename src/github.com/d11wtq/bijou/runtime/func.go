@@ -27,7 +27,7 @@ func (fn *Func) IsMacro() bool {
 }
 
 // Call this function with the given arguments
-func (fn *Func) Call(args *List) (Value, error) {
+func (fn *Func) Call(envc Env, args *List) (Value, error) {
 	env := fn.Env.Extend()
 
 	seen := 0

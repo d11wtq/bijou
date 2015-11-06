@@ -15,6 +15,10 @@ func init() {
 	root.Def("true", runtime.True)
 	root.Def("false", runtime.False)
 
+	// runtime functions
+	root.Def("read", GoFunc(Read))
+	root.Def("eval", GoFunc(Eval))
+
 	// logical functions
 	root.Def("not", GoFunc(Not))
 
