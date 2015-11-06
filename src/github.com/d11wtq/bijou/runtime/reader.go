@@ -30,6 +30,8 @@ func Read(s string) (Value, string, error) {
 			return ReadList(s[i:])
 		case (r == '"'):
 			return ReadString(s[i:])
+		case (r == '\''):
+			return ReadQuoted(s[i:])
 		default:
 			return ReadSymbol(s[i:])
 		}
@@ -49,8 +51,21 @@ func ReadInt(s string) (Value, string, error) {
 
 // Read an input string and convert it to a Symbol type
 func ReadSymbol(s string) (Value, string, error) {
+	var value Value
 	atom, rem := ReadAtom(s)
-	return Symbol(atom), rem, nil
+
+	switch atom {
+	case "nil":
+		value = Nil
+	case "true":
+		value = True
+	case "false":
+		value = False
+	default:
+		value = Symbol(atom)
+	}
+
+	return value, rem, nil
 }
 
 // Read an input string and convert it to a String type
@@ -120,6 +135,17 @@ OuterLoop:
 
 		return UnexpectedEOF(s1)
 	}
+}
+
+// Read an input string and convert it to a (quote ...)
+func ReadQuoted(s1 string) (Value, string, error) {
+	// skip over the "'"
+	s2 := s1[1:]
+	v, rem, err := Read(s2)
+	if err != nil {
+		return nil, s1, err
+	}
+	return EmptyList.Cons(v).Cons(Symbol("quote")), rem, nil
 }
 
 // Read an atom string from the input string, returning it and the remainder

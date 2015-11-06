@@ -286,6 +286,67 @@ func TestReadWithASymbolFollowedByADelimiter(t *testing.T) {
 	}
 }
 
+func TestReadWithNil(t *testing.T) {
+	v, s, err := Read("nil")
+	if err != nil {
+		t.Fatalf(`expected err == nil, got %s`, err)
+	}
+	if s != "" {
+		t.Fatalf(`expected s == '', got %s`, s)
+	}
+	if v != Nil {
+		t.Fatalf(`expected v == Nil, got %s`, v)
+	}
+}
+
+func TestReadWithTrue(t *testing.T) {
+	v, s, err := Read("true")
+	if err != nil {
+		t.Fatalf(`expected err == nil, got %s`, err)
+	}
+	if s != "" {
+		t.Fatalf(`expected s == '', got %s`, s)
+	}
+	if v != True {
+		t.Fatalf(`expected v == True, got %s`, v)
+	}
+}
+
+func TestReadWithFalse(t *testing.T) {
+	v, s, err := Read("false")
+	if err != nil {
+		t.Fatalf(`expected err == nil, got %s`, err)
+	}
+	if s != "" {
+		t.Fatalf(`expected s == '', got %s`, s)
+	}
+	if v != False {
+		t.Fatalf(`expected v == False, got %s`, v)
+	}
+}
+
+func TestReadWithQuote(t *testing.T) {
+	v, s, err := Read("'foo")
+	if err != nil {
+		t.Fatalf(`expected err == nil, got %s`, err)
+	}
+	if s != "" {
+		t.Fatalf(`expected s == '', got %s`, s)
+	}
+	v2, ok := v.(*List)
+	if ok == false {
+		t.Fatalf(`expected v2.(*List), but not a *List`)
+	}
+
+	if v := v2.Head(); v != Symbol("quote") {
+		t.Fatalf(`expected v == Symbol("quote"), got %s`, v)
+	}
+
+	if v := v2.Tail().Head(); v != Symbol("foo") {
+		t.Fatalf(`expected v == Symbol("foo"), got %s`, v)
+	}
+}
+
 func TestReadSrcWithNoErrors(t *testing.T) {
 	lst, err := ReadSrc(`  abc (x) 42  `)
 	if err != nil {
