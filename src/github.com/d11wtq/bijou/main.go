@@ -28,8 +28,7 @@ func main() {
 		  (or (head s)
 		      (some (tail s))))))
 
-	(def x '(false nil 42 nil))
-	(some x)
+	(some '(false nil 42 nil))
 	`
 
 	app, err := runtime.ReadSrc(src)

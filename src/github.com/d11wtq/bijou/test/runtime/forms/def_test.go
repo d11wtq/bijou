@@ -76,3 +76,14 @@ func TestDefWithNonSymbolName(t *testing.T) {
 		t.Fatalf(`expected v == nil, got %s`, v)
 	}
 }
+
+func TestDefWithDoubleDefine(t *testing.T) {
+	form := EmptyList.Cons(Int(42)).Cons(Symbol("x")).Cons(Symbol("def"))
+	env := test.FakeEnv()
+	env.Def("x", Int(7))
+
+	_, err := form.Eval(env)
+	if err == nil {
+		t.Fatalf(`expected err != nil, got nil`)
+	}
+}

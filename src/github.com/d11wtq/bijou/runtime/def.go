@@ -20,7 +20,9 @@ func EvalDef(env Env, lst *List) (Value, error) {
 		return nil, err
 	}
 
-	env.Def(string(key), val)
+	if err := env.Def(string(key), val); err != nil {
+		return nil, err
+	}
 
 	return val, nil
 }

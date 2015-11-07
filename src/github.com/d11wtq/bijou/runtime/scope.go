@@ -1,5 +1,9 @@
 package runtime
 
+import (
+	"fmt"
+)
+
 // Concrete implementation of Env
 type Scope struct {
 	// Parent scope, if not the root scope
@@ -17,8 +21,16 @@ func NewScope(parent Env) Env {
 }
 
 // Define a new symbol in the current scope
-func (s *Scope) Def(k string, v Value) {
+func (s *Scope) Def(k string, v Value) error {
+	x, ok := s.Values[k]
+	if ok && !x.Eq(v) {
+		return &RuntimeError{
+			fmt.Sprintf("Attempted to def %s more than once", k),
+		}
+	}
+
 	s.Values[k] = v
+	return nil
 }
 
 // Retrieve a symbol from the current scope, or any parent scope

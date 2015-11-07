@@ -55,7 +55,7 @@ type Sequence interface {
 // Runtime environment
 type Env interface {
 	// Define a new symbol
-	Def(string, Value)
+	Def(string, Value) error
 	// Lookup a variable
 	Get(string) (Value, bool)
 	// Introduce a new scope
