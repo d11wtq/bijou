@@ -10,16 +10,12 @@ var root runtime.Env
 func init() {
 	root = runtime.NewScope(nil)
 
-	// primitives
-	root.Def("nil", runtime.Nil)
-	root.Def("true", runtime.True)
-	root.Def("false", runtime.False)
-
 	// runtime functions
 	root.Def("read", GoFunc(Read))
 	root.Def("eval", GoFunc(Eval))
 
 	// logical functions
+	root.Def("identity", GoFunc(Identity))
 	root.Def("not", GoFunc(Not))
 
 	// comparison functions
@@ -37,5 +33,5 @@ func init() {
 
 // Get the initial root scope
 func RootEnv() runtime.Env {
-	return root
+	return root.Extend()
 }

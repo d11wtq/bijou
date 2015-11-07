@@ -2,25 +2,35 @@ package runtime
 
 // Process the elements of a def form
 func EvalDef(env Env, lst *List) (Value, error) {
-	if lst == EmptyList {
-		return nil, &RuntimeError{"Missing name in `def'"}
+	var key, doc, val Value
+
+	if ReadArgs(lst, &key, &doc, &val) != nil {
+		doc = String("")
+		err := ReadArgs(lst, &key, &val)
+		if err != nil {
+			switch {
+			case (key == nil):
+				return nil, &ArgumentError{"Missing name in def"}
+			case (val == nil):
+				return nil, &ArgumentError{"Missing value in def"}
+			default:
+				return nil, &ArgumentError{"Too many arguments to def"}
+			}
+		}
 	}
 
-	key, ok := lst.Data.(Symbol)
+	sym, ok := key.(Symbol)
 	if ok == false {
-		return nil, &RuntimeError{"Bad name in `def' (Symbol required)"}
+		return nil, &ArgumentError{"Bad name in def (symbol required)"}
 	}
 
-	if lst.Next == EmptyList {
-		return nil, &RuntimeError{"Missing value in `def'"}
-	}
-
-	val, err := lst.Next.Data.Eval(env)
+	val, err := val.Eval(env)
 	if err != nil {
 		return nil, err
 	}
 
-	if err := env.Def(string(key), val); err != nil {
+	err = env.Def(string(sym), val)
+	if err != nil {
 		return nil, err
 	}
 

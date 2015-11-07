@@ -42,21 +42,3 @@ func (w *FuncWrapper) IsMacro() bool {
 func (w *FuncWrapper) Call(env runtime.Env, args *runtime.List) (runtime.Value, error) {
 	return w.Func(env, args)
 }
-
-// Read the expected number of arguments into the slice of pointers ptrs
-func ReadArgs(args *runtime.List, ptrs ...*runtime.Value) error {
-	for n, ptr := range ptrs {
-		if args == runtime.EmptyList {
-			return runtime.BadArity(len(ptrs), n)
-		}
-
-		*ptr = args.Data
-		args = args.Next
-	}
-
-	if args != runtime.EmptyList {
-		return runtime.BadArity(len(ptrs), len(ptrs)+args.Length())
-	}
-
-	return nil
-}

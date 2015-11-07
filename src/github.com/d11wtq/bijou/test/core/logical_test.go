@@ -80,3 +80,23 @@ func TestNot(t *testing.T) {
 		t.Fatalf(`expected v == nil, got %s`, v)
 	}
 }
+
+func TestIdentity(t *testing.T) {
+	args := runtime.EmptyList
+	v, err := core.Identity(test.FakeEnv(), args)
+	if err == nil {
+		t.Fatalf(`expected err != nil, got nil`)
+	}
+	if v != nil {
+		t.Fatalf(`expected v == nil, got %s`, v)
+	}
+
+	args = runtime.EmptyList.Cons(runtime.Int(42))
+	v, err = core.Identity(test.FakeEnv(), args)
+	if err != nil {
+		t.Fatalf(`expected err == nil, got %s`, err)
+	}
+	if v != runtime.Int(42) {
+		t.Fatalf(`expected v == nil, got %s`, v)
+	}
+}

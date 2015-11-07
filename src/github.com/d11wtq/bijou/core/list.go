@@ -12,7 +12,7 @@ func List(env runtime.Env, args *runtime.List) (runtime.Value, error) {
 // Return a new list appending a new head to a given list
 func Cons(env runtime.Env, args *runtime.List) (runtime.Value, error) {
 	var hd, tl runtime.Value
-	if err := ReadArgs(args, &hd, &tl); err != nil {
+	if err := runtime.ReadArgs(args, &hd, &tl); err != nil {
 		return nil, err
 	}
 	lst, ok := tl.(*runtime.List)

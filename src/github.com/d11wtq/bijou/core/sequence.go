@@ -36,7 +36,7 @@ func Empty(env runtime.Env, args *runtime.List) (runtime.Value, error) {
 // Read the sequence argument from args
 func ReadSequence(args *runtime.List, ptr *runtime.Sequence) error {
 	var v runtime.Value
-	err := ReadArgs(args, &v)
+	err := runtime.ReadArgs(args, &v)
 	if err != nil {
 		return err
 	}

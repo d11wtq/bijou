@@ -7,7 +7,7 @@ import (
 // Reader function
 func Read(env runtime.Env, args *runtime.List) (runtime.Value, error) {
 	var v runtime.Value
-	if err := ReadArgs(args, &v); err != nil {
+	if err := runtime.ReadArgs(args, &v); err != nil {
 		return nil, err
 	}
 
@@ -23,7 +23,7 @@ func Read(env runtime.Env, args *runtime.List) (runtime.Value, error) {
 // Eval function
 func Eval(env runtime.Env, args *runtime.List) (runtime.Value, error) {
 	var v runtime.Value
-	if err := ReadArgs(args, &v); err != nil {
+	if err := runtime.ReadArgs(args, &v); err != nil {
 		return nil, err
 	}
 	return v.Eval(env)

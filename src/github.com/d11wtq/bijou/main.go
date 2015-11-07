@@ -23,12 +23,14 @@ func main() {
 			  b)))
 
 	(def some
-	  (fn (s)
+	  "Return the first element in s for which predicate p is true."
+	  (fn (p s)
 	    (unless (empty? s)
-		  (or (head s)
-		      (some (tail s))))))
+		  (if (p (head s))
+		    (head s)
+			(some p (tail s))))))
 
-	(some '(false nil 42 nil))
+	(some identity '(false nil 42 nil 7))
 	`
 
 	app, err := runtime.ReadSrc(src)

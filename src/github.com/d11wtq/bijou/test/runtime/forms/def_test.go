@@ -87,3 +87,21 @@ func TestDefWithDoubleDefine(t *testing.T) {
 		t.Fatalf(`expected err != nil, got nil`)
 	}
 }
+
+func TestDefWithDocString(t *testing.T) {
+	form := EmptyList.
+		Cons(Int(42)).
+		Cons(String("doc string")).
+		Cons(Symbol("x")).
+		Cons(Symbol("def"))
+
+	env := test.FakeEnv()
+
+	v, err := form.Eval(env)
+	if err != nil {
+		t.Fatalf(`expected err == nil, got %s`, err)
+	}
+	if v != Int(42) {
+		t.Fatalf(`expected v == Int(42), got %s`, v)
+	}
+}
