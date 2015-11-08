@@ -15,6 +15,8 @@ const (
 	// Strings
 	StringType
 	// Linked lists
+	ConsType
+	// Linked lists
 	ListType
 	// Functions
 	FuncType

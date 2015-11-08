@@ -9,16 +9,16 @@ func List(env runtime.Env, args *runtime.List) (runtime.Value, error) {
 	return args, nil
 }
 
-// Return a new list appending a new head to a given list
+// Return a new cons cell appending a new head to a given sequence
 func Cons(env runtime.Env, args *runtime.List) (runtime.Value, error) {
 	var hd, tl runtime.Value
 	if err := runtime.ReadArgs(args, &hd, &tl); err != nil {
 		return nil, err
 	}
-	lst, ok := tl.(*runtime.List)
+	seq, ok := tl.(runtime.Sequence)
 	if ok == false {
-		return nil, &runtime.RuntimeError{"Bad data type: list required"}
+		return nil, &runtime.RuntimeError{"Bad data type: sequence required"}
 	}
 
-	return lst.Cons(hd), nil
+	return runtime.Cons(hd, seq), nil
 }

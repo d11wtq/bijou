@@ -18,19 +18,27 @@ func TestListReturnsVariadicArgs(t *testing.T) {
 	}
 }
 
-func TestConsReturnsANewList(t *testing.T) {
+func TestConsReturnsAConsCell(t *testing.T) {
 	args := runtime.EmptyList.
-		Cons(runtime.EmptyList.Cons(runtime.Int(42))).
+		Cons(runtime.Cons(runtime.Int(42), runtime.Nil)).
 		Cons(runtime.Int(7))
+
 	v, err := core.Cons(test.FakeEnv(), args)
 	if err != nil {
 		t.Fatalf(`expected err == nil, got %s`, err)
 	}
-	v2 := v.(*runtime.List)
-	if v2.Data != runtime.Int(7) {
-		t.Fatalf(`expected v2.Data == Int(7), got %s`, v2.Data)
+	v2, ok := v.(*runtime.ConsCell)
+	if ok == false {
+		t.Fatalf(`expected v.(*ConsCell), but not a *ConsCell`)
 	}
-	if v2.Next.Data != runtime.Int(42) {
-		t.Fatalf(`expected v2.Next.Data == Int(42), got %s`, v2.Next.Data)
+
+	if v2.Head() != runtime.Int(7) {
+		t.Fatalf(`expected v2.Head() == Int(7), got %s`, v2.Head())
+	}
+	if v2.Tail().Head() != runtime.Int(42) {
+		t.Fatalf(
+			`expected v2.Tail().Head() == Int(42), got %s`,
+			v2.Tail().Head(),
+		)
 	}
 }
