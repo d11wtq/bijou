@@ -24,6 +24,20 @@ func Tail(env runtime.Env, args *runtime.List) (runtime.Value, error) {
 	return seq.Tail(), nil
 }
 
+// Create a new sequence by putting a new value at the end of the sequence
+func Put(env runtime.Env, args *runtime.List) (runtime.Value, error) {
+	var seq, val runtime.Value
+	if err := runtime.ReadArgs(args, &seq, &val); err != nil {
+		return nil, err
+	}
+	seq2, ok := seq.(runtime.Sequence)
+	if ok == false {
+		return nil, &runtime.RuntimeError{"Bad data type: sequence required"}
+	}
+
+	return seq2.Put(val)
+}
+
 // Return true if the sequence is empty
 func Empty(env runtime.Env, args *runtime.List) (runtime.Value, error) {
 	var seq runtime.Sequence

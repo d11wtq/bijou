@@ -83,6 +83,10 @@ func (lst *List) Empty() bool {
 	return lst == EmptyList
 }
 
+func (lst *List) Put(v Value) (Sequence, error) {
+	return lst.Cons(v), nil
+}
+
 // Append a new element to the head of the list
 func (lst *List) Cons(head Value) *List {
 	return &List{head, lst}

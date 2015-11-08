@@ -43,6 +43,16 @@ func TestNilTail(t *testing.T) {
 	}
 }
 
+func TestNilPut(t *testing.T) {
+	v, err := Nil.Put(Int(42))
+	if err != nil {
+		t.Fatalf(`expected err == nil, got %s`, err)
+	}
+	if v.Head() != Int(42) {
+		t.Fatalf(`expected v.Head() == Int(42), got %s`, v.Head())
+	}
+}
+
 func TestNilEmpty(t *testing.T) {
 	if Nil.Empty() == false {
 		t.Fatalf(`expected Nil.Empty() == true, got false`)

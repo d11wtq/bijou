@@ -101,6 +101,23 @@ func TestListEmptyListHasNoTailOrHead(t *testing.T) {
 	}
 }
 
+func TestListPut(t *testing.T) {
+	list, err := EmptyList.Cons(Int(42)).Put(Int(7))
+
+	if err != nil {
+		t.Fatalf(`expected err == nil, got %s`, err)
+	}
+	if list.Head() != Int(7) {
+		t.Fatalf(`expected list.Head() == Int(7), got %s`, list.Head())
+	}
+	if list.Tail().Head() != Int(42) {
+		t.Fatalf(
+			`expected list.Tail().Head() == Int(42), got %s`,
+			list.Tail().Head(),
+		)
+	}
+}
+
 func TestListEmpty(t *testing.T) {
 	if v := EmptyList.Empty(); v == false {
 		t.Fatalf(`expected EmptyList.Empty(), got false`)

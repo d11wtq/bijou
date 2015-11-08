@@ -28,6 +28,7 @@ func init() {
 	// sequence functions
 	root.Def("head", GoFunc(Head))
 	root.Def("tail", GoFunc(Tail))
+	root.Def("put", GoFunc(Put))
 	root.Def("empty?", GoFunc(Empty))
 }
 

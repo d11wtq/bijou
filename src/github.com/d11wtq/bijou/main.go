@@ -31,6 +31,9 @@ func main() {
 			(some p (tail s))))))
 
 	(some identity '(false nil 42 nil 7))
+
+	(put "I like foo" 100)
+	(put '(1 2 3) 4)
 	`
 
 	app, err := runtime.ReadSrc(src)

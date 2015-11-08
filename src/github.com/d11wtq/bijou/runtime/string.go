@@ -20,7 +20,7 @@ func (s String) Head() Value {
 		return Nil
 	}
 
-	return s[:1]
+	return Int(s[0])
 }
 
 func (s String) Tail() Sequence {
@@ -29,6 +29,14 @@ func (s String) Tail() Sequence {
 	}
 
 	return s[1:]
+}
+
+func (s String) Put(v Value) (Sequence, error) {
+	s2, ok := v.(Int)
+	if ok == false {
+		return nil, &RuntimeError{"Can only put integer values to string"}
+	}
+	return String(append([]rune(string(s)), rune(s2))), nil
 }
 
 func (s String) Empty() bool {

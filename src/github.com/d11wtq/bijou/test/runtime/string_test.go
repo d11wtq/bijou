@@ -32,8 +32,8 @@ func TestStringEq(t *testing.T) {
 }
 
 func TestStringHead(t *testing.T) {
-	if v := String("foo").Head(); v != String("f") {
-		t.Fatalf(`expected String("foo").Head() == String("f"), got`, v)
+	if v := String("foo").Head(); v != Int('f') {
+		t.Fatalf(`expected String("foo").Head() == Int('f'), got`, v)
 	}
 
 	if v := String("").Head(); v != Nil {
@@ -48,6 +48,24 @@ func TestStringTail(t *testing.T) {
 
 	if v := String("").Tail(); v != String("") {
 		t.Fatalf(`expected String("").Tail() == String(""), got`, v)
+	}
+}
+
+func TestStringPut(t *testing.T) {
+	v, err := String("foo").Put(Int(100))
+	if err != nil {
+		t.Fatalf(`expected err == nil, got %s`, err)
+	}
+	if v != String("food") {
+		t.Fatalf(`expected v == String("food"), got`, v)
+	}
+
+	v, err = String("foo").Put(String("d"))
+	if err == nil {
+		t.Fatalf(`expected err != nil, got nil`)
+	}
+	if v != nil {
+		t.Fatalf(`expected v == nil, got`, v)
 	}
 }
 

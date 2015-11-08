@@ -24,8 +24,8 @@ func TestHeadReturnsHeadOfSequence(t *testing.T) {
 	if err != nil {
 		t.Fatalf(`expected err == nil, got %s`, err)
 	}
-	if v != runtime.String("f") {
-		t.Fatalf(`expected v == String("f"), got %s`, v)
+	if v != runtime.Int('f') {
+		t.Fatalf(`expected v == Int('f'), got %s`, v)
 	}
 }
 
