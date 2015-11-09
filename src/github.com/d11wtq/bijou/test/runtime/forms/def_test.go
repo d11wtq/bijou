@@ -9,7 +9,7 @@ import (
 
 func TestDefWithNameAndValue(t *testing.T) {
 	env := test.FakeEnv()
-	form := EmptyList.Cons(Int(42)).Cons(Symbol("foo")).Cons(Symbol("def"))
+	form := test.NewList(Symbol("def"), Symbol("foo"), Int(42))
 
 	v, err := form.Eval(env)
 	if err != nil {
@@ -27,7 +27,7 @@ func TestDefWithNameAndValue(t *testing.T) {
 }
 
 func TestDefWithoutName(t *testing.T) {
-	form := EmptyList.Cons(Symbol("def"))
+	form := test.NewList(Symbol("def"))
 	msg := "missing name"
 
 	v, err := form.Eval(test.FakeEnv())
@@ -44,7 +44,7 @@ func TestDefWithoutName(t *testing.T) {
 }
 
 func TestDefWithoutValue(t *testing.T) {
-	form := EmptyList.Cons(Symbol("foo")).Cons(Symbol("def"))
+	form := test.NewList(Symbol("def"), Symbol("foo"))
 	msg := "missing value"
 
 	v, err := form.Eval(test.FakeEnv())
@@ -61,7 +61,7 @@ func TestDefWithoutValue(t *testing.T) {
 }
 
 func TestDefWithNonSymbolName(t *testing.T) {
-	form := EmptyList.Cons(Int(7)).Cons(Int(42)).Cons(Symbol("def"))
+	form := test.NewList(Symbol("def"), Int(42), Int(7))
 	msg := "symbol"
 
 	v, err := form.Eval(test.FakeEnv())
@@ -78,7 +78,7 @@ func TestDefWithNonSymbolName(t *testing.T) {
 }
 
 func TestDefWithDoubleDefine(t *testing.T) {
-	form := EmptyList.Cons(Int(42)).Cons(Symbol("x")).Cons(Symbol("def"))
+	form := test.NewList(Symbol("def"), Symbol("x"), Int(42))
 	env := test.FakeEnv()
 	env.Def("x", Int(7))
 
@@ -89,11 +89,12 @@ func TestDefWithDoubleDefine(t *testing.T) {
 }
 
 func TestDefWithDocString(t *testing.T) {
-	form := EmptyList.
-		Cons(Int(42)).
-		Cons(String("doc string")).
-		Cons(Symbol("x")).
-		Cons(Symbol("def"))
+	form := test.NewList(
+		Symbol("def"),
+		Symbol("x"),
+		String("doc string"),
+		Int(42),
+	)
 
 	env := test.FakeEnv()
 

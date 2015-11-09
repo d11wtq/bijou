@@ -2,13 +2,14 @@ package runtime_test
 
 import (
 	. "github.com/d11wtq/bijou/runtime"
+	"github.com/d11wtq/bijou/test"
 	"testing"
 )
 
 func TestReadArgsWithCorrectArity(t *testing.T) {
 	var a, b Value
 
-	args := EmptyList.Cons(Int(7)).Cons(Int(42))
+	args := test.NewList(Int(42), Int(7))
 
 	if err := ReadArgs(args, &a, &b); err != nil {
 		t.Fatalf(`expected err == nil, got %s`, err)
@@ -26,8 +27,8 @@ func TestReadArgsWithCorrectArity(t *testing.T) {
 func TestReadArgsWithBadArity(t *testing.T) {
 	var a, b Value
 
-	args1 := EmptyList.Cons(Int(7)).Cons(Int(42)).Cons(Int(13))
-	args2 := EmptyList.Cons(Int(7))
+	args1 := test.NewList(Int(13), Int(42), Int(7))
+	args2 := test.NewList(Int(7))
 
 	if err := ReadArgs(args1, &a, &b); err == nil {
 		t.Fatalf(`expected err != nil, got nil`)

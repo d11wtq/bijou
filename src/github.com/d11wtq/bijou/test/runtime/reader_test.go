@@ -159,8 +159,8 @@ func TestReadWithAnEmptyList(t *testing.T) {
 		t.Fatalf(`expected s == '', got %s`, s)
 	}
 
-	if v != EmptyList {
-		t.Fatalf(`expected v == EmptyList, got %s`, v)
+	if !v.Eq(&List{}) {
+		t.Fatalf(`expected v == '(), got %s`, v)
 	}
 }
 
@@ -173,8 +173,8 @@ func TestReadWithAnEmptyListFollowedByWhitespace(t *testing.T) {
 		t.Fatalf(`expected s == '', got %s`, s)
 	}
 
-	if v != EmptyList {
-		t.Fatalf(`expected v == EmptyList, got %s`, v)
+	if !v.Eq(&List{}) {
+		t.Fatalf(`expected v == '(), got %s`, v)
 	}
 }
 

@@ -13,11 +13,10 @@ type ConsCell struct {
 	Next Sequence
 }
 
-// Representation of the empty list
 var EmptyCons = (*ConsCell)(nil)
 
 func (cons *ConsCell) Eq(other Value) bool {
-	if other, ok := other.(*ConsCell); ok == true {
+	if other, ok := IsList(other); ok == true {
 		a, b := Sequence(cons), Sequence(other)
 
 		for {
@@ -41,7 +40,26 @@ func (cons *ConsCell) Eq(other Value) bool {
 }
 
 func (cons *ConsCell) Eval(env Env) (Value, error) {
-	return cons, nil
+	if cons.Empty() {
+		return EmptyCons, nil
+	}
+
+	switch cons.Data {
+	case Symbol("quote"):
+		return EvalQuote(env, cons.Next)
+	case Symbol("if"):
+		return EvalIf(env, cons.Next)
+	case Symbol("do"):
+		return EvalDo(env, cons.Next)
+	case Symbol("fn"):
+		return EvalFn(env, cons.Next)
+	case Symbol("macro"):
+		return EvalMacro(env, cons.Next)
+	case Symbol("def"):
+		return EvalDef(env, cons.Next)
+	default:
+		return EvalCall(env, cons)
+	}
 }
 
 func (cons *ConsCell) Type() Type {

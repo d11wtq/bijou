@@ -1,8 +1,8 @@
 package runtime
 
 // Process the elements of a function call form
-func EvalCall(env Env, lst *List) (Value, error) {
-	callee, err := lst.Data.Eval(env)
+func EvalCall(env Env, s Sequence) (Value, error) {
+	callee, err := s.Head().Eval(env)
 	if err != nil {
 		return nil, err
 	}
@@ -12,7 +12,7 @@ func EvalCall(env Env, lst *List) (Value, error) {
 		return nil, &RuntimeError{"Attempted to call non-callable value"}
 	}
 
-	args, err := lst.Next, nil
+	args, err := s.Tail(), nil
 
 	if callable.IsMacro() {
 		v, err := callable.Call(env, args)
@@ -21,7 +21,7 @@ func EvalCall(env Env, lst *List) (Value, error) {
 		}
 		return v.Eval(env)
 	} else {
-		args, err = EvalEach(env, lst.Next)
+		args, err = EvalEach(env, args)
 		if err != nil {
 			return nil, err
 		}

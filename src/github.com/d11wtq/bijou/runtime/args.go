@@ -1,18 +1,18 @@
 package runtime
 
 // Read the expected number of arguments into the slice of pointers ptrs
-func ReadArgs(args *List, ptrs ...*Value) error {
+func ReadArgs(args Sequence, ptrs ...*Value) error {
 	for n, ptr := range ptrs {
-		if args == EmptyList {
+		if args.Empty() {
 			return BadArity(len(ptrs), n)
 		}
 
-		*ptr = args.Data
-		args = args.Next
+		*ptr = args.Head()
+		args = args.Tail()
 	}
 
-	if args != EmptyList {
-		return BadArity(len(ptrs), len(ptrs)+args.Length())
+	if !args.Empty() {
+		return BadArity(len(ptrs), len(ptrs)+Length(args))
 	}
 
 	return nil

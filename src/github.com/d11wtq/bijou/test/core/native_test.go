@@ -7,7 +7,7 @@ import (
 	"testing"
 )
 
-func example(env runtime.Env, args *runtime.List) (runtime.Value, error) {
+func example(env runtime.Env, args runtime.Sequence) (runtime.Value, error) {
 	return args, nil
 }
 
@@ -21,7 +21,7 @@ func TestGoFunc(t *testing.T) {
 		t.Fatalf(`expected fn.(Callable), got false`)
 	}
 
-	args := runtime.EmptyList.Cons(runtime.Int(42))
+	args := (&runtime.List{}).Append(runtime.Int(42))
 	v2, err2 := fn.Call(test.FakeEnv(), args)
 	if err2 != nil {
 		t.Fatalf(`expected err2 == nil, got %s`, err2)

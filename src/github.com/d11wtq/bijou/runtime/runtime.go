@@ -38,7 +38,7 @@ type Value interface {
 type Callable interface {
 	Value
 	// Invoke this value with the given arguments
-	Call(env Env, args *List) (Value, error) // FIXME: *List
+	Call(env Env, args Sequence) (Value, error)
 	// True if arguments should not be evaluated
 	IsMacro() bool
 }

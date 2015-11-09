@@ -8,7 +8,7 @@ import (
 )
 
 func TestFnReturnsAFunction(t *testing.T) {
-	form := EmptyList.Cons(EmptyList.Cons(Symbol("x"))).Cons(Symbol("fn"))
+	form := test.NewList(Symbol("fn"), test.NewList(Symbol("x")))
 	env := test.FakeEnv()
 	v, err := form.Eval(env)
 	if err != nil {
@@ -30,7 +30,7 @@ func TestFnReturnsAFunction(t *testing.T) {
 }
 
 func TestFnValidatesParameterListPresence(t *testing.T) {
-	form := EmptyList.Cons(Symbol("fn"))
+	form := test.NewList(Symbol("fn"))
 	v, err := form.Eval(test.FakeEnv())
 	errmsg := "missing param"
 	if err == nil {
@@ -45,7 +45,7 @@ func TestFnValidatesParameterListPresence(t *testing.T) {
 }
 
 func TestFnValidatesParameterListType(t *testing.T) {
-	form := EmptyList.Cons(Int(1)).Cons(Symbol("fn"))
+	form := test.NewList(Symbol("fn"), Int(1))
 	v, err := form.Eval(test.FakeEnv())
 	errmsg := "invalid param"
 	if err == nil {
@@ -60,7 +60,7 @@ func TestFnValidatesParameterListType(t *testing.T) {
 }
 
 func TestFnValidatesParameterTypes(t *testing.T) {
-	form := EmptyList.Cons(EmptyList.Cons(Int(1))).Cons(Symbol("fn"))
+	form := test.NewList(Symbol("fn"), test.NewList(Int(1)))
 	v, err := form.Eval(test.FakeEnv())
 	errmsg := "invalid param"
 	if err == nil {
@@ -75,9 +75,10 @@ func TestFnValidatesParameterTypes(t *testing.T) {
 }
 
 func TestFnValidatesVariadicIsLastParameter(t *testing.T) {
-	form := EmptyList.Cons(
-		EmptyList.Cons(Symbol("y")).Cons(Symbol("x")).Cons(Symbol("&")),
-	).Cons(Symbol("fn"))
+	form := test.NewList(
+		Symbol("fn"),
+		test.NewList(Symbol("&"), Symbol("x"), Symbol("y")),
+	)
 
 	v, err := form.Eval(test.FakeEnv())
 	errmsg := "variadic"
@@ -93,9 +94,7 @@ func TestFnValidatesVariadicIsLastParameter(t *testing.T) {
 }
 
 func TestFnAllowsEmptyVariadic(t *testing.T) {
-	form := EmptyList.Cons(
-		EmptyList.Cons(Symbol("&")),
-	).Cons(Symbol("fn"))
+	form := test.NewList(Symbol("fn"), test.NewList(Symbol("&")))
 
 	env := test.FakeEnv()
 	v, err := form.Eval(env)

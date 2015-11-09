@@ -8,7 +8,7 @@ import (
 )
 
 func TestNot(t *testing.T) {
-	args := runtime.EmptyList
+	args := &runtime.List{}
 	v, err := core.Not(test.FakeEnv(), args)
 	if err == nil {
 		t.Fatalf(`expected err != nil, got nil`)
@@ -17,7 +17,7 @@ func TestNot(t *testing.T) {
 		t.Fatalf(`expected v == nil, got %s`, v)
 	}
 
-	args = runtime.EmptyList.Cons(runtime.Int(0))
+	args = (&runtime.List{}).Append(runtime.Int(0))
 	v, err = core.Not(test.FakeEnv(), args)
 	if err != nil {
 		t.Fatalf(`expected err == nil, got %s`, err)
@@ -26,7 +26,7 @@ func TestNot(t *testing.T) {
 		t.Fatalf(`expected v == False, got %s`, v)
 	}
 
-	args = runtime.EmptyList.Cons(runtime.Int(42))
+	args = (&runtime.List{}).Append(runtime.Int(42))
 	v, err = core.Not(test.FakeEnv(), args)
 	if err != nil {
 		t.Fatalf(`expected err == nil, got %s`, err)
@@ -35,7 +35,7 @@ func TestNot(t *testing.T) {
 		t.Fatalf(`expected v == False, got %s`, v)
 	}
 
-	args = runtime.EmptyList.Cons(runtime.True)
+	args = (&runtime.List{}).Append(runtime.True)
 	v, err = core.Not(test.FakeEnv(), args)
 	if err != nil {
 		t.Fatalf(`expected err == nil, got %s`, err)
@@ -44,7 +44,7 @@ func TestNot(t *testing.T) {
 		t.Fatalf(`expected v == False, got %s`, v)
 	}
 
-	args = runtime.EmptyList.Cons(runtime.False)
+	args = (&runtime.List{}).Append(runtime.False)
 	v, err = core.Not(test.FakeEnv(), args)
 	if err != nil {
 		t.Fatalf(`expected err == nil, got %s`, err)
@@ -53,7 +53,7 @@ func TestNot(t *testing.T) {
 		t.Fatalf(`expected v == True, got %s`, v)
 	}
 
-	args = runtime.EmptyList.Cons(runtime.Nil)
+	args = (&runtime.List{}).Append(runtime.Nil)
 	v, err = core.Not(test.FakeEnv(), args)
 	if err != nil {
 		t.Fatalf(`expected err == nil, got %s`, err)
@@ -62,7 +62,7 @@ func TestNot(t *testing.T) {
 		t.Fatalf(`expected v == True, got %s`, v)
 	}
 
-	args = runtime.EmptyList.Cons(runtime.EmptyList)
+	args = (&runtime.List{}).Append(runtime.EmptyCons)
 	v, err = core.Not(test.FakeEnv(), args)
 	if err != nil {
 		t.Fatalf(`expected err == nil, got %s`, err)
@@ -71,7 +71,7 @@ func TestNot(t *testing.T) {
 		t.Fatalf(`expected v == False, got %s`, v)
 	}
 
-	args = runtime.EmptyList.Cons(runtime.Int(0)).Cons(runtime.Int(1))
+	args = (&runtime.List{}).Append(runtime.Int(0)).Append(runtime.Int(1))
 	v, err = core.Not(test.FakeEnv(), args)
 	if err == nil {
 		t.Fatalf(`expected err != nil, got nil`)
@@ -82,7 +82,7 @@ func TestNot(t *testing.T) {
 }
 
 func TestIdentity(t *testing.T) {
-	args := runtime.EmptyList
+	args := &runtime.List{}
 	v, err := core.Identity(test.FakeEnv(), args)
 	if err == nil {
 		t.Fatalf(`expected err != nil, got nil`)
@@ -91,7 +91,7 @@ func TestIdentity(t *testing.T) {
 		t.Fatalf(`expected v == nil, got %s`, v)
 	}
 
-	args = runtime.EmptyList.Cons(runtime.Int(42))
+	args = (&runtime.List{}).Append(runtime.Int(42))
 	v, err = core.Identity(test.FakeEnv(), args)
 	if err != nil {
 		t.Fatalf(`expected err == nil, got %s`, err)

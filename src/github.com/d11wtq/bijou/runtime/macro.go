@@ -22,11 +22,11 @@ func (mc *Macro) Eval(env Env) (Value, error) {
 }
 
 // Process the elements of the 'macro' special form
-func EvalMacro(env Env, lst *List) (Value, error) {
-	if lst == EmptyList {
+func EvalMacro(env Env, s Sequence) (Value, error) {
+	if s.Empty() {
 		return nil, &RuntimeError{"Missing parameter list in macro"}
 	}
-	params, ok := lst.Data.(*List)
+	params, ok := IsList(s.Head())
 	if ok == false {
 		return nil, &RuntimeError{"Invalid parameter list type"}
 	}
@@ -34,7 +34,7 @@ func EvalMacro(env Env, lst *List) (Value, error) {
 	return &Macro{
 		Func{
 			Params: params,
-			Body:   lst.Next,
+			Body:   s.Tail(),
 			Env:    env,
 		},
 	}, nil

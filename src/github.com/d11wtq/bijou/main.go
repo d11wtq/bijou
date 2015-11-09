@@ -36,7 +36,6 @@ func main() {
 	(put '(1 2 3) 4)
 	(cons 42 "abc")
 	`
-
 	app, err := runtime.ReadSrc(src)
 	if err != nil {
 		fmt.Println(err)

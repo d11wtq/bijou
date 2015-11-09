@@ -5,7 +5,7 @@ import (
 )
 
 // Signature of a runtime-compatible go func
-type CallableFunc (func(runtime.Env, *runtime.List) (runtime.Value, error))
+type CallableFunc (func(runtime.Env, runtime.Sequence) (runtime.Value, error))
 
 // Wrapper for a runtime-compatible go func
 type FuncWrapper struct {
@@ -39,6 +39,6 @@ func (w *FuncWrapper) IsMacro() bool {
 }
 
 // Invoke this function and return a value (Callable interface method)
-func (w *FuncWrapper) Call(env runtime.Env, args *runtime.List) (runtime.Value, error) {
+func (w *FuncWrapper) Call(env runtime.Env, args runtime.Sequence) (runtime.Value, error) {
 	return w.Func(env, args)
 }

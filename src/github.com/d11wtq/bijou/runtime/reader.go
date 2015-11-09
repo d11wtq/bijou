@@ -109,7 +109,7 @@ OuterLoop:
 
 // Read an input string and convert it to a *List type
 func ReadList(s1 string) (Value, string, error) {
-	lst := EmptyList
+	lst := &List{}
 	// skip over the '('
 	s2 := s1[1:]
 
@@ -121,13 +121,13 @@ OuterLoop:
 				// ignore
 			case (r == ')'):
 				// skip over the ')'
-				return lst.Reverse(), s2[i+1:], nil
+				return lst, s2[i+1:], nil
 			default:
 				v, rem, err := Read(s2[i:])
 				if err != nil {
 					return nil, s1, err
 				}
-				lst = lst.Cons(v)
+				lst.Append(v)
 				s2 = rem
 				continue OuterLoop
 			}
@@ -145,7 +145,7 @@ func ReadQuoted(s1 string) (Value, string, error) {
 	if err != nil {
 		return nil, s1, err
 	}
-	return EmptyList.Cons(v).Cons(Symbol("quote")), rem, nil
+	return (&List{}).Append(Symbol("quote")).Append(v), rem, nil
 }
 
 // Read an atom string from the input string, returning it and the remainder
@@ -163,7 +163,7 @@ func ReadAtom(s string) (string, string) {
 
 // Read all forms in the input string and return a list of Values
 func ReadSrc(s string) (*List, error) {
-	lst := EmptyList
+	lst := &List{}
 
 OuterLoop:
 	for s != "" {
@@ -176,12 +176,12 @@ OuterLoop:
 				if err != nil {
 					return nil, err
 				}
-				lst = lst.Cons(v)
+				lst.Append(v)
 				s = rem
 				continue OuterLoop
 			}
 		}
 		break
 	}
-	return lst.Reverse(), nil
+	return lst, nil
 }

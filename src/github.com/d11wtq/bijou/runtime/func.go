@@ -3,9 +3,9 @@ package runtime
 // Function data type
 type Func struct {
 	// Parameter list
-	Params *List
+	Params Sequence
 	// Function body expressions
-	Body *List
+	Body Sequence
 	// Closed environment
 	Env Env
 }
@@ -27,34 +27,35 @@ func (fn *Func) IsMacro() bool {
 }
 
 // Call this function with the given arguments
-func (fn *Func) Call(envc Env, args *List) (Value, error) {
+func (fn *Func) Call(envc Env, args Sequence) (Value, error) {
 	env := fn.Env.Extend()
 
 	seen := 0
-	for params := fn.Params; params != EmptyList; params = params.Next {
-		key := params.Data.(Symbol)
+	a, p := args, fn.Params
+	for !p.Empty() {
+		key := p.Head().(Symbol)
 
 		if key == Symbol("&") {
 			// variadic; consume everything
-			if params.Next != EmptyList {
-				key = params.Next.Data.(Symbol)
-				env.Def(string(key), args)
+			if !p.Tail().Empty() {
+				key = p.Tail().Head().(Symbol)
+				env.Def(string(key), a)
 			}
 
 			return EvalDo(env, fn.Body)
 		}
 
-		if args == EmptyList {
-			return nil, BadArity(seen+params.Length(), seen)
+		if a.Empty() {
+			return nil, BadArity(seen+Length(p), seen)
 		}
 
-		env.Def(string(key), args.Data)
-		args = args.Next
+		env.Def(string(key), a.Head())
+		a, p = a.Tail(), p.Tail()
 		seen += 1
 	}
 
-	if args != EmptyList {
-		return nil, BadArity(seen, seen+args.Length())
+	if !a.Empty() {
+		return nil, BadArity(seen, seen+Length(a))
 	}
 
 	return EvalDo(env, fn.Body)

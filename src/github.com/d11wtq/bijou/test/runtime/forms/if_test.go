@@ -8,7 +8,7 @@ import (
 )
 
 func TestIfWithoutCondition(t *testing.T) {
-	form := EmptyList.Cons(Symbol("if"))
+	form := test.NewList(Symbol("if"))
 	errmsg := "missing condition"
 
 	v, err := form.Eval(test.FakeEnv())
@@ -25,7 +25,7 @@ func TestIfWithoutCondition(t *testing.T) {
 }
 
 func TestIfWithoutPassValue(t *testing.T) {
-	form := EmptyList.Cons(Int(1)).Cons(Symbol("if"))
+	form := test.NewList(Symbol("if"), Int(1))
 	errmsg := "missing body"
 
 	v, err := form.Eval(test.FakeEnv())
@@ -44,7 +44,7 @@ func TestIfWithoutPassValue(t *testing.T) {
 func TestIfWithPassValue(t *testing.T) {
 	pass := test.NewFakeValue(Int(1))
 	fail := test.NewFakeValue(Int(2))
-	form := EmptyList.Cons(fail).Cons(pass).Cons(Int(0)).Cons(Symbol("if"))
+	form := test.NewList(Symbol("if"), Int(0), pass, fail)
 
 	v, err := form.Eval(test.FakeEnv())
 	if err != nil {
@@ -63,7 +63,7 @@ func TestIfWithPassValue(t *testing.T) {
 func TestIfWithFailValue(t *testing.T) {
 	pass := test.NewFakeValue(Int(1))
 	fail := test.NewFakeValue(Int(2))
-	form := EmptyList.Cons(fail).Cons(pass).Cons(Nil).Cons(Symbol("if"))
+	form := test.NewList(Symbol("if"), Nil, pass, fail)
 
 	v, err := form.Eval(test.FakeEnv())
 	if err != nil {
@@ -81,7 +81,7 @@ func TestIfWithFailValue(t *testing.T) {
 
 func TestIfWithoutFailValue(t *testing.T) {
 	pass := test.NewFakeValue(Int(1))
-	form := EmptyList.Cons(pass).Cons(Nil).Cons(Symbol("if"))
+	form := test.NewList(Symbol("if"), Nil, pass)
 
 	v, err := form.Eval(test.FakeEnv())
 	if err != nil {
@@ -101,7 +101,7 @@ func TestIfWithErrorInCondition(t *testing.T) {
 	cond := test.NewFakeValue(Symbol("bad"))
 	pass := test.NewFakeValue(Int(1))
 	fail := test.NewFakeValue(Int(2))
-	form := EmptyList.Cons(fail).Cons(pass).Cons(cond).Cons(Symbol("if"))
+	form := test.NewList(Symbol("if"), cond, pass, fail)
 
 	v, err := form.Eval(test.FakeEnv())
 	if err == nil {
@@ -129,7 +129,7 @@ func TestIfWithErrorInPassValue(t *testing.T) {
 	cond := test.NewFakeValue(Int(1))
 	pass := test.NewFakeValue(Symbol("bad"))
 	fail := test.NewFakeValue(Int(2))
-	form := EmptyList.Cons(fail).Cons(pass).Cons(cond).Cons(Symbol("if"))
+	form := test.NewList(Symbol("if"), cond, pass, fail)
 
 	v, err := form.Eval(test.FakeEnv())
 	if err == nil {
@@ -149,7 +149,7 @@ func TestIfWithErrorInFailValue(t *testing.T) {
 	cond := test.NewFakeValue(Nil)
 	pass := test.NewFakeValue(Int(1))
 	fail := test.NewFakeValue(Symbol("bad"))
-	form := EmptyList.Cons(fail).Cons(pass).Cons(cond).Cons(Symbol("if"))
+	form := test.NewList(Symbol("if"), cond, pass, fail)
 
 	v, err := form.Eval(test.FakeEnv())
 	if err == nil {
@@ -170,13 +170,7 @@ func TestIfWithMultipleFailValues(t *testing.T) {
 	f1 := test.NewFakeValue(Int(2))
 	f2 := test.NewFakeValue(Int(3))
 	f3 := test.NewFakeValue(Int(4))
-	form := EmptyList.
-		Cons(f3).
-		Cons(f2).
-		Cons(f1).
-		Cons(pass).
-		Cons(Nil).
-		Cons(Symbol("if"))
+	form := test.NewList(Symbol("if"), Nil, pass, f1, f2, f3)
 
 	v, err := form.Eval(test.FakeEnv())
 	if err != nil {

@@ -1,111 +1,47 @@
 package runtime
 
-// List data type (Seq)
+// List data type (Sequence)
 type List struct {
-	// Value head at this element of the list
-	Data Value
-	// The rest of the list (end == nil)
-	Next *List
-}
-
-// Representation of the empty list
-var EmptyList = (*List)(nil)
-
-func (lst *List) Eq(other Value) bool {
-	if other, ok := other.(*List); ok == true {
-		for {
-			if lst == EmptyList && other == EmptyList {
-				return true
-			}
-
-			if lst == EmptyList || other == EmptyList {
-				return false
-			}
-
-			if !lst.Data.Eq(other.Data) {
-				return false
-			}
-
-			lst, other = lst.Next, other.Next
-		}
-	} else {
-		return false
-	}
-}
-
-func (lst *List) Eval(env Env) (Value, error) {
-	if lst == EmptyList {
-		return EmptyList, nil
-	}
-
-	switch lst.Data {
-	case Symbol("quote"):
-		return EvalQuote(env, lst.Next)
-	case Symbol("if"):
-		return EvalIf(env, lst.Next)
-	case Symbol("do"):
-		return EvalDo(env, lst.Next)
-	case Symbol("fn"):
-		return EvalFn(env, lst.Next)
-	case Symbol("macro"):
-		return EvalMacro(env, lst.Next)
-	case Symbol("def"):
-		return EvalDef(env, lst.Next)
-	default:
-		return EvalCall(env, lst)
-	}
+	// Otherwise behaves like a ConsCell
+	*ConsCell
+	// Retain a pointer to the last element in the list
+	Last *ConsCell
 }
 
 func (lst *List) Type() Type {
 	return ListType
 }
 
-// Get the first element of this list
-func (lst *List) Head() Value {
-	if lst == EmptyList {
-		return Nil
+func (lst *List) Eval(env Env) (Value, error) {
+	if lst.Empty() {
+		return lst, nil
 	}
 
-	return lst.Data
-}
-
-// Get the next sequence of this list
-func (lst *List) Tail() Sequence {
-	if lst == EmptyList {
-		return EmptyList
-	}
-
-	return lst.Next
-}
-
-// Return true if this is the empty list
-func (lst *List) Empty() bool {
-	return lst == EmptyList
+	return lst.ConsCell.Eval(env)
 }
 
 func (lst *List) Put(v Value) (Sequence, error) {
-	return lst.Cons(v), nil
-}
-
-// Append a new element to the head of the list
-func (lst *List) Cons(head Value) *List {
-	return &List{head, lst}
-}
-
-// Return a new list with the elements of this list in reverse
-func (lst *List) Reverse() *List {
-	acc := EmptyList
-	for x := lst; x != EmptyList; x = x.Next {
-		acc = acc.Cons(x.Data)
+	newLst := &List{&ConsCell{v, lst}, lst.Last}
+	if newLst.Last.Empty() {
+		newLst.Last = newLst.ConsCell
 	}
-	return acc
+	return newLst, nil
 }
 
-// Return the length of this list
-func (lst *List) Length() int {
-	acc := 0
-	for x := lst; x != EmptyList; x = x.Next {
-		acc += 1
+// Append a value to this List at the end.
+//
+// WARNING: This method is destructive and only intended to be used during list
+//          construction. Attempts to use it at runtime will violate the
+//          immutability principle.
+func (lst *List) Append(v Value) *List {
+	newCons := &ConsCell{v, EmptyCons}
+	if lst.Last.Empty() {
+		lst.ConsCell = newCons
+		lst.Last = newCons
+		return lst
 	}
-	return acc
+
+	lst.Last.Next = newCons
+	lst.Last = newCons
+	return lst
 }

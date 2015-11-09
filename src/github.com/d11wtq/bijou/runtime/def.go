@@ -1,12 +1,12 @@
 package runtime
 
 // Process the elements of a def form
-func EvalDef(env Env, lst *List) (Value, error) {
+func EvalDef(env Env, s Sequence) (Value, error) {
 	var key, doc, val Value
 
-	if ReadArgs(lst, &key, &doc, &val) != nil {
+	if ReadArgs(s, &key, &doc, &val) != nil {
 		doc = String("")
-		err := ReadArgs(lst, &key, &val)
+		err := ReadArgs(s, &key, &val)
 		if err != nil {
 			switch {
 			case (key == nil):

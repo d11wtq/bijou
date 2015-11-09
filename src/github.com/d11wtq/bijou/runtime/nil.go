@@ -27,7 +27,7 @@ func (v *NilObj) Tail() Sequence {
 }
 
 func (v *NilObj) Put(x Value) (Sequence, error) {
-	return EmptyList.Cons(x), nil
+	return Cons(x, v), nil
 }
 
 func (v *NilObj) Empty() bool {

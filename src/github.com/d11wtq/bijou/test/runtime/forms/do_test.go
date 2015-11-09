@@ -7,7 +7,7 @@ import (
 )
 
 func TestDoReturnsLastEvaluatedExpression(t *testing.T) {
-	form := EmptyList.Cons(Int(7)).Cons(Int(42)).Cons(Symbol("do"))
+	form := test.NewList(Symbol("do"), Int(42), Int(7))
 	v, err := form.Eval(test.FakeEnv())
 
 	if err != nil {
@@ -24,7 +24,7 @@ func TestDoPropagatesErrors(t *testing.T) {
 	foo := Symbol("foo")
 	_, expected := foo.Eval(env)
 
-	form := EmptyList.Cons(Int(7)).Cons(foo).Cons(Symbol("do"))
+	form := test.NewList(Symbol("do"), foo, Int(7))
 
 	v, err := form.Eval(env)
 
@@ -42,10 +42,11 @@ func TestDoPropagatesErrors(t *testing.T) {
 }
 
 func TestDoWithNestedDoInTailPosition(t *testing.T) {
-	form := EmptyList.
-		Cons(EmptyList.Cons(Int(42)).Cons(Symbol("do"))).
-		Cons(Int(7)).
-		Cons(Symbol("do"))
+	form := test.NewList(
+		Symbol("do"),
+		Int(7),
+		test.NewList(Symbol("do"), Int(42)),
+	)
 
 	v, err := form.Eval(test.FakeEnv())
 
@@ -59,7 +60,7 @@ func TestDoWithNestedDoInTailPosition(t *testing.T) {
 }
 
 func TestDoWithEmptyBody(t *testing.T) {
-	form := EmptyList.Cons(Symbol("do"))
+	form := test.NewList(Symbol("do"))
 
 	v, err := form.Eval(test.FakeEnv())
 
@@ -73,7 +74,7 @@ func TestDoWithEmptyBody(t *testing.T) {
 }
 
 func TestDoWithNilInTheBody(t *testing.T) {
-	form := EmptyList.Cons(Nil).Cons(Symbol("do"))
+	form := test.NewList(Symbol("do"), Nil)
 
 	v, err := form.Eval(test.FakeEnv())
 

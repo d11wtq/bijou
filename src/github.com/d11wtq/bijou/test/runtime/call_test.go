@@ -8,13 +8,13 @@ import (
 
 func TestFunctionCallWithSymbol(t *testing.T) {
 	fn := &Func{
-		Params: EmptyList,
-		Body:   EmptyList.Cons(Int(42)),
+		Params: test.NewList(),
+		Body:   test.NewList(Int(42)),
 		Env:    test.FakeEnv(),
 	}
 	env := test.FakeEnv()
 	env.Def("example", fn)
-	form := EmptyList.Cons(Symbol("example"))
+	form := test.NewList(Symbol("example"))
 	v, err := form.Eval(env)
 	if err != nil {
 		t.Fatalf(`expected err == nil, got %s`, err)
@@ -27,11 +27,11 @@ func TestFunctionCallWithSymbol(t *testing.T) {
 
 func TestFunctionCallWithLambda(t *testing.T) {
 	fn := &Func{
-		Params: EmptyList,
-		Body:   EmptyList.Cons(Int(42)),
+		Params: test.NewList(),
+		Body:   test.NewList(Int(42)),
 		Env:    test.FakeEnv(),
 	}
-	form := EmptyList.Cons(fn)
+	form := test.NewList(fn)
 	v, err := form.Eval(test.FakeEnv())
 	if err != nil {
 		t.Fatalf(`expected err == nil, got %s`, err)
@@ -44,14 +44,14 @@ func TestFunctionCallWithLambda(t *testing.T) {
 
 func TestFunctionCallWithArguments(t *testing.T) {
 	fn := &Func{
-		Params: EmptyList.Cons(Symbol("a")),
-		Body:   EmptyList.Cons(Symbol("a")),
+		Params: test.NewList(Symbol("a")),
+		Body:   test.NewList(Symbol("a")),
 		Env:    test.FakeEnv(),
 	}
 	env := test.FakeEnv()
 	env.Def("example", fn)
 	env.Def("x", Int(42))
-	form := EmptyList.Cons(Symbol("x")).Cons(Symbol("example"))
+	form := test.NewList(Symbol("example"), Symbol("x"))
 	v, err := form.Eval(env)
 	if err != nil {
 		t.Fatalf(`expected err == nil, got %s`, err)

@@ -8,20 +8,20 @@ import (
 )
 
 func TestListReturnsVariadicArgs(t *testing.T) {
-	args := runtime.EmptyList.Cons(runtime.Int(42)).Cons(runtime.Int(7))
+	args := (&runtime.List{}).Append(runtime.Int(42)).Append(runtime.Int(7))
 	v, err := core.List(test.FakeEnv(), args)
 	if err != nil {
 		t.Fatalf(`expected err == nil, got %s`, err)
 	}
-	if v != args {
+	if !v.Eq(args) {
 		t.Fatalf(`expected v == args, got %s`, v)
 	}
 }
 
 func TestConsReturnsAConsCell(t *testing.T) {
-	args := runtime.EmptyList.
-		Cons(runtime.Cons(runtime.Int(42), runtime.Nil)).
-		Cons(runtime.Int(7))
+	args := (&runtime.List{}).
+		Append(runtime.Int(7)).
+		Append(runtime.Cons(runtime.Int(42), runtime.Nil))
 
 	v, err := core.Cons(test.FakeEnv(), args)
 	if err != nil {

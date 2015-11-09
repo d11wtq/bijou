@@ -5,13 +5,13 @@ import (
 )
 
 // Logical equality
-func Eq(env runtime.Env, args *runtime.List) (runtime.Value, error) {
-	if args != runtime.EmptyList {
-		for args.Next != runtime.EmptyList {
-			if !args.Data.Eq(args.Next.Data) {
+func Eq(env runtime.Env, args runtime.Sequence) (runtime.Value, error) {
+	if !args.Empty() {
+		for !args.Tail().Empty() {
+			if !args.Head().Eq(args.Tail().Head()) {
 				return runtime.False, nil
 			}
-			args = args.Next
+			args = args.Tail()
 		}
 	}
 

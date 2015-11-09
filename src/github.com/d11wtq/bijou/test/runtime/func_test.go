@@ -9,8 +9,8 @@ import (
 
 func TestFuncType(t *testing.T) {
 	fn := &Func{
-		Params: EmptyList,
-		Body:   EmptyList,
+		Params: test.NewList(),
+		Body:   test.NewList(),
 		Env:    test.FakeEnv(),
 	}
 
@@ -21,8 +21,8 @@ func TestFuncType(t *testing.T) {
 
 func TestFuncIsNotMacro(t *testing.T) {
 	fn := &Func{
-		Params: EmptyList,
-		Body:   EmptyList,
+		Params: test.NewList(),
+		Body:   test.NewList(),
 		Env:    test.FakeEnv(),
 	}
 
@@ -33,13 +33,13 @@ func TestFuncIsNotMacro(t *testing.T) {
 
 func TestFuncEq(t *testing.T) {
 	a := &Func{
-		Params: EmptyList,
-		Body:   EmptyList,
+		Params: test.NewList(),
+		Body:   test.NewList(),
 		Env:    test.FakeEnv(),
 	}
 	b := &Func{
-		Params: EmptyList,
-		Body:   EmptyList,
+		Params: test.NewList(),
+		Body:   test.NewList(),
 		Env:    test.FakeEnv(),
 	}
 
@@ -60,8 +60,8 @@ func TestFuncEq(t *testing.T) {
 
 func TestFuncEvalToSelf(t *testing.T) {
 	fn := &Func{
-		Params: EmptyList,
-		Body:   EmptyList,
+		Params: test.NewList(),
+		Body:   test.NewList(),
 		Env:    test.FakeEnv(),
 	}
 
@@ -76,15 +76,15 @@ func TestFuncEvalToSelf(t *testing.T) {
 }
 
 func TestFuncCallReturnsLastEvaluatedExpression(t *testing.T) {
-	params := EmptyList
-	body := EmptyList.Cons(Int(42)).Cons(Int(7))
+	params := test.NewList()
+	body := test.NewList(Int(7), Int(42))
 	fn := &Func{
 		Params: params,
 		Body:   body,
 		Env:    test.FakeEnv(),
 	}
 
-	v, err := fn.Call(test.FakeEnv(), EmptyList)
+	v, err := fn.Call(test.FakeEnv(), test.NewList())
 	if err != nil {
 		t.Fatalf(`expected err == nil, got %s`, err)
 	}
@@ -95,8 +95,8 @@ func TestFuncCallReturnsLastEvaluatedExpression(t *testing.T) {
 }
 
 func TestFuncCallUsesClosedEnvironment(t *testing.T) {
-	params := EmptyList
-	body := EmptyList.Cons(Symbol("foo")).Cons(Int(7))
+	params := test.NewList()
+	body := test.NewList(Int(7), Symbol("foo"))
 	env := test.FakeEnv()
 	env.Def("foo", Int(99))
 	fn := &Func{
@@ -105,7 +105,7 @@ func TestFuncCallUsesClosedEnvironment(t *testing.T) {
 		Env:    env,
 	}
 
-	v, err := fn.Call(test.FakeEnv(), EmptyList)
+	v, err := fn.Call(test.FakeEnv(), test.NewList())
 	if err != nil {
 		t.Fatalf(`expected err == nil, got %s`, err)
 	}
@@ -116,8 +116,8 @@ func TestFuncCallUsesClosedEnvironment(t *testing.T) {
 }
 
 func TestFuncCallExtendsEnvironmentWithArgs(t *testing.T) {
-	params := EmptyList.Cons(Symbol("x"))
-	body := EmptyList.Cons(Symbol("x")).Cons(Int(7))
+	params := test.NewList(Symbol("x"))
+	body := test.NewList(Int(7), Symbol("x"))
 	env := test.FakeEnv()
 	env.Def("foo", Int(99))
 	fn := &Func{
@@ -125,7 +125,7 @@ func TestFuncCallExtendsEnvironmentWithArgs(t *testing.T) {
 		Body:   body,
 		Env:    env,
 	}
-	args := EmptyList.Cons(Int(21))
+	args := test.NewList(Int(21))
 
 	v, err := fn.Call(test.FakeEnv(), args)
 	if err != nil {
@@ -138,15 +138,15 @@ func TestFuncCallExtendsEnvironmentWithArgs(t *testing.T) {
 }
 
 func TestFuncCallValidatesTooFewArgs(t *testing.T) {
-	params := EmptyList.Cons(Symbol("y")).Cons(Symbol("x"))
-	body := EmptyList
+	params := test.NewList(Symbol("x"), Symbol("y"))
+	body := test.NewList()
 	env := test.FakeEnv()
 	fn := &Func{
 		Params: params,
 		Body:   body,
 		Env:    env,
 	}
-	args := EmptyList.Cons(Int(21))
+	args := test.NewList(Int(21))
 
 	v, err := fn.Call(test.FakeEnv(), args)
 	if err == nil {
@@ -168,15 +168,15 @@ func TestFuncCallValidatesTooFewArgs(t *testing.T) {
 }
 
 func TestFuncCallValidatesTooManyArgs(t *testing.T) {
-	params := EmptyList.Cons(Symbol("y")).Cons(Symbol("x"))
-	body := EmptyList
+	params := test.NewList(Symbol("x"), Symbol("y"))
+	body := test.NewList()
 	env := test.FakeEnv()
 	fn := &Func{
 		Params: params,
 		Body:   body,
 		Env:    env,
 	}
-	args := EmptyList.Cons(Int(21)).Cons(Int(9)).Cons(Int(2))
+	args := test.NewList(Int(2), Int(9), Int(21))
 
 	v, err := fn.Call(test.FakeEnv(), args)
 	if err == nil {
@@ -198,67 +198,67 @@ func TestFuncCallValidatesTooManyArgs(t *testing.T) {
 }
 
 func TestFuncCallWithVariadicArgs(t *testing.T) {
-	params := EmptyList.Cons(Symbol("y")).Cons(Symbol("&")).Cons(Symbol("x"))
-	body := EmptyList.Cons(Symbol("y"))
+	params := test.NewList(Symbol("x"), Symbol("&"), Symbol("y"))
+	body := test.NewList(Symbol("y"))
 	env := test.FakeEnv()
 	fn := &Func{
 		Params: params,
 		Body:   body,
 		Env:    env,
 	}
-	args := EmptyList.Cons(Int(4)).Cons(Int(3)).Cons(Int(2)).Cons(Int(1))
+	args := test.NewList(Int(1), Int(2), Int(3), Int(4))
 
 	v, err := fn.Call(test.FakeEnv(), args)
 	if err != nil {
 		t.Fatalf(`expected err == nil, got %s`, err)
 	}
 
-	y, ok := v.(*List)
+	y, ok := v.(Sequence)
 	if ok == false {
-		t.Fatalf(`expected v.(*List), but not a *List`)
+		t.Fatalf(`expected v.(Sequence), but not a Sequence`)
 	}
 
-	if y.Data != Int(2) {
-		t.Fatalf(`expected y.Data == Int(2), got %s`, y.Data)
+	if y.Head() != Int(2) {
+		t.Fatalf(`expected y.Head() == Int(2), got %s`, y.Head())
 	}
 }
 
 func TestFuncCallWithEmptyVariadicArgs(t *testing.T) {
-	params := EmptyList.Cons(Symbol("y")).Cons(Symbol("&")).Cons(Symbol("x"))
-	body := EmptyList.Cons(Symbol("y"))
+	params := test.NewList(Symbol("x"), Symbol("&"), Symbol("y"))
+	body := test.NewList(Symbol("y"))
 	env := test.FakeEnv()
 	fn := &Func{
 		Params: params,
 		Body:   body,
 		Env:    env,
 	}
-	args := EmptyList.Cons(Int(1))
+	args := test.NewList(Int(1))
 
 	v, err := fn.Call(test.FakeEnv(), args)
 	if err != nil {
 		t.Fatalf(`expected err == nil, got %s`, err)
 	}
 
-	y, ok := v.(*List)
+	y, ok := v.(Sequence)
 	if ok == false {
-		t.Fatalf(`expected v.(*List), but not a *List`)
+		t.Fatalf(`expected v.(Sequence), but not a Sequence`)
 	}
 
-	if y != EmptyList {
-		t.Fatalf(`expected y == EmptyList, got %s`, y)
+	if !y.Empty() {
+		t.Fatalf(`expected y.Empty(), got false`)
 	}
 }
 
 func TestFuncCallWithIgnoredVariadicArgs(t *testing.T) {
-	params := EmptyList.Cons(Symbol("&")).Cons(Symbol("x"))
-	body := EmptyList.Cons(Symbol("x"))
+	params := test.NewList(Symbol("x"), Symbol("&"))
+	body := test.NewList(Symbol("x"))
 	env := test.FakeEnv()
 	fn := &Func{
 		Params: params,
 		Body:   body,
 		Env:    env,
 	}
-	args := EmptyList.Cons(Int(4)).Cons(Int(3)).Cons(Int(2)).Cons(Int(1))
+	args := test.NewList(Int(1), Int(2), Int(3), Int(4))
 
 	v, err := fn.Call(test.FakeEnv(), args)
 	if err != nil {
@@ -274,14 +274,14 @@ func TestFuncCallShortCirtcuitsOnError(t *testing.T) {
 	v1 := test.NewFakeValue(Symbol("xx"))
 	v2 := test.NewFakeValue(Symbol("yy"))
 
-	params := EmptyList.Cons(Symbol("y")).Cons(Symbol("x"))
-	body := EmptyList.Cons(v2).Cons(v1)
+	params := test.NewList(Symbol("x"), Symbol("y"))
+	body := test.NewList(v1, v2)
 	fn := &Func{
 		Params: params,
 		Body:   body,
 		Env:    test.FakeEnv(),
 	}
-	args := EmptyList.Cons(Int(21)).Cons(Int(9))
+	args := test.NewList(Int(9), Int(21))
 
 	v, err := fn.Call(test.FakeEnv(), args)
 	if err == nil {

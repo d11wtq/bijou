@@ -5,7 +5,7 @@ import (
 )
 
 // Return the head of the given sequence
-func Head(env runtime.Env, args *runtime.List) (runtime.Value, error) {
+func Head(env runtime.Env, args runtime.Sequence) (runtime.Value, error) {
 	var seq runtime.Sequence
 	if err := ReadSequence(args, &seq); err != nil {
 		return nil, err
@@ -15,7 +15,7 @@ func Head(env runtime.Env, args *runtime.List) (runtime.Value, error) {
 }
 
 // Return the tail of the given sequence
-func Tail(env runtime.Env, args *runtime.List) (runtime.Value, error) {
+func Tail(env runtime.Env, args runtime.Sequence) (runtime.Value, error) {
 	var seq runtime.Sequence
 	if err := ReadSequence(args, &seq); err != nil {
 		return nil, err
@@ -25,7 +25,7 @@ func Tail(env runtime.Env, args *runtime.List) (runtime.Value, error) {
 }
 
 // Create a new sequence by putting a new value at the end of the sequence
-func Put(env runtime.Env, args *runtime.List) (runtime.Value, error) {
+func Put(env runtime.Env, args runtime.Sequence) (runtime.Value, error) {
 	var seq, val runtime.Value
 	if err := runtime.ReadArgs(args, &seq, &val); err != nil {
 		return nil, err
@@ -39,7 +39,7 @@ func Put(env runtime.Env, args *runtime.List) (runtime.Value, error) {
 }
 
 // Return true if the sequence is empty
-func Empty(env runtime.Env, args *runtime.List) (runtime.Value, error) {
+func Empty(env runtime.Env, args runtime.Sequence) (runtime.Value, error) {
 	var seq runtime.Sequence
 	if err := ReadSequence(args, &seq); err != nil {
 		return nil, err
@@ -48,7 +48,7 @@ func Empty(env runtime.Env, args *runtime.List) (runtime.Value, error) {
 }
 
 // Read the sequence argument from args
-func ReadSequence(args *runtime.List, ptr *runtime.Sequence) error {
+func ReadSequence(args runtime.Sequence, ptr *runtime.Sequence) error {
 	var v runtime.Value
 	err := runtime.ReadArgs(args, &v)
 	if err != nil {

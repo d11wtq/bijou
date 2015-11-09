@@ -1,13 +1,13 @@
 package runtime
 
 // Process the elements of the 'if' special form
-func EvalIf(env Env, lst *List) (Value, error) {
-	cond, body := lst, lst.Tail()
+func EvalIf(env Env, s Sequence) (Value, error) {
+	cond, body := s, s.Tail()
 
-	if cond == EmptyList {
+	if cond.Empty() {
 		return nil, &RuntimeError{"Missing condition in if"}
 	}
-	if body == EmptyList {
+	if body.Empty() {
 		return nil, &RuntimeError{"Missing body in if"}
 	}
 

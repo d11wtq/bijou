@@ -8,7 +8,7 @@ import (
 )
 
 func TestEqWithoutArgs(t *testing.T) {
-	args := runtime.EmptyList
+	args := &runtime.List{}
 	v, err := core.Eq(test.FakeEnv(), args)
 	if err != nil {
 		t.Fatalf(`expected err == nil, got %s`, err)
@@ -19,7 +19,7 @@ func TestEqWithoutArgs(t *testing.T) {
 }
 
 func TestEqWithOneArg(t *testing.T) {
-	args := runtime.EmptyList.Cons(runtime.Int(42))
+	args := (&runtime.List{}).Append(runtime.Int(42))
 	v, err := core.Eq(test.FakeEnv(), args)
 	if err != nil {
 		t.Fatalf(`expected err == nil, got %s`, err)
@@ -30,7 +30,7 @@ func TestEqWithOneArg(t *testing.T) {
 }
 
 func TestEqWithTwoEqualArgs(t *testing.T) {
-	args := runtime.EmptyList.Cons(runtime.Int(42)).Cons(runtime.Int(42))
+	args := (&runtime.List{}).Append(runtime.Int(42)).Append(runtime.Int(42))
 	v, err := core.Eq(test.FakeEnv(), args)
 	if err != nil {
 		t.Fatalf(`expected err == nil, got %s`, err)
@@ -41,7 +41,7 @@ func TestEqWithTwoEqualArgs(t *testing.T) {
 }
 
 func TestEqWithTwoUnequalArgs(t *testing.T) {
-	args := runtime.EmptyList.Cons(runtime.Int(42)).Cons(runtime.Int(7))
+	args := (&runtime.List{}).Append(runtime.Int(42)).Append(runtime.Int(7))
 
 	v, err := core.Eq(test.FakeEnv(), args)
 	if err != nil {
@@ -53,10 +53,10 @@ func TestEqWithTwoUnequalArgs(t *testing.T) {
 }
 
 func TestEqWithManyEqualArgs(t *testing.T) {
-	args := runtime.EmptyList.
-		Cons(runtime.Int(42)).
-		Cons(runtime.Int(42)).
-		Cons(runtime.Int(42))
+	args := (&runtime.List{}).
+		Append(runtime.Int(42)).
+		Append(runtime.Int(42)).
+		Append(runtime.Int(42))
 
 	v, err := core.Eq(test.FakeEnv(), args)
 	if err != nil {
@@ -68,10 +68,10 @@ func TestEqWithManyEqualArgs(t *testing.T) {
 }
 
 func TestEqWithManyUnequalArgs(t *testing.T) {
-	args := runtime.EmptyList.
-		Cons(runtime.Int(7)).
-		Cons(runtime.Int(42)).
-		Cons(runtime.Int(42))
+	args := (&runtime.List{}).
+		Append(runtime.Int(7)).
+		Append(runtime.Int(42)).
+		Append(runtime.Int(42))
 
 	v, err := core.Eq(test.FakeEnv(), args)
 	if err != nil {

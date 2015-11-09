@@ -8,18 +8,17 @@ import (
 )
 
 func TestHeadReturnsHeadOfSequence(t *testing.T) {
-	args := runtime.EmptyList.Cons(
-		runtime.EmptyList.Cons(runtime.Int(42)).Cons(runtime.Int(7)),
-	)
+	args := (&runtime.List{}).
+		Append((&runtime.List{}).Append(runtime.Int(42)).Append(runtime.Int(7)))
 	v, err := core.Head(test.FakeEnv(), args)
 	if err != nil {
 		t.Fatalf(`expected err == nil, got %s`, err)
 	}
-	if v != runtime.Int(7) {
+	if v != runtime.Int(42) {
 		t.Fatalf(`expected v == Int(7), got %s`, v)
 	}
 
-	args = runtime.EmptyList.Cons(runtime.String("foo"))
+	args = (&runtime.List{}).Append(runtime.String("foo"))
 	v, err = core.Head(test.FakeEnv(), args)
 	if err != nil {
 		t.Fatalf(`expected err == nil, got %s`, err)
@@ -30,14 +29,16 @@ func TestHeadReturnsHeadOfSequence(t *testing.T) {
 }
 
 func TestHeadValidatesArity(t *testing.T) {
-	v, err := core.Head(test.FakeEnv(), runtime.EmptyList)
+	v, err := core.Head(test.FakeEnv(), &runtime.List{})
 	if err == nil {
 		t.Fatalf(`expected err != nil, got nil`)
 	}
 	if v != nil {
 		t.Fatalf(`expected v == nil, got %s`, v)
 	}
-	args := runtime.EmptyList.Cons(runtime.EmptyList).Cons(runtime.EmptyList)
+	args := (&runtime.List{}).
+		Append(runtime.EmptyCons).
+		Append(runtime.EmptyCons)
 	v, err = core.Head(test.FakeEnv(), args)
 	if err == nil {
 		t.Fatalf(`expected err != nil, got nil`)
@@ -48,19 +49,25 @@ func TestHeadValidatesArity(t *testing.T) {
 }
 
 func TestTailReturnsTailOfSequence(t *testing.T) {
-	args := runtime.EmptyList.Cons(
-		runtime.EmptyList.Cons(runtime.Int(42)).Cons(runtime.Int(7)),
-	)
+	args := (&runtime.List{}).
+		Append(
+		(&runtime.List{}).
+			Append(runtime.Int(42)).
+			Append(runtime.Int(7)))
+
 	v, err := core.Tail(test.FakeEnv(), args)
 	if err != nil {
 		t.Fatalf(`expected err == nil, got %s`, err)
 	}
-	v2 := v.(*runtime.List).Data
-	if v2 != runtime.Int(42) {
-		t.Fatalf(`expected v2 == Int(42), got %s`, v2)
+	v2, ok := v.(*runtime.ConsCell)
+	if ok == false {
+		t.Fatalf(`expected v.(*List), but not a *List`)
+	}
+	if v2.Head() != runtime.Int(7) {
+		t.Fatalf(`expected v2.Head() == Int(7), got %s`, v2.Head())
 	}
 
-	args = runtime.EmptyList.Cons(runtime.String("foo"))
+	args = (&runtime.List{}).Append(runtime.String("foo"))
 	v, err = core.Tail(test.FakeEnv(), args)
 	if err != nil {
 		t.Fatalf(`expected err == nil, got %s`, err)
@@ -71,9 +78,9 @@ func TestTailReturnsTailOfSequence(t *testing.T) {
 }
 
 func TestEmptySequence(t *testing.T) {
-	args := runtime.EmptyList.Cons(
-		runtime.EmptyList.Cons(runtime.Int(42)),
-	)
+	args := (&runtime.List{}).
+		Append((&runtime.List{}).Append(runtime.Int(42)))
+
 	v, err := core.Empty(test.FakeEnv(), args)
 	if err != nil {
 		t.Fatalf(`expected err == nil, got %s`, err)
@@ -82,7 +89,7 @@ func TestEmptySequence(t *testing.T) {
 		t.Fatalf(`expected v == False, got %s`, v)
 	}
 
-	args = runtime.EmptyList.Cons(runtime.EmptyList)
+	args = (&runtime.List{}).Append(runtime.EmptyCons)
 	v, err = core.Empty(test.FakeEnv(), args)
 	if err != nil {
 		t.Fatalf(`expected err == nil, got %s`, err)

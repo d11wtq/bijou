@@ -7,7 +7,7 @@ import (
 )
 
 func TestQuoteReturnsArgumentUnevaluated(t *testing.T) {
-	form := EmptyList.Cons(Symbol("x")).Cons(Symbol("quote"))
+	form := test.NewList(Symbol("quote"), Symbol("x"))
 	v, err := form.Eval(test.FakeEnv())
 
 	if err != nil {

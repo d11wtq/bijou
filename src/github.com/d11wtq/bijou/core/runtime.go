@@ -4,8 +4,7 @@ import (
 	"github.com/d11wtq/bijou/runtime"
 )
 
-// Reader function
-func Read(env runtime.Env, args *runtime.List) (runtime.Value, error) {
+func Read(env runtime.Env, args runtime.Sequence) (runtime.Value, error) {
 	var v runtime.Value
 	if err := runtime.ReadArgs(args, &v); err != nil {
 		return nil, err
@@ -20,8 +19,7 @@ func Read(env runtime.Env, args *runtime.List) (runtime.Value, error) {
 	return v, err
 }
 
-// Eval function
-func Eval(env runtime.Env, args *runtime.List) (runtime.Value, error) {
+func Eval(env runtime.Env, args runtime.Sequence) (runtime.Value, error) {
 	var v runtime.Value
 	if err := runtime.ReadArgs(args, &v); err != nil {
 		return nil, err

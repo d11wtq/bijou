@@ -39,3 +39,12 @@ func (v *FakeValue) Eval(env Env) (Value, error) {
 	v.Result, v.Error = v.Delegate.Eval(env)
 	return v.Result, v.Error
 }
+
+// Helper to construct lists for testing
+func NewList(vs ...Value) *List {
+	acc := &List{}
+	for _, v := range vs {
+		acc.Append(v)
+	}
+	return acc
+}

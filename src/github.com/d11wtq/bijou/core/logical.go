@@ -5,7 +5,7 @@ import (
 )
 
 // Unchanged identity value
-func Identity(env runtime.Env, args *runtime.List) (runtime.Value, error) {
+func Identity(env runtime.Env, args runtime.Sequence) (runtime.Value, error) {
 	var v runtime.Value
 	if err := runtime.ReadArgs(args, &v); err != nil {
 		return nil, err
@@ -14,7 +14,7 @@ func Identity(env runtime.Env, args *runtime.List) (runtime.Value, error) {
 }
 
 // Logical not
-func Not(env runtime.Env, args *runtime.List) (runtime.Value, error) {
+func Not(env runtime.Env, args runtime.Sequence) (runtime.Value, error) {
 	var v runtime.Value
 	if err := runtime.ReadArgs(args, &v); err != nil {
 		return nil, err

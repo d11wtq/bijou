@@ -13,14 +13,14 @@ func TestListType(t *testing.T) {
 }
 
 func TestListEqWithEmptyLists(t *testing.T) {
-	if !EmptyList.Eq(EmptyList) {
+	if !(&List{}).Eq(&List{}) {
 		t.Fatalf(`expected EmptyList.Eq(EmptyList), got false`)
 	}
 }
 
 func TestListEqWithOneEmptyList(t *testing.T) {
-	a := EmptyList
-	b := EmptyList.Cons(Int(42))
+	a := &List{}
+	b := (&List{}).Append(Int(42))
 
 	if a.Eq(b) {
 		t.Fatalf(`expected !a.Eq(b), got true`)
@@ -31,8 +31,8 @@ func TestListEqWithOneEmptyList(t *testing.T) {
 }
 
 func TestListEqWithEquivalentLists(t *testing.T) {
-	a := EmptyList.Cons(Int(42)).Cons(Int(7))
-	b := EmptyList.Cons(Int(42)).Cons(Int(7))
+	a := (&List{}).Append(Int(7)).Append(Int(42))
+	b := (&List{}).Append(Int(7)).Append(Int(42))
 
 	if !a.Eq(b) {
 		t.Fatalf(`expected a.Eq(b), got false`)
@@ -43,14 +43,14 @@ func TestListEqWithEquivalentLists(t *testing.T) {
 }
 
 func TestListEqWithEquivalentListsRecursive(t *testing.T) {
-	a := EmptyList.
-		Cons(Int(42)).
-		Cons(EmptyList.Cons(Int(1))).
-		Cons(Int(7))
-	b := EmptyList.
-		Cons(Int(42)).
-		Cons(EmptyList.Cons(Int(1))).
-		Cons(Int(7))
+	a := (&List{}).
+		Append(Int(7)).
+		Append((&List{}).Append(Int(1))).
+		Append(Int(42))
+	b := (&List{}).
+		Append(Int(7)).
+		Append((&List{}).Append(Int(1))).
+		Append(Int(42))
 
 	if !a.Eq(b) {
 		t.Fatalf(`expected a.Eq(b), got false`)
@@ -61,8 +61,8 @@ func TestListEqWithEquivalentListsRecursive(t *testing.T) {
 }
 
 func TestListEqWithDifferentLengths(t *testing.T) {
-	a := EmptyList.Cons(Int(42)).Cons(Int(7))
-	b := EmptyList.Cons(Int(7))
+	a := (&List{}).Append(Int(7)).Append(Int(42))
+	b := (&List{}).Append(Int(7))
 
 	if a.Eq(b) {
 		t.Fatalf(`expected !a.Eq(b), got true`)
@@ -73,84 +73,70 @@ func TestListEqWithDifferentLengths(t *testing.T) {
 }
 
 func TestListEmptyListEvalItself(t *testing.T) {
-	var list *List = nil
-
-	if EmptyList != list {
-		t.Fatalf(`expected EmptyList == list, got %s`, EmptyList)
-	}
-
+	lst := &List{}
 	env := FakeEnv()
 
-	if v, err := list.Eval(env); err != nil {
+	v, err := lst.Eval(env)
+	if err != nil {
 		t.Fatalf(`expected err == nil, got %s`, err)
-	} else if v != EmptyList {
-		t.Fatalf(`expected v == EmptyList, got %s`, v)
+	}
+	if v != lst {
+		t.Fatalf(`expected v == lst, got %s`, v)
 	}
 }
 
 func TestListEmptyListHasNoTailOrHead(t *testing.T) {
-	if EmptyList.Head() != Nil {
-		t.Fatalf(`expected EmptyList.Head() == Nil, got %s`, EmptyList.Head())
+	lst := &List{}
+	if lst.Head() != Nil {
+		t.Fatalf(`expected lst.Head() == Nil, got %s`, lst.Head())
 	}
 
-	if EmptyList.Tail() != EmptyList {
+	if !lst.Tail().Empty() {
 		t.Fatalf(
-			`expected EmptyList.Tail() == EmptyList, got %s`,
-			EmptyList.Tail(),
+			`expected EmptyList.Tail().Empty(), got %s`,
+			lst.Tail(),
 		)
 	}
 }
 
 func TestListPut(t *testing.T) {
-	list, err := EmptyList.Cons(Int(42)).Put(Int(7))
+	lst, err := (&List{}).Append(Int(42)).Put(Int(7))
 
 	if err != nil {
 		t.Fatalf(`expected err == nil, got %s`, err)
 	}
-	if list.Head() != Int(7) {
-		t.Fatalf(`expected list.Head() == Int(7), got %s`, list.Head())
+	if lst.Head() != Int(7) {
+		t.Fatalf(`expected lst.Head() == Int(7), got %s`, lst.Head())
 	}
-	if list.Tail().Head() != Int(42) {
+	if lst.Tail().Head() != Int(42) {
 		t.Fatalf(
-			`expected list.Tail().Head() == Int(42), got %s`,
-			list.Tail().Head(),
+			`expected lst.Tail().Head() == Int(42), got %s`,
+			lst.Tail().Head(),
+		)
+	}
+}
+
+func TestListAppend(t *testing.T) {
+	lst := (&List{}).Append(Int(42)).Append(Int(7))
+	if lst.Head() != Int(42) {
+		t.Fatalf(`expected lst.Head() == Int(42), got %s`, lst.Head())
+	}
+	if lst.Tail().Head() != Int(7) {
+		t.Fatalf(
+			`expected lst.Tail().Head() == Int(7), got %s`,
+			lst.Tail().Head(),
 		)
 	}
 }
 
 func TestListEmpty(t *testing.T) {
-	if v := EmptyList.Empty(); v == false {
-		t.Fatalf(`expected EmptyList.Empty(), got false`)
+	lst := &List{}
+
+	if !lst.Empty() {
+		t.Fatalf(`expected lst.Empty(), got false`)
 	}
 
-	if v := EmptyList.Cons(Int(42)).Empty(); v == true {
-		t.Fatalf(`expected !EmptyList.Cons(Int(42)).Empty(), got true`)
-	}
-}
-
-func TestListConsAddsANewHead(t *testing.T) {
-	list := EmptyList.Cons(Int(42)).Cons(Int(7))
-
-	if list.Head() != Int(7) {
-		t.Fatalf(`expected list.Head() == Int(7), got %s`, list.Head())
-	} else if list.Tail().Head() != Int(42) {
-		t.Fatalf(
-			`expected list.Tail().Head() == Int(42), got %s`,
-			list.Tail().Head(),
-		)
-	}
-}
-
-func TestListReverse(t *testing.T) {
-	list := EmptyList.Cons(Int(42)).Cons(Int(7))
-	rev := list.Reverse()
-
-	if rev.Head() != Int(42) {
-		t.Fatalf(`expected list.Head() == Int(42), got %s`, rev.Head())
-	} else if rev.Tail().Head() != Int(7) {
-		t.Fatalf(
-			`expected rev.Tail().Head() == Int(7), got %s`,
-			rev.Tail().Head(),
-		)
+	if lst.Append(Int(42)).Empty() {
+		t.Fatalf(`expected !lst.Append(Int(42)).Empty(), got true`)
 	}
 }
