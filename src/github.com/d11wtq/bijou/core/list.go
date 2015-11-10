@@ -4,8 +4,13 @@ import (
 	"github.com/d11wtq/bijou/runtime"
 )
 
-// Basic list function, returns variadic args as a *List
+// Return a list of all arguments in order.
+// Usage: (list & args)
 func List(env runtime.Env, args runtime.Sequence) (runtime.Value, error) {
+	if _, ok := args.(*runtime.List); ok == true {
+		return args, nil
+	}
+
 	acc := runtime.EmptyList
 	for !args.Empty() {
 		acc = acc.Append(args.Head())
@@ -14,7 +19,8 @@ func List(env runtime.Env, args runtime.Sequence) (runtime.Value, error) {
 	return acc, nil
 }
 
-// Return a new cons cell appending a new head to a given sequence
+// Return cons cell, whose head is hd and whose tail is tl.
+// Usage: (cons hd tl)
 func Cons(env runtime.Env, args runtime.Sequence) (runtime.Value, error) {
 	var hd, tl runtime.Value
 	if err := runtime.ReadArgs(args, &hd, &tl); err != nil {

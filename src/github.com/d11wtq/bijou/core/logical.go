@@ -4,7 +4,8 @@ import (
 	"github.com/d11wtq/bijou/runtime"
 )
 
-// Unchanged identity value
+// Return argument v unchanged.
+// Usage: (identity v)
 func Identity(env runtime.Env, args runtime.Sequence) (runtime.Value, error) {
 	var v runtime.Value
 	if err := runtime.ReadArgs(args, &v); err != nil {
@@ -13,7 +14,8 @@ func Identity(env runtime.Env, args runtime.Sequence) (runtime.Value, error) {
 	return v, nil
 }
 
-// Logical not
+// Return the logical inversion of v.
+// Usage: (not x)
 func Not(env runtime.Env, args runtime.Sequence) (runtime.Value, error) {
 	var v runtime.Value
 	if err := runtime.ReadArgs(args, &v); err != nil {

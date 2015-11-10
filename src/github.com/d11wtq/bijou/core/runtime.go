@@ -4,6 +4,8 @@ import (
 	"github.com/d11wtq/bijou/runtime"
 )
 
+// Return the runtime data read by the reader for s.
+// Usage: (read s)
 func Read(env runtime.Env, args runtime.Sequence) (runtime.Value, error) {
 	var v runtime.Value
 	if err := runtime.ReadArgs(args, &v); err != nil {
@@ -19,6 +21,8 @@ func Read(env runtime.Env, args runtime.Sequence) (runtime.Value, error) {
 	return v, err
 }
 
+// Evaluate runtime data as executable data.
+// Usage: (eval data)
 func Eval(env runtime.Env, args runtime.Sequence) (runtime.Value, error) {
 	var v runtime.Value
 	if err := runtime.ReadArgs(args, &v); err != nil {

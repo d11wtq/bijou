@@ -4,7 +4,8 @@ import (
 	"github.com/d11wtq/bijou/runtime"
 )
 
-// Logical equality
+// Return true if all arguments are equivalent.
+// Usage: (= & args)
 func Eq(env runtime.Env, args runtime.Sequence) (runtime.Value, error) {
 	if !args.Empty() {
 		for !args.Tail().Empty() {

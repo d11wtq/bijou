@@ -31,11 +31,17 @@ func main() {
 			(some p (tail s))))))
 
 	(some identity '(false nil 42 nil 7))
+	(+ 1 2 3)
+	(- 7 4)
 
-	(put "I like foo" 100)
-	(put '(1 2 3) 4)
-	(put "abc" (head "d"))
-	(inspect '("hello world" 42))
+
+
+	(def s "foo")
+	(put s 100)
+	(cons 42 s)
+
+	(+ 7 4 89 345)
+	(- 7 4 1)
 	`
 	app, err := runtime.ReadSrc(src)
 	if err != nil {

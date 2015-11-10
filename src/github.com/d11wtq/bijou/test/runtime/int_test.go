@@ -37,3 +37,59 @@ func TestIntString(t *testing.T) {
 		t.Fatalf(`expected s == "42", got %s`, s)
 	}
 }
+
+func TestIntAddWithInt(t *testing.T) {
+	a := Int(42)
+	b := Int(7)
+
+	c, err := a.Add(b)
+	if err != nil {
+		t.Fatalf(`expected err == nil, got %s`, err)
+	}
+
+	if c != Int(49) {
+		t.Fatalf(`expected c == Int(49), got %s`, c)
+	}
+}
+
+func TestIntAddWithAString(t *testing.T) {
+	a := Int(42)
+	b := String("foo")
+
+	c, err := a.Add(b)
+	if err == nil {
+		t.Fatalf(`expected err != nil, got nil`)
+	}
+
+	if c != nil {
+		t.Fatalf(`expected c == nil, got %s`, c)
+	}
+}
+
+func TestIntSubWithInt(t *testing.T) {
+	a := Int(42)
+	b := Int(7)
+
+	c, err := a.Sub(b)
+	if err != nil {
+		t.Fatalf(`expected err == nil, got %s`, err)
+	}
+
+	if c != Int(35) {
+		t.Fatalf(`expected c == Int(35), got %s`, c)
+	}
+}
+
+func TestIntSubWithAString(t *testing.T) {
+	a := Int(42)
+	b := String("foo")
+
+	c, err := a.Sub(b)
+	if err == nil {
+		t.Fatalf(`expected err != nil, got nil`)
+	}
+
+	if c != nil {
+		t.Fatalf(`expected c == nil, got %s`, c)
+	}
+}

@@ -22,3 +22,19 @@ func (v Int) Type() Type {
 func (v Int) String() string {
 	return strconv.Itoa(int(v))
 }
+
+func (v Int) Add(x Value) (Value, error) {
+	i, ok := x.(Int)
+	if ok == false {
+		return nil, &RuntimeError{"Bad data type: int required"}
+	}
+	return v + i, nil
+}
+
+func (v Int) Sub(x Value) (Value, error) {
+	i, ok := x.(Int)
+	if ok == false {
+		return nil, &RuntimeError{"Bad data type: int required"}
+	}
+	return v - i, nil
+}
