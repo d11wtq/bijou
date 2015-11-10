@@ -35,6 +35,7 @@ func main() {
 	(put "I like foo" 100)
 	(put '(1 2 3) 4)
 	(put "abc" (head "d"))
+	(inspect '("hello world" 42))
 	`
 	app, err := runtime.ReadSrc(src)
 	if err != nil {

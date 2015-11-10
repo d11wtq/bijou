@@ -26,3 +26,11 @@ func Eval(env runtime.Env, args runtime.Sequence) (runtime.Value, error) {
 	}
 	return v.Eval(env)
 }
+
+func Inspect(env runtime.Env, args runtime.Sequence) (runtime.Value, error) {
+	var v runtime.Value
+	if err := runtime.ReadArgs(args, &v); err != nil {
+		return nil, err
+	}
+	return runtime.String(v.String()), nil
+}
