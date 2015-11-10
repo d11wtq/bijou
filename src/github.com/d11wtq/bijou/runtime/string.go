@@ -1,5 +1,7 @@
 package runtime
 
+import "fmt"
+
 // String data type
 type String string
 
@@ -13,6 +15,29 @@ func (s String) Eval(env Env) (Value, error) {
 
 func (s String) Type() Type {
 	return StringType
+}
+
+func (s String) String() string {
+	acc := make([]rune, 0, len(s)*2)
+	for _, r := range s {
+		switch r {
+		case '\r', '\n', '\t', '\\', '"':
+			acc = append(acc, '\\')
+		}
+
+		switch r {
+		case '\r':
+			r = 'r'
+		case '\n':
+			r = 'n'
+		case '\t':
+			r = 't'
+		}
+
+		acc = append(acc, r)
+	}
+
+	return fmt.Sprintf(`"%s"`, string(acc))
 }
 
 func (s String) Head() Value {

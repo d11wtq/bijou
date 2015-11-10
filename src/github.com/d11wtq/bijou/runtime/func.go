@@ -22,6 +22,10 @@ func (fn *Func) Eval(env Env) (Value, error) {
 	return fn, nil
 }
 
+func (fn *Func) String() string {
+	return "#<function>"
+}
+
 func (fn *Func) IsMacro() bool {
 	return false
 }

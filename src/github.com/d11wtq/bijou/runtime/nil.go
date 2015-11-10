@@ -18,6 +18,10 @@ func (v *NilObj) Eval(env Env) (Value, error) {
 	return Nil, nil
 }
 
+func (v *NilObj) String() string {
+	return "nil"
+}
+
 func (v *NilObj) Head() Value {
 	return v
 }

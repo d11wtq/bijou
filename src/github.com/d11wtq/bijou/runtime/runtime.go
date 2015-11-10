@@ -32,6 +32,8 @@ type Value interface {
 	Eval(env Env) (Value, error)
 	// Eval to the lowest level value
 	Type() Type
+	// Provide a representation of this value as string
+	String() string
 }
 
 // Value that can be invoked

@@ -49,3 +49,13 @@ func TestBooleanEq(t *testing.T) {
 		t.Fatalf(`expected !True.Eq(False), got true`)
 	}
 }
+
+func TestBooleanString(t *testing.T) {
+	if True.String() != "true" {
+		t.Fatalf(`expected True.String() == "true", got %s`, True.String())
+	}
+
+	if False.String() != "false" {
+		t.Fatalf(`expected False.String() == "true", got %s`, False.String())
+	}
+}

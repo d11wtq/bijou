@@ -33,6 +33,10 @@ func (w *FuncWrapper) Eval(env runtime.Env) (runtime.Value, error) {
 	return w, nil
 }
 
+func (w *FuncWrapper) String() string {
+	return "#<function>"
+}
+
 // True if arguments should not be evaluated (Callable interface method)
 func (w *FuncWrapper) IsMacro() bool {
 	return w.Macro

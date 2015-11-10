@@ -78,3 +78,11 @@ func TestStringEmpty(t *testing.T) {
 		t.Fatalf(`expected String("").Empty(), got false`)
 	}
 }
+
+func TestStringString(t *testing.T) {
+	v := String("hello \"world\" \\ \n \r \t")
+	s := v.String()
+	if s != `"hello \"world\" \\ \n \r \t"` {
+		t.Fatalf(`expected s == `+"`"+`"hello \"world\" \\ \n \r \t"`+"` got %s", s)
+	}
+}

@@ -1,5 +1,10 @@
 package runtime
 
+import (
+	"fmt"
+	"strings"
+)
+
 // Create a new ConsCell with a given Head and Tail
 func Cons(data Value, next Sequence) Sequence {
 	return &ConsCell{data, next}
@@ -39,6 +44,10 @@ func (cons *ConsCell) Eq(other Value) bool {
 	}
 }
 
+func (cons *ConsCell) Type() Type {
+	return ConsType
+}
+
 func (cons *ConsCell) Eval(env Env) (Value, error) {
 	if cons.Empty() {
 		return EmptyCons, nil
@@ -62,8 +71,14 @@ func (cons *ConsCell) Eval(env Env) (Value, error) {
 	}
 }
 
-func (cons *ConsCell) Type() Type {
-	return ConsType
+func (cons *ConsCell) String() string {
+	strs := make([]string, 0, Length(cons))
+	s := Sequence(cons)
+	for !s.Empty() {
+		strs = append(strs, s.Head().String())
+		s = s.Tail()
+	}
+	return fmt.Sprintf("(%s)", strings.Join(strs, " "))
 }
 
 func (cons *ConsCell) Head() Value {

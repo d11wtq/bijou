@@ -21,6 +21,10 @@ func (mc *Macro) Eval(env Env) (Value, error) {
 	return mc, nil
 }
 
+func (mc *Macro) String() string {
+	return "#<macro>"
+}
+
 // Process the elements of the 'macro' special form
 func EvalMacro(env Env, s Sequence) (Value, error) {
 	if s.Empty() {

@@ -1,5 +1,9 @@
 package runtime
 
+import (
+	"strconv"
+)
+
 // Signed integer data type
 type Int int
 
@@ -13,4 +17,8 @@ func (v Int) Eval(env Env) (Value, error) {
 
 func (v Int) Type() Type {
 	return IntType
+}
+
+func (v Int) String() string {
+	return strconv.Itoa(int(v))
 }

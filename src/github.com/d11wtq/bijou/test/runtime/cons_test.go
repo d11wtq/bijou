@@ -119,3 +119,12 @@ func TestConsEmpty(t *testing.T) {
 		t.Fatalf(`expected !EmptyList.Cons(Int(42)).Empty(), got true`)
 	}
 }
+
+func TestConsString(t *testing.T) {
+	v := Cons(Int(42), Cons(Int(7), EmptyCons))
+	s := v.String()
+
+	if s != "(42 7)" {
+		t.Fatalf(`expected s == "(42 7)", got %s`, s)
+	}
+}

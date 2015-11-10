@@ -20,3 +20,11 @@ func (v Boolean) Type() Type {
 func (v Boolean) Eval(env Env) (Value, error) {
 	return v, nil
 }
+
+func (v Boolean) String() string {
+	if bool(v) {
+		return "true"
+	} else {
+		return "false"
+	}
+}

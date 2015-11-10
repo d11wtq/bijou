@@ -299,3 +299,15 @@ func TestFuncCallShortCirtcuitsOnError(t *testing.T) {
 		t.Fatalf(`expected v2.Evaluated == false, got true`)
 	}
 }
+
+func TestFuncString(t *testing.T) {
+	fn := &Func{
+		Params: EmptyList,
+		Body:   EmptyList,
+		Env:    test.FakeEnv(),
+	}
+
+	if fn.String() != "#<function>" {
+		t.Fatalf(`expected fn.String() == "#<function>", got %s`, fn.String())
+	}
+}

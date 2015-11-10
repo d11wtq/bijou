@@ -31,9 +31,9 @@ func TestIntEq(t *testing.T) {
 	}
 }
 
-func TestIntCastToNative(t *testing.T) {
-	i := Int(42)
-	if int(i) != 42 {
-		t.Fatalf(`expected int(i) == 42, got %d`, int(i))
+func TestIntString(t *testing.T) {
+	s := Int(42).String()
+	if s != "42" {
+		t.Fatalf(`expected s == "42", got %s`, s)
 	}
 }

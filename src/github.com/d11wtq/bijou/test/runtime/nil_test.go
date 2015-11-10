@@ -58,3 +58,9 @@ func TestNilEmpty(t *testing.T) {
 		t.Fatalf(`expected Nil.Empty() == true, got false`)
 	}
 }
+
+func TestNilString(t *testing.T) {
+	if Nil.String() != "nil" {
+		t.Fatalf(`expected Nil.String() == "nil", got %s`, Nil.String())
+	}
+}

@@ -51,3 +51,10 @@ func TestSymbolCastToNative(t *testing.T) {
 		t.Fatalf(`expected string(sym) == "test", got %s`, string(sym))
 	}
 }
+
+func TestSymbolString(t *testing.T) {
+	sym := Symbol("example")
+	if sym.String() != "example" {
+		t.Fatalf(`expected sym.String() == "example", got %s`, sym.String())
+	}
+}

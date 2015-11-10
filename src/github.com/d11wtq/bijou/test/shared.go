@@ -40,6 +40,10 @@ func (v *FakeValue) Eval(env Env) (Value, error) {
 	return v.Result, v.Error
 }
 
+func (v *FakeValue) String() string {
+	return v.Delegate.String()
+}
+
 // Helper to construct lists for testing
 func NewList(vs ...Value) *List {
 	acc := EmptyList

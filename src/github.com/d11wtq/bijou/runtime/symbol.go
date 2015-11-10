@@ -22,3 +22,7 @@ func (s Symbol) Eval(env Env) (Value, error) {
 func (s Symbol) Type() Type {
 	return SymbolType
 }
+
+func (s Symbol) String() string {
+	return string(s)
+}
