@@ -6,9 +6,9 @@ import (
 
 // Basic list function, returns variadic args as a *List
 func List(env runtime.Env, args runtime.Sequence) (runtime.Value, error) {
-	acc := &runtime.List{}
+	acc := runtime.EmptyList
 	for !args.Empty() {
-		acc.Append(args.Head())
+		acc = acc.Append(args.Head())
 		args = args.Tail()
 	}
 	return acc, nil

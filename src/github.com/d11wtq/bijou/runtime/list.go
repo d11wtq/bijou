@@ -5,8 +5,10 @@ type List struct {
 	// Otherwise behaves like a ConsCell
 	*ConsCell
 	// Retain a pointer to the last element in the list
-	Last *ConsCell
+	Last *List
 }
+
+var EmptyList = &List{}
 
 func (lst *List) Type() Type {
 	return ListType
@@ -14,34 +16,43 @@ func (lst *List) Type() Type {
 
 func (lst *List) Eval(env Env) (Value, error) {
 	if lst.Empty() {
-		return lst, nil
+		return EmptyList, nil
 	}
 
 	return lst.ConsCell.Eval(env)
 }
 
-func (lst *List) Put(v Value) (Sequence, error) {
-	newLst := &List{&ConsCell{v, lst}, lst.Last}
-	if newLst.Last.Empty() {
-		newLst.Last = newLst.ConsCell
+func (lst *List) Tail() Sequence {
+	if lst.Empty() {
+		return EmptyList
 	}
+
+	return lst.Next
+}
+
+func (lst *List) Put(v Value) (Sequence, error) {
+	newLst := &List{&ConsCell{v, lst}, EmptyList}
+
+	if lst.Empty() {
+		newLst.Last = newLst
+	} else {
+		newLst.Last = lst.Last
+	}
+
 	return newLst, nil
 }
 
-// Append a value to this List at the end.
-//
-// WARNING: This method is destructive and only intended to be used during list
-//          construction. Attempts to use it at runtime will violate the
-//          immutability principle.
+// Append a value to the end of this List (destructive).
 func (lst *List) Append(v Value) *List {
-	newCons := &ConsCell{v, EmptyCons}
-	if lst.Last.Empty() {
-		lst.ConsCell = newCons
-		lst.Last = newCons
-		return lst
+	if lst.Empty() {
+		lst2, _ := lst.Put(v)
+		return lst2.(*List)
 	}
 
-	lst.Last.Next = newCons
-	lst.Last = newCons
+	newLst := &List{&ConsCell{v, EmptyList}, EmptyList}
+	newLst.Last = newLst
+
+	lst.Last.Next = newLst
+	lst.Last = newLst
 	return lst
 }

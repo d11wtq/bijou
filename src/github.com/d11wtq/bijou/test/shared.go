@@ -42,9 +42,9 @@ func (v *FakeValue) Eval(env Env) (Value, error) {
 
 // Helper to construct lists for testing
 func NewList(vs ...Value) *List {
-	acc := &List{}
+	acc := EmptyList
 	for _, v := range vs {
-		acc.Append(v)
+		acc = acc.Append(v)
 	}
 	return acc
 }

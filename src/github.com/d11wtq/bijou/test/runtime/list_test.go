@@ -2,25 +2,118 @@ package runtime_test
 
 import (
 	. "github.com/d11wtq/bijou/runtime"
+	"github.com/d11wtq/bijou/test"
 	"testing"
 )
 
 func TestListType(t *testing.T) {
-	list := &List{}
+	list := EmptyList
 	if list.Type() != ListType {
 		t.Fatalf(`expected list.Type() == ListType, got %s`, list.Type())
 	}
 }
 
+func TestListEmpty(t *testing.T) {
+	if !EmptyList.Empty() {
+		t.Fatalf(`expected EmptyList.Empty(), got false`)
+	}
+}
+
+func TestListPutPrependsNewHead(t *testing.T) {
+	a := &List{
+		&ConsCell{
+			Int(42),
+			&List{
+				&ConsCell{
+					Int(7),
+					EmptyList,
+				},
+				nil,
+			},
+		},
+		nil,
+	}
+	a.Last = a.Next.(*List)
+	a.Next.(*List).Last = a.Next.(*List)
+
+	b, err := a.Put(Int(7))
+
+	if err != nil {
+		t.Fatalf(`expected err == nil, got %s`, err)
+	}
+
+	b2, ok := b.(*List)
+	if ok == false {
+		t.Fatalf(`expected b.(*List), got false`)
+	}
+
+	if b2.Data != Int(7) {
+		t.Fatalf(`expected b2.Data == Int(7), got %s`, b2.Data)
+	}
+
+	if b2.Last != a.Last {
+		t.Fatalf(`expected b2.Last == a.Last, got %s`, b2.Last)
+	}
+
+	if b2.Next.(*List).Data != Int(42) {
+		t.Fatalf(
+			`expected b2.Next.Data == Int(42), got %s`,
+			b2.Next.(*List).Data,
+		)
+	}
+}
+
+func TestListAppendWithEmptyListIsPut(t *testing.T) {
+	a := EmptyList
+	b := a.Append(Int(7))
+
+	if b.Data != Int(7) {
+		t.Fatalf(`expected b.Data == Int(7), got %s`, b.Data)
+	}
+
+	if b.Last != b {
+		t.Fatalf(`expected b.Last == b, got %s`, b.Last)
+	}
+
+	if b.Next.(*List) != EmptyList {
+		t.Fatalf(`expected b.Next == EmptyList, got %s`, b.Next)
+	}
+}
+
+func TestListAppendAddsANewValueAtTheEnd(t *testing.T) {
+	a := &List{
+		&ConsCell{
+			Int(42),
+			EmptyList,
+		},
+		nil,
+	}
+	a.Last = a
+
+	b := a.Append(Int(7))
+
+	if b.Data != Int(42) {
+		t.Fatalf(`expected b.Data == Int(42), got %s`, b.Data)
+	}
+
+	if b.Last != b.Next.(*List) {
+		t.Fatalf(`expected b.Last == b.Next, got %s`, b.Last)
+	}
+
+	if b.Last.Data != Int(7) {
+		t.Fatalf(`expected b.Last.Data == Int(7), got %s`, b.Last.Data)
+	}
+}
+
 func TestListEqWithEmptyLists(t *testing.T) {
-	if !(&List{}).Eq(&List{}) {
+	if !EmptyList.Eq(EmptyList) {
 		t.Fatalf(`expected EmptyList.Eq(EmptyList), got false`)
 	}
 }
 
 func TestListEqWithOneEmptyList(t *testing.T) {
-	a := &List{}
-	b := (&List{}).Append(Int(42))
+	a := EmptyList
+	b := EmptyList.Append(Int(42))
 
 	if a.Eq(b) {
 		t.Fatalf(`expected !a.Eq(b), got true`)
@@ -31,8 +124,8 @@ func TestListEqWithOneEmptyList(t *testing.T) {
 }
 
 func TestListEqWithEquivalentLists(t *testing.T) {
-	a := (&List{}).Append(Int(7)).Append(Int(42))
-	b := (&List{}).Append(Int(7)).Append(Int(42))
+	a := EmptyList.Append(Int(42)).Append(Int(7))
+	b := EmptyList.Append(Int(42)).Append(Int(7))
 
 	if !a.Eq(b) {
 		t.Fatalf(`expected a.Eq(b), got false`)
@@ -43,11 +136,11 @@ func TestListEqWithEquivalentLists(t *testing.T) {
 }
 
 func TestListEqWithEquivalentListsRecursive(t *testing.T) {
-	a := (&List{}).
+	a := EmptyList.
 		Append(Int(7)).
 		Append((&List{}).Append(Int(1))).
 		Append(Int(42))
-	b := (&List{}).
+	b := EmptyList.
 		Append(Int(7)).
 		Append((&List{}).Append(Int(1))).
 		Append(Int(42))
@@ -61,8 +154,8 @@ func TestListEqWithEquivalentListsRecursive(t *testing.T) {
 }
 
 func TestListEqWithDifferentLengths(t *testing.T) {
-	a := (&List{}).Append(Int(7)).Append(Int(42))
-	b := (&List{}).Append(Int(7))
+	a := EmptyList.Append(Int(7)).Append(Int(42))
+	b := EmptyList.Append(Int(7))
 
 	if a.Eq(b) {
 		t.Fatalf(`expected !a.Eq(b), got true`)
@@ -73,70 +166,36 @@ func TestListEqWithDifferentLengths(t *testing.T) {
 }
 
 func TestListEmptyListEvalItself(t *testing.T) {
-	lst := &List{}
-	env := FakeEnv()
+	lst := EmptyList
+	env := test.FakeEnv()
 
 	v, err := lst.Eval(env)
 	if err != nil {
 		t.Fatalf(`expected err == nil, got %s`, err)
 	}
-	if v != lst {
-		t.Fatalf(`expected v == lst, got %s`, v)
+	if v != EmptyList {
+		t.Fatalf(`expected v == EmptyList, got %s`, v)
 	}
 }
 
 func TestListEmptyListHasNoTailOrHead(t *testing.T) {
-	lst := &List{}
+	lst := EmptyList
 	if lst.Head() != Nil {
 		t.Fatalf(`expected lst.Head() == Nil, got %s`, lst.Head())
 	}
 
-	if !lst.Tail().Empty() {
+	if lst.Tail() != EmptyList {
 		t.Fatalf(
-			`expected EmptyList.Tail().Empty(), got %s`,
+			`expected EmptyList.Tail() == EmptyList, got %s`,
 			lst.Tail(),
 		)
 	}
 }
 
-func TestListPut(t *testing.T) {
-	lst, err := (&List{}).Append(Int(42)).Put(Int(7))
-
-	if err != nil {
-		t.Fatalf(`expected err == nil, got %s`, err)
-	}
-	if lst.Head() != Int(7) {
-		t.Fatalf(`expected lst.Head() == Int(7), got %s`, lst.Head())
-	}
-	if lst.Tail().Head() != Int(42) {
-		t.Fatalf(
-			`expected lst.Tail().Head() == Int(42), got %s`,
-			lst.Tail().Head(),
-		)
-	}
-}
-
-func TestListAppend(t *testing.T) {
-	lst := (&List{}).Append(Int(42)).Append(Int(7))
-	if lst.Head() != Int(42) {
-		t.Fatalf(`expected lst.Head() == Int(42), got %s`, lst.Head())
-	}
-	if lst.Tail().Head() != Int(7) {
-		t.Fatalf(
-			`expected lst.Tail().Head() == Int(7), got %s`,
-			lst.Tail().Head(),
-		)
-	}
-}
-
-func TestListEmpty(t *testing.T) {
-	lst := &List{}
-
-	if !lst.Empty() {
-		t.Fatalf(`expected lst.Empty(), got false`)
-	}
-
-	if lst.Append(Int(42)).Empty() {
-		t.Fatalf(`expected !lst.Append(Int(42)).Empty(), got true`)
+func TestListTailIsAList(t *testing.T) {
+	lst := EmptyList.Append(Int(42)).Append(Int(7))
+	_, ok := lst.Tail().(*List)
+	if ok == false {
+		t.Fatalf(`expected lst.Tail().(*List), got false`)
 	}
 }
