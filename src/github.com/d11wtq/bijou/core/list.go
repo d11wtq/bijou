@@ -28,7 +28,7 @@ func Cons(env runtime.Env, args runtime.Sequence) (runtime.Value, error) {
 	}
 	seq, ok := tl.(runtime.Sequence)
 	if ok == false {
-		return nil, &runtime.RuntimeError{"Bad data type: sequence required"}
+		return nil, runtime.BadType(runtime.SequenceType, tl.Type())
 	}
 
 	return runtime.Cons(hd, seq), nil

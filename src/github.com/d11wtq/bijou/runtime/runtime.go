@@ -8,13 +8,15 @@ const (
 	NilType Type = iota
 	// Boolean true/false
 	BooleanType
-	// Unique symbols; variable names, function names
-	SymbolType
 	// Integers
 	IntType
+	// Unique symbols; variable names, function names
+	SymbolType
+	// Generic sequences
+	SequenceType
 	// Strings
 	StringType
-	// Linked lists
+	// Cons sequences
 	ConsType
 	// Linked lists
 	ListType
@@ -26,14 +28,14 @@ const (
 
 // Program runtime value
 type Value interface {
-	// Equality comparison
-	Eq(Value) bool
 	// Eval to the lowest level value
 	Eval(env Env) (Value, error)
 	// Eval to the lowest level value
 	Type() Type
 	// Provide a representation of this value as string
 	String() string
+	// Equality comparison
+	Eq(Value) bool
 }
 
 // Value that can be invoked

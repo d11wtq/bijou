@@ -35,7 +35,7 @@ func Put(env runtime.Env, args runtime.Sequence) (runtime.Value, error) {
 	}
 	seq2, ok := seq.(runtime.Sequence)
 	if ok == false {
-		return nil, &runtime.RuntimeError{"Bad data type: sequence required"}
+		return nil, runtime.BadType(runtime.SequenceType, seq.Type())
 	}
 
 	return seq2.Put(val)
@@ -60,7 +60,7 @@ func ReadSequence(args runtime.Sequence, ptr *runtime.Sequence) error {
 	}
 	seq, ok := v.(runtime.Sequence)
 	if ok == false {
-		return &runtime.RuntimeError{"Bad data type: sequence required"}
+		return runtime.BadType(runtime.SequenceType, v.Type())
 	}
 	*ptr = seq
 	return nil

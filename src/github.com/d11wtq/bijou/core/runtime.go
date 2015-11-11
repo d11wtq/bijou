@@ -14,7 +14,7 @@ func Read(env runtime.Env, args runtime.Sequence) (runtime.Value, error) {
 
 	s, ok := v.(runtime.String)
 	if ok == false {
-		return nil, &runtime.RuntimeError{"Bad data type: string required"}
+		return nil, runtime.BadType(runtime.StringType, v.Type())
 	}
 
 	v, _, err := runtime.Read(string(s))

@@ -26,7 +26,7 @@ func (v Int) String() string {
 func (v Int) Add(x Value) (Value, error) {
 	i, ok := x.(Int)
 	if ok == false {
-		return nil, &RuntimeError{"Bad data type: int required"}
+		return nil, BadType(IntType, x.Type())
 	}
 	return v + i, nil
 }
@@ -34,7 +34,7 @@ func (v Int) Add(x Value) (Value, error) {
 func (v Int) Sub(x Value) (Value, error) {
 	i, ok := x.(Int)
 	if ok == false {
-		return nil, &RuntimeError{"Bad data type: int required"}
+		return nil, BadType(IntType, x.Type())
 	}
 	return v - i, nil
 }
@@ -42,7 +42,7 @@ func (v Int) Sub(x Value) (Value, error) {
 func (v Int) Mul(x Value) (Value, error) {
 	i, ok := x.(Int)
 	if ok == false {
-		return nil, &RuntimeError{"Bad data type: int required"}
+		return nil, BadType(IntType, x.Type())
 	}
 	return v * i, nil
 }
@@ -50,10 +50,10 @@ func (v Int) Mul(x Value) (Value, error) {
 func (v Int) Div(x Value) (Value, error) {
 	i, ok := x.(Int)
 	if ok == false {
-		return nil, &RuntimeError{"Bad data type: int required"}
+		return nil, BadType(IntType, x.Type())
 	}
 	if i == Int(0) {
-		return nil, &ArithmeticError{"Divide by zero"}
+		return nil, DivisionByZero()
 	}
 	return v / i, nil
 }
