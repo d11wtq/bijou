@@ -99,6 +99,52 @@ func TestSubWithNonSubtractiveData(t *testing.T) {
 	}
 }
 
+func TestMulWithoutArgs(t *testing.T) {
+	args := runtime.EmptyList
+	v, err := core.Mul(test.FakeEnv(), args)
+	if err != nil {
+		t.Fatalf(`expected err == nil, got %s`, err)
+	}
+	if v != runtime.Int(1) {
+		t.Fatalf(`expected v == Int(1), got %s`, v)
+	}
+}
+
+func TestMulWithASingleArg(t *testing.T) {
+	args := runtime.EmptyList.Append(runtime.Int(42))
+	v, err := core.Mul(test.FakeEnv(), args)
+	if err != nil {
+		t.Fatalf(`expected err == nil, got %s`, err)
+	}
+	if v != runtime.Int(42) {
+		t.Fatalf(`expected v == Int(42), got %s`, v)
+	}
+}
+
+func TestMulWithMultipleArgs(t *testing.T) {
+	args := runtime.EmptyList.Append(runtime.Int(42)).Append(runtime.Int(5))
+	v, err := core.Mul(test.FakeEnv(), args)
+	if err != nil {
+		t.Fatalf(`expected err == nil, got %s`, err)
+	}
+	if v != runtime.Int(210) {
+		t.Fatalf(`expected v == Int(210), got %s`, v)
+	}
+}
+
+func TestMulWithNonMultiplicativeData(t *testing.T) {
+	args := runtime.EmptyList.
+		Append(runtime.Int(42)).
+		Append(runtime.Symbol("x"))
+	v, err := core.Mul(test.FakeEnv(), args)
+	if err == nil {
+		t.Fatalf(`expected err != nil, got nil`)
+	}
+	if v != nil {
+		t.Fatalf(`expected v == nil, got %s`, v)
+	}
+}
+
 func TestDivWithoutArgs(t *testing.T) {
 	args := runtime.EmptyList
 	v, err := core.Div(test.FakeEnv(), args)

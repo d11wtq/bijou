@@ -48,7 +48,7 @@ func main() {
 		  (sum (- n 1) (+ acc n)))))
 
 	(sum 3 0)
-	(/ 0)
+	(* 2 3)
 	`
 	app, err := runtime.ReadSrc(src)
 	if err != nil {

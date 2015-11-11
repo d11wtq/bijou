@@ -50,6 +50,27 @@ func Sub(env runtime.Env, args runtime.Sequence) (runtime.Value, error) {
 	return acc, nil
 }
 
+// Return the product of all arguments
+// Usage: (* & args)
+func Mul(env runtime.Env, args runtime.Sequence) (runtime.Value, error) {
+	var acc runtime.Value = runtime.Int(1)
+	var err error
+
+	for !args.Empty() {
+		v, ok := acc.(runtime.Multiplication)
+		if ok == false {
+			return nil, &runtime.ArgumentError{"Type does not support *"}
+		}
+		acc, err = v.Mul(args.Head())
+		if err != nil {
+			return nil, err
+		}
+		args = args.Tail()
+	}
+
+	return acc, nil
+}
+
 // Return the division of all arguments
 // Usage: (/ & args)
 func Div(env runtime.Env, args runtime.Sequence) (runtime.Value, error) {
