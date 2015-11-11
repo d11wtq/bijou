@@ -93,3 +93,31 @@ func TestIntSubWithAString(t *testing.T) {
 		t.Fatalf(`expected c == nil, got %s`, c)
 	}
 }
+
+func TestIntDivWithInt(t *testing.T) {
+	a := Int(43)
+	b := Int(7)
+
+	c, err := a.Div(b)
+	if err != nil {
+		t.Fatalf(`expected err == nil, got %s`, err)
+	}
+
+	if c != Int(6) {
+		t.Fatalf(`expected c == Int(6), got %s`, c)
+	}
+}
+
+func TestIntDivWithAString(t *testing.T) {
+	a := Int(43)
+	b := String("foo")
+
+	c, err := a.Div(b)
+	if err == nil {
+		t.Fatalf(`expected err != nil, got nil`)
+	}
+
+	if c != nil {
+		t.Fatalf(`expected c == nil, got %s`, c)
+	}
+}

@@ -34,14 +34,21 @@ func main() {
 	(+ 1 2 3)
 	(- 7 4)
 
-
-
 	(def s "foo")
 	(put s 100)
 	(cons 42 s)
 
 	(+ 7 4 89 345)
 	(- 7 4 1)
+
+	(def sum
+	  (fn (n acc)
+	    (if (= n 0)
+		  acc
+		  (sum (- n 1) (+ acc n)))))
+
+	(sum 3 0)
+	(/ 0)
 	`
 	app, err := runtime.ReadSrc(src)
 	if err != nil {

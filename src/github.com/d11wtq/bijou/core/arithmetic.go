@@ -49,3 +49,28 @@ func Sub(env runtime.Env, args runtime.Sequence) (runtime.Value, error) {
 
 	return acc, nil
 }
+
+// Return the division of all arguments
+// Usage: (/ & args)
+func Div(env runtime.Env, args runtime.Sequence) (runtime.Value, error) {
+	var acc runtime.Value = runtime.Int(1)
+	var err error
+
+	if !args.Tail().Empty() {
+		acc, args = args.Head(), args.Tail()
+	}
+
+	for !args.Empty() {
+		v, ok := acc.(runtime.Division)
+		if ok == false {
+			return nil, &runtime.ArgumentError{"Type does not support /"}
+		}
+		acc, err = v.Div(args.Head())
+		if err != nil {
+			return nil, err
+		}
+		args = args.Tail()
+	}
+
+	return acc, nil
+}

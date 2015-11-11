@@ -38,3 +38,14 @@ func (v Int) Sub(x Value) (Value, error) {
 	}
 	return v - i, nil
 }
+
+func (v Int) Div(x Value) (Value, error) {
+	i, ok := x.(Int)
+	if ok == false {
+		return nil, &RuntimeError{"Bad data type: int required"}
+	}
+	if i == Int(0) {
+		return nil, &ArithmeticError{"Divide by zero"}
+	}
+	return v / i, nil
+}

@@ -25,6 +25,7 @@ func init() {
 	// arithmetic functions
 	root.Def("+", GoFunc(Add))
 	root.Def("-", GoFunc(Sub))
+	root.Def("/", GoFunc(Div))
 
 	// list functions
 	root.Def("list", GoFunc(List))

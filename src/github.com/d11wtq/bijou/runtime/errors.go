@@ -24,6 +24,16 @@ func (e *ArgumentError) Error() string {
 	return e.Message
 }
 
+// Runtime error caused by impossible airthmetic
+type ArithmeticError struct {
+	// Contextual error message (user-friendly)
+	Message string
+}
+
+func (e *ArithmeticError) Error() string {
+	return e.Message
+}
+
 func BadArity(wanted, received int) error {
 	return &ArgumentError{
 		fmt.Sprintf(
