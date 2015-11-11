@@ -4,32 +4,27 @@ import (
 	"fmt"
 )
 
+// Map of Type -> name associations
+var TypeNameMap = map[Type]string{
+	NilType:      "nil",
+	BooleanType:  "boolean",
+	IntType:      "integer",
+	SymbolType:   "symbol",
+	SequenceType: "sequence",
+	StringType:   "string",
+	ConsType:     "cons",
+	ListType:     "list",
+	FuncType:     "function",
+	MacroType:    "macro",
+}
+
 // Get the name of a given Type
 func TypeName(t Type) string {
-	switch t {
-	case NilType:
-		return "nil"
-	case BooleanType:
-		return "boolean"
-	case IntType:
-		return "integer"
-	case SymbolType:
-		return "symbol"
-	case SequenceType:
-		return "sequence"
-	case StringType:
-		return "string"
-	case ConsType:
-		return "cons"
-	case ListType:
-		return "list"
-	case FuncType:
-		return "function"
-	case MacroType:
-		return "macro"
-	default:
+	s, ok := TypeNameMap[t]
+	if ok == false {
 		panic(fmt.Sprintf("Unknown type: %d", t))
 	}
+	return s
 }
 
 // Predicate to check if a Value is a List or a Cons
