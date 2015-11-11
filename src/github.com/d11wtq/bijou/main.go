@@ -9,46 +9,16 @@ import (
 func main() {
 	env := core.RootEnv()
 	src := `
-	(def unless
-	  (macro (cond then)
-	    (list (quote if)
-		      (list (quote not) cond)
-			  then)))
+	(def factorial
+	  "Return the factorial of n"
+	  (fn (n)
+	    (if (= n 1)
+		  1
+		  (* n (factorial (- n 1))))))
 
-	(def or
-	  (macro (a b)
-	    (list (quote if)
-		      a
-			  a
-			  b)))
+	(factorial 5)
 
-	(def some
-	  "Return the first element in s for which predicate p is true."
-	  (fn (p s)
-	    (unless (empty? s)
-		  (if (p (head s))
-		    (head s)
-			(some p (tail s))))))
-
-	(some identity '(false nil 42 nil 7))
-	(+ 1 2 3)
-	(- 7 4)
-
-	(def s "foo")
-	(put s 100)
-	(cons 42 s)
-
-	(+ 7 4 89 345)
-	(- 7 4 1)
-
-	(def sum
-	  (fn (n acc)
-	    (if (= n 0)
-		  acc
-		  (sum (- n 1) (+ acc n)))))
-
-	(sum 3 0)
-	(- "foo" "bar")
+	(> 3)
 	`
 	app, err := runtime.ReadSrc(src)
 	if err != nil {

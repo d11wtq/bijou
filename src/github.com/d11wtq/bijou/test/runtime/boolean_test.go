@@ -2,6 +2,7 @@ package runtime_test
 
 import (
 	. "github.com/d11wtq/bijou/runtime"
+	"github.com/d11wtq/bijou/test"
 	"testing"
 )
 
@@ -16,7 +17,7 @@ func TestBooleanType(t *testing.T) {
 }
 
 func TestBooleanEvalToSelf(t *testing.T) {
-	env := FakeEnv()
+	env := test.FakeEnv()
 	v1, err := True.Eval(env)
 	if err != nil {
 		t.Fatalf(`expected err == nil, got %s`, err)
@@ -47,6 +48,51 @@ func TestBooleanEq(t *testing.T) {
 	}
 	if True.Eq(False) {
 		t.Fatalf(`expected !True.Eq(False), got true`)
+	}
+}
+
+func TestBooleanGt(t *testing.T) {
+	if True.Gt(True) {
+		t.Fatalf(`expected !True.Gt(True), got true`)
+	}
+	if !True.Gt(False) {
+		t.Fatalf(`expected True.Gt(False), got false`)
+	}
+	if False.Gt(False) {
+		t.Fatalf(`expected !False.Gt(False), got true`)
+	}
+	if False.Gt(True) {
+		t.Fatalf(`expected !False.Gt(True), got true`)
+	}
+	if False.Gt(Int(0)) {
+		t.Fatalf(`expected !False.Gt(Int(0)), got true`)
+	}
+	if !False.Gt(Nil) {
+		t.Fatalf(`expected False.Gt(Nil), got false`)
+	}
+}
+
+func TestBooleanLt(t *testing.T) {
+	if True.Lt(True) {
+		t.Fatalf(`expected !True.Lt(True), got true`)
+	}
+	if !False.Lt(True) {
+		t.Fatalf(`expected False.Gt(True), got false`)
+	}
+	if False.Lt(False) {
+		t.Fatalf(`expected !False.Gt(False), got true`)
+	}
+	if True.Lt(False) {
+		t.Fatalf(`expected !True.Lt(False), got true`)
+	}
+	if !False.Lt(Int(0)) {
+		t.Fatalf(`expected False.Lt(Int(0)), got false`)
+	}
+	if !True.Lt(Int(0)) {
+		t.Fatalf(`expected True.Lt(Int(0)), got false`)
+	}
+	if False.Lt(Nil) {
+		t.Fatalf(`expected !False.Lt(Nil), got true`)
 	}
 }
 

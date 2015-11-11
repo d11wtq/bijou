@@ -13,6 +13,24 @@ func (v Boolean) Eq(other Value) bool {
 	return v == other
 }
 
+func (v Boolean) Gt(other Value) bool {
+	y, ok := other.(Boolean)
+	if ok == false {
+		return v.Type() > other.Type()
+	}
+
+	return v == True && y == False
+}
+
+func (v Boolean) Lt(other Value) bool {
+	y, ok := other.(Boolean)
+	if ok == false {
+		return v.Type() < other.Type()
+	}
+
+	return v == False && y == True
+}
+
 func (v Boolean) Type() Type {
 	return BooleanType
 }

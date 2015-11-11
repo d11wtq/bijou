@@ -31,6 +31,42 @@ func TestStringEq(t *testing.T) {
 	}
 }
 
+func TestStringGt(t *testing.T) {
+	if String("foo").Gt(String("foo")) {
+		t.Fatalf(`expected !String("foo").Gt(String("foo")), got true`)
+	}
+	if !String("foo").Gt(String("bar")) {
+		t.Fatalf(`expected String("foo").Gt(String("bar")), got false`)
+	}
+	if !String("foo").Gt(String("fo")) {
+		t.Fatalf(`expected String("foo").Gt(String("fo")), got false`)
+	}
+	if String("foo").Gt(EmptyList) {
+		t.Fatalf(`expected !String("foo").Gt(EmptyList), got true`)
+	}
+	if !String("41").Gt(Int(42)) {
+		t.Fatalf(`expected String("41").Gt(Int(42)), got false`)
+	}
+}
+
+func TestStringLt(t *testing.T) {
+	if String("foo").Lt(String("foo")) {
+		t.Fatalf(`expected !String("foo").Lt(String("foo")), got true`)
+	}
+	if !String("bar").Lt(String("foo")) {
+		t.Fatalf(`expected String("bar").Lt(String("foo")), got false`)
+	}
+	if !String("fo").Lt(String("foo")) {
+		t.Fatalf(`expected String("fo").Lt(String("foo")), got false`)
+	}
+	if !String("foo").Lt(EmptyList) {
+		t.Fatalf(`expected String("foo").Lt(EmptyList), got false`)
+	}
+	if String("41").Lt(Int(42)) {
+		t.Fatalf(`expected !String("41").Lt(Int(42)), got true`)
+	}
+}
+
 func TestStringHead(t *testing.T) {
 	if v := String("foo").Head(); v != Int('f') {
 		t.Fatalf(`expected String("foo").Head() == Int('f'), got`, v)

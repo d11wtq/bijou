@@ -10,6 +10,14 @@ func (v *NilObj) Eq(other Value) bool {
 	return v == other
 }
 
+func (v *NilObj) Gt(other Value) bool {
+	return v.Type() > other.Type()
+}
+
+func (v *NilObj) Lt(other Value) bool {
+	return v.Type() < other.Type()
+}
+
 func (v *NilObj) Type() Type {
 	return NilType
 }

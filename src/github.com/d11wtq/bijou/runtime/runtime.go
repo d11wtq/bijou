@@ -34,8 +34,12 @@ type Value interface {
 	Type() Type
 	// Provide a representation of this value as string
 	String() string
-	// Equality comparison
+	// = comparison
 	Eq(Value) bool
+	// > comparison
+	Gt(Value) bool
+	// < comparison
+	Lt(Value) bool
 }
 
 // Value that can be invoked

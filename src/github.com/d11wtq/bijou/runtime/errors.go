@@ -6,7 +6,6 @@ import (
 
 // Generic runtime error
 type RuntimeError struct {
-	// Contextual error message (user-friendly)
 	Message string
 }
 
@@ -14,9 +13,8 @@ func (e *RuntimeError) Error() string {
 	return e.Message
 }
 
-// Runtime error caused by bad function arguments
+// Error caused by bad function/form arguments
 type ArgumentError struct {
-	// Contextual error message (user-friendly)
 	Message string
 }
 
@@ -26,7 +24,6 @@ func (e *ArgumentError) Error() string {
 
 // Runtime error caused by impossible airthmetic
 type ArithmeticError struct {
-	// Contextual error message (user-friendly)
 	Message string
 }
 
@@ -36,7 +33,6 @@ func (e *ArithmeticError) Error() string {
 
 // Runtime error caused by invalid type
 type TypeError struct {
-	// Contextual error message (user-friendly)
 	Message string
 }
 

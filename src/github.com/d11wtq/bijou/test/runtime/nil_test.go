@@ -31,6 +31,30 @@ func TestNilEq(t *testing.T) {
 	}
 }
 
+func TestNilGt(t *testing.T) {
+	if Nil.Gt(Nil) {
+		t.Fatalf(`expected !Nil.Gt(Nil), got true`)
+	}
+	if Nil.Gt(False) {
+		t.Fatalf(`expected !Nil.Gt(False), got true`)
+	}
+	if Nil.Gt(Int(0)) {
+		t.Fatalf(`expected !Nil.Gt(Int(0)), got true`)
+	}
+}
+
+func TestNilLt(t *testing.T) {
+	if Nil.Lt(Nil) {
+		t.Fatalf(`expected !Nil.Lt(Nil), got true`)
+	}
+	if !Nil.Lt(False) {
+		t.Fatalf(`expected Nil.Lt(False), got false`)
+	}
+	if !Nil.Lt(Int(0)) {
+		t.Fatalf(`expected Nil.Lt(Int(0)), got false`)
+	}
+}
+
 func TestNilHead(t *testing.T) {
 	if Nil.Head() != Nil {
 		t.Fatalf(`expected Nil.Head() == Nil, got %s`, Nil.Head())

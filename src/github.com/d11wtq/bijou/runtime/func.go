@@ -1,5 +1,9 @@
 package runtime
 
+import (
+	"fmt"
+)
+
 // Function data type
 type Func struct {
 	// Parameter list
@@ -12,6 +16,24 @@ type Func struct {
 
 func (fn *Func) Eq(other Value) bool {
 	return fn == other
+}
+
+func (fn *Func) Gt(other Value) bool {
+	y, ok := other.(*Func)
+	if ok == false {
+		return fn.Type() > other.Type()
+	}
+
+	return fmt.Sprintf("%p", fn) > fmt.Sprintf("%p", y)
+}
+
+func (fn *Func) Lt(other Value) bool {
+	y, ok := other.(*Func)
+	if ok == false {
+		return fn.Type() < other.Type()
+	}
+
+	return fmt.Sprintf("%p", fn) < fmt.Sprintf("%p", y)
 }
 
 func (fn *Func) Type() Type {

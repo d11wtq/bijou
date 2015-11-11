@@ -11,6 +11,24 @@ func (v Int) Eq(other Value) bool {
 	return v == other
 }
 
+func (v Int) Gt(other Value) bool {
+	y, ok := other.(Int)
+	if ok == false {
+		return v.Type() > other.Type()
+	}
+
+	return v > y
+}
+
+func (v Int) Lt(other Value) bool {
+	y, ok := other.(Int)
+	if ok == false {
+		return v.Type() < other.Type()
+	}
+
+	return v < y
+}
+
 func (v Int) Eval(env Env) (Value, error) {
 	return v, nil
 }

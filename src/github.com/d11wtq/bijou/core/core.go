@@ -21,6 +21,8 @@ func init() {
 
 	// comparison functions
 	root.Def("=", GoFunc(Eq))
+	root.Def(">", GoFunc(Gt))
+	root.Def("<", GoFunc(Lt))
 
 	// arithmetic functions
 	root.Def("+", GoFunc(Add))

@@ -9,6 +9,24 @@ func (s String) Eq(other Value) bool {
 	return s == other
 }
 
+func (s String) Gt(other Value) bool {
+	s2, ok := other.(String)
+	if ok == false {
+		return s.Type() > other.Type()
+	}
+
+	return s > s2
+}
+
+func (s String) Lt(other Value) bool {
+	s2, ok := other.(String)
+	if ok == false {
+		return s.Type() < other.Type()
+	}
+
+	return s < s2
+}
+
 func (s String) Eval(env Env) (Value, error) {
 	return s, nil
 }

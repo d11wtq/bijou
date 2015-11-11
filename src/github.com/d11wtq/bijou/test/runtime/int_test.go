@@ -31,6 +31,42 @@ func TestIntEq(t *testing.T) {
 	}
 }
 
+func TestIntGt(t *testing.T) {
+	if !Int(42).Gt(Int(41)) {
+		t.Fatalf(`expected Int(42).Gt(Int(41)), got false`)
+	}
+	if Int(42).Gt(Int(42)) {
+		t.Fatalf(`expected !Int(42).Gt(Int(42)), got true`)
+	}
+	if Int(41).Gt(Int(42)) {
+		t.Fatalf(`expected !Int(41).Gt(Int(42)), got true`)
+	}
+	if !Int(0).Gt(False) {
+		t.Fatalf(`expected Int(0).Gt(False), got false`)
+	}
+	if !Int(0).Gt(Nil) {
+		t.Fatalf(`expected Int(0).Gt(Nil), got false`)
+	}
+}
+
+func TestIntLt(t *testing.T) {
+	if !Int(41).Lt(Int(42)) {
+		t.Fatalf(`expected Int(41).Lt(Int(42)), got false`)
+	}
+	if Int(42).Lt(Int(42)) {
+		t.Fatalf(`expected !Int(42).Lt(Int(42)), got true`)
+	}
+	if Int(42).Lt(Int(42)) {
+		t.Fatalf(`expected !Int(41).Lt(Int(42)), got true`)
+	}
+	if !Int(42).Lt(Symbol("a")) {
+		t.Fatalf(`expected Int(42).Lt(Symbol("a")), got false`)
+	}
+	if !Int(42).Lt(String("")) {
+		t.Fatalf(`expected Int(42).Lt(String("")), got false`)
+	}
+}
+
 func TestIntString(t *testing.T) {
 	s := Int(42).String()
 	if s != "42" {

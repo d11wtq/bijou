@@ -23,6 +23,16 @@ func (w *FuncWrapper) Eq(other runtime.Value) bool {
 	return w == other
 }
 
+// Greater than comparison (Value interface method)
+func (w *FuncWrapper) Gt(other runtime.Value) bool {
+	return w.Type() > other.Type()
+}
+
+// Less than comparison (Value interface method)
+func (w *FuncWrapper) Lt(other runtime.Value) bool {
+	return w.Type() < other.Type()
+}
+
 // Return the runtime Type (Value interface method)
 func (w *FuncWrapper) Type() runtime.Type {
 	return runtime.FuncType

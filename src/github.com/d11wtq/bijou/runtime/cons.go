@@ -44,6 +44,72 @@ func (cons *ConsCell) Eq(other Value) bool {
 	}
 }
 
+func (cons *ConsCell) Gt(other Value) bool {
+	y, ok := IsList(other)
+	if ok == false {
+		return cons.Type() > other.Type()
+	}
+
+	a, b := Sequence(cons), Sequence(y)
+
+	for {
+		if a.Empty() && b.Empty() {
+			return false
+		}
+
+		if b.Empty() {
+			return true
+		}
+
+		if a.Empty() {
+			return false
+		}
+
+		if a.Head().Gt(b.Head()) {
+			return true
+		}
+
+		if a.Head().Lt(b.Head()) {
+			return false
+		}
+
+		a, b = a.Tail(), b.Tail()
+	}
+}
+
+func (cons *ConsCell) Lt(other Value) bool {
+	y, ok := IsList(other)
+	if ok == false {
+		return cons.Type() < other.Type()
+	}
+
+	a, b := Sequence(cons), Sequence(y)
+
+	for {
+		if a.Empty() && b.Empty() {
+			return false
+		}
+
+		if a.Empty() {
+			return true
+		}
+
+		if b.Empty() {
+			return false
+		}
+
+		if a.Head().Lt(b.Head()) {
+			return true
+		}
+
+		if a.Head().Gt(b.Head()) {
+			return false
+		}
+
+		a, b = a.Tail(), b.Tail()
+	}
+}
+
 func (cons *ConsCell) Type() Type {
 	return ConsType
 }

@@ -45,6 +45,42 @@ func TestSymbolEq(t *testing.T) {
 	}
 }
 
+func TestSymbolGt(t *testing.T) {
+	if Symbol("foo").Gt(Symbol("foo")) {
+		t.Fatalf(`expected !Symbol("foo").Gt(Symbol("foo")), got true`)
+	}
+	if !Symbol("foo").Gt(Symbol("bar")) {
+		t.Fatalf(`expected Symbol("foo").Gt(Symbol("bar")), got false`)
+	}
+	if !Symbol("foo").Gt(Symbol("fo")) {
+		t.Fatalf(`expected Symbol("foo").Gt(Symbol("fo")), got false`)
+	}
+	if Symbol("foo").Gt(EmptyList) {
+		t.Fatalf(`expected !Symbol("foo").Gt(EmptyList), got true`)
+	}
+	if !Symbol("41").Gt(Int(42)) {
+		t.Fatalf(`expected Symbol("41").Gt(Int(42)), got false`)
+	}
+}
+
+func TestSymbolLt(t *testing.T) {
+	if Symbol("foo").Lt(Symbol("foo")) {
+		t.Fatalf(`expected !Symbol("foo").Lt(Symbol("foo")), got true`)
+	}
+	if !Symbol("bar").Lt(Symbol("foo")) {
+		t.Fatalf(`expected Symbol("bar").Lt(Symbol("foo")), got false`)
+	}
+	if !Symbol("fo").Lt(Symbol("foo")) {
+		t.Fatalf(`expected Symbol("fo").Lt(Symbol("foo")), got false`)
+	}
+	if !Symbol("foo").Lt(EmptyList) {
+		t.Fatalf(`expected Symbol("foo").Lt(EmptyList), got false`)
+	}
+	if Symbol("41").Lt(Int(42)) {
+		t.Fatalf(`expected !Symbol("41").Lt(Int(42)), got true`)
+	}
+}
+
 func TestSymbolCastToNative(t *testing.T) {
 	sym := Symbol("test")
 	if string(sym) != "test" {
