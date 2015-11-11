@@ -13,7 +13,7 @@ func Add(env runtime.Env, args runtime.Sequence) (runtime.Value, error) {
 	for !args.Empty() {
 		v, ok := acc.(runtime.Addition)
 		if ok == false {
-			return nil, &runtime.ArgumentError{"Type does not support +"}
+			return nil, runtime.BadOperation("+", acc.Type())
 		}
 		acc, err = v.Add(args.Head())
 		if err != nil {
@@ -38,7 +38,7 @@ func Sub(env runtime.Env, args runtime.Sequence) (runtime.Value, error) {
 	for !args.Empty() {
 		v, ok := acc.(runtime.Subtraction)
 		if ok == false {
-			return nil, &runtime.ArgumentError{"Type does not support -"}
+			return nil, runtime.BadOperation("-", acc.Type())
 		}
 		acc, err = v.Sub(args.Head())
 		if err != nil {
@@ -59,7 +59,7 @@ func Mul(env runtime.Env, args runtime.Sequence) (runtime.Value, error) {
 	for !args.Empty() {
 		v, ok := acc.(runtime.Multiplication)
 		if ok == false {
-			return nil, &runtime.ArgumentError{"Type does not support *"}
+			return nil, runtime.BadOperation("*", acc.Type())
 		}
 		acc, err = v.Mul(args.Head())
 		if err != nil {
@@ -84,7 +84,7 @@ func Div(env runtime.Env, args runtime.Sequence) (runtime.Value, error) {
 	for !args.Empty() {
 		v, ok := acc.(runtime.Division)
 		if ok == false {
-			return nil, &runtime.ArgumentError{"Type does not support /"}
+			return nil, runtime.BadOperation("/", acc.Type())
 		}
 		acc, err = v.Div(args.Head())
 		if err != nil {

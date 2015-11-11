@@ -70,3 +70,14 @@ func BadArity(wanted, received int) error {
 func DivisionByZero() error {
 	return &ArithmeticError{"Divide by zero"}
 }
+
+// Return a TypeError when calculation is not implemented
+func BadOperation(op string, t Type) error {
+	return &TypeError{
+		fmt.Sprintf(
+			"Type %s does not support %s",
+			TypeName(t),
+			op,
+		),
+	}
+}
