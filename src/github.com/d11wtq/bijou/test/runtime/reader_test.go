@@ -247,6 +247,19 @@ func TestReadWithAnUnterminatedList(t *testing.T) {
 	}
 }
 
+func TestReadWithAnUnexpectedCloseList(t *testing.T) {
+	v, s, err := Read(")")
+	if err == nil {
+		t.Fatalf(`expected err != nil, got nil`)
+	}
+	if s != ")" {
+		t.Fatalf(`expected s == ')', got %s`, s)
+	}
+	if v != nil {
+		t.Fatalf(`expected v == nil, got %s`, v)
+	}
+}
+
 func TestReadWithASymbol(t *testing.T) {
 	v, s, err := Read("xyz")
 	if err != nil {

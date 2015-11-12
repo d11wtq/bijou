@@ -18,6 +18,13 @@ func UnexpectedEOF(s string) (Value, string, error) {
 	return nil, s, &RuntimeError{"Unexpected EOF while reading"}
 }
 
+// Handle the unexpected delimiter error generation
+func UnexpectedChar(s string) (Value, string, error) {
+	return nil, s, &RuntimeError{
+		fmt.Sprintf("Unexpected %c while reading", s[0]),
+	}
+}
+
 // Read an input string and convert it to an internal Value type
 func Read(s string) (Value, string, error) {
 	for i, r := range s {
@@ -32,6 +39,8 @@ func Read(s string) (Value, string, error) {
 			return ReadString(s[i:])
 		case (r == '\''):
 			return ReadQuoted(s[i:])
+		case unicode.Is(Delim, r):
+			return UnexpectedChar(s)
 		default:
 			return ReadSymbol(s[i:])
 		}

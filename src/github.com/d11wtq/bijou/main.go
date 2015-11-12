@@ -7,28 +7,13 @@ import (
 )
 
 func main() {
-	env := core.RootEnv()
-	src := `
-	(def factorial
-	  "Return the factorial of n"
-	  (fn (n)
-	    (if (= n 1)
-		  1
-		  (* n (factorial (- n 1))))))
+	src := `())`
 
-	(factorial 5)
+	res, err := runtime.Run(src, core.RootEnv())
 
-	(> 3)
-	`
-	app, err := runtime.ReadSrc(src)
-	if err != nil {
-		fmt.Println(err)
-		return
+	if err == nil {
+		fmt.Println(res)
+	} else {
+		fmt.Println("error:", err)
 	}
-	res, err := runtime.EvalDo(env, app)
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	fmt.Println(res)
 }
