@@ -19,18 +19,6 @@ func TestFuncType(t *testing.T) {
 	}
 }
 
-func TestFuncIsNotMacro(t *testing.T) {
-	fn := &Func{
-		Params: test.NewList(),
-		Body:   test.NewList(),
-		Env:    test.FakeEnv(),
-	}
-
-	if fn.IsMacro() {
-		t.Fatalf(`expected fn.IsMacro() == false, got true`)
-	}
-}
-
 func TestFuncEq(t *testing.T) {
 	a := &Func{
 		Params: test.NewList(),

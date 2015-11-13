@@ -48,10 +48,6 @@ func (fn *Func) String() string {
 	return "#<function>"
 }
 
-func (fn *Func) IsMacro() bool {
-	return false
-}
-
 // Call this function with the given arguments
 func (fn *Func) Call(envc Env, args Sequence) (Value, error) {
 	env := fn.Env.Extend()

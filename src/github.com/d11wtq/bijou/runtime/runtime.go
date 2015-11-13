@@ -47,8 +47,13 @@ type Callable interface {
 	Value
 	// Invoke this value with the given arguments
 	Call(env Env, args Sequence) (Value, error)
-	// True if arguments should not be evaluated
-	IsMacro() bool
+}
+
+// Value that can be expanded with arguments
+type Expandable interface {
+	Value
+	// Transform this value into another syntactic element
+	Expand(env Env, args Sequence) (Value, error)
 }
 
 // Data structures that can be looped over
