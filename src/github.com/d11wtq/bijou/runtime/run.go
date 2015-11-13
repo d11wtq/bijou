@@ -6,5 +6,5 @@ func Run(src string, env Env) (Value, error) {
 	if err != nil {
 		return nil, err
 	}
-	return EvalDo(env, forms)
+	return EvalForms(forms, env)
 }

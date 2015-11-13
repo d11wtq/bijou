@@ -15,7 +15,7 @@ func TestFunctionCallWithSymbol(t *testing.T) {
 	env := test.FakeEnv()
 	env.Def("example", fn)
 	form := test.NewList(Symbol("example"))
-	v, err := form.Eval(env)
+	v, err := Eval(form, env)
 	if err != nil {
 		t.Fatalf(`expected err == nil, got %s`, err)
 	}
@@ -32,7 +32,7 @@ func TestFunctionCallWithLambda(t *testing.T) {
 		Env:    test.FakeEnv(),
 	}
 	form := test.NewList(fn)
-	v, err := form.Eval(test.FakeEnv())
+	v, err := Eval(form, test.FakeEnv())
 	if err != nil {
 		t.Fatalf(`expected err == nil, got %s`, err)
 	}
@@ -52,7 +52,7 @@ func TestFunctionCallWithArguments(t *testing.T) {
 	env.Def("example", fn)
 	env.Def("x", Int(42))
 	form := test.NewList(Symbol("example"), Symbol("x"))
-	v, err := form.Eval(env)
+	v, err := Eval(form, env)
 	if err != nil {
 		t.Fatalf(`expected err == nil, got %s`, err)
 	}

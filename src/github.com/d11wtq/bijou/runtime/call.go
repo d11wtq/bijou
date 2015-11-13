@@ -6,5 +6,10 @@ func EvalCall(env Env, fn Callable, args Sequence) (Value, error) {
 	if err != nil {
 		return nil, err
 	}
-	return fn.Call(env, args)
+
+	return &Trampoline{
+		Fn:   fn,
+		Args: args,
+		Env:  env,
+	}, nil
 }
