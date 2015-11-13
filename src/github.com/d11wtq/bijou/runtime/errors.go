@@ -71,7 +71,7 @@ func DivisionByZero() error {
 func BadOperation(op string, t Type) error {
 	return &TypeError{
 		fmt.Sprintf(
-			"Type %s does not support %s",
+			"wrong data type (%s does not support %s)",
 			TypeName(t),
 			op,
 		),
