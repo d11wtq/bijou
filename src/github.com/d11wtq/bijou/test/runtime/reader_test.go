@@ -66,6 +66,34 @@ func TestReadWithAnIntNonsense(t *testing.T) {
 	}
 }
 
+func TestReadWithANegativeInt(t *testing.T) {
+	v, s, err := Read("-42")
+	if err != nil {
+		t.Fatalf(`expected err == nil, got %s`, err)
+	}
+	if s != "" {
+		t.Fatalf(`expected s == '', got %s`, s)
+	}
+
+	if v != Int(-42) {
+		t.Fatalf(`expected v == Int(-42), got %s`, v)
+	}
+}
+
+func TestReadWithAPositiveInt(t *testing.T) {
+	v, s, err := Read("+42")
+	if err != nil {
+		t.Fatalf(`expected err == nil, got %s`, err)
+	}
+	if s != "" {
+		t.Fatalf(`expected s == '', got %s`, s)
+	}
+
+	if v != Int(42) {
+		t.Fatalf(`expected v == Int(42), got %s`, v)
+	}
+}
+
 func TestReadWithAnEmptyString(t *testing.T) {
 	v, s, err := Read(`""`)
 	if err != nil {
@@ -270,6 +298,19 @@ func TestReadWithASymbol(t *testing.T) {
 	}
 	if v != Symbol("xyz") {
 		t.Fatalf(`expected v == Symbol("xyz"), got %s`, v)
+	}
+}
+
+func TestReadWithAMinusSymbol(t *testing.T) {
+	v, s, err := Read("-")
+	if err != nil {
+		t.Fatalf(`expected err == nil, got %s`, err)
+	}
+	if s != "" {
+		t.Fatalf(`expected s == '', got %s`, s)
+	}
+	if v != Symbol("-") {
+		t.Fatalf(`expected v == Symbol("-"), got %s`, v)
 	}
 }
 

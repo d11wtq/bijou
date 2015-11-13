@@ -31,6 +31,8 @@ func Read(s string) (Value, string, error) {
 		switch {
 		case unicode.IsSpace(r):
 			// ignore
+		case (r == '+'), (r == '-'):
+			return ReadMaybeInt(s[i:])
 		case unicode.IsDigit(r):
 			return ReadInt(s[i:])
 		case (r == '('):
@@ -46,6 +48,18 @@ func Read(s string) (Value, string, error) {
 		}
 	}
 	return UnexpectedEOF(s)
+}
+
+// Read an input string prefixed '+' or '-' and convert it to Int or Symbol
+func ReadMaybeInt(s string) (Value, string, error) {
+	for _, r := range s[1:] {
+		if unicode.IsDigit(r) {
+			return ReadInt(s)
+		}
+		break
+	}
+
+	return ReadSymbol(s)
 }
 
 // Read an input string and convert it to an Int type
