@@ -56,10 +56,10 @@ type Expandable interface {
 	Expand(env Env, args Sequence) (Value, error)
 }
 
-// Tail calls are emitted as deferred procedures
+// Funcation calls are emitted as deferred procedures
 type TailCall interface {
 	// Resolve the tail call to its value
-	Resolve() (Value, error)
+	Return() (Value, error)
 }
 
 // Data structures that can be looped over

@@ -3,9 +3,9 @@ package runtime
 // Evaluate a single form and return the result.
 func Eval(form Value, env Env) (Value, error) {
 	res, err := form.Eval(env)
-	tmp, tco := res.(TailCall)
-	if tco {
-		return tmp.Resolve()
+	t, ok := res.(TailCall)
+	if ok == true {
+		return t.Return()
 	}
 
 	return res, err

@@ -31,6 +31,8 @@ func Eval(env runtime.Env, args runtime.Sequence) (runtime.Value, error) {
 	return v.Eval(env)
 }
 
+// Return the string representation of form.
+// Usage: (inspect form)
 func Inspect(env runtime.Env, args runtime.Sequence) (runtime.Value, error) {
 	var v runtime.Value
 	if err := runtime.ReadArgs(args, &v); err != nil {

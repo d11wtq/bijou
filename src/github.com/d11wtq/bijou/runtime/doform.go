@@ -4,9 +4,10 @@ package runtime
 func EvalDo(env Env, seq Sequence) (res Value, err error) {
 	res = Nil
 	for !seq.Empty() {
-		// Not a true tail call, resolve now
-		if tmp, tco := res.(TailCall); tco {
-			res, err = tmp.Resolve()
+		// Not a tail call in this position
+		t, ok := res.(TailCall)
+		if ok == true {
+			res, err = t.Return()
 			if err != nil {
 				return
 			}

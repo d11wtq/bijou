@@ -24,7 +24,7 @@ func EvalDef(env Env, s Sequence) (Value, error) {
 		return nil, &ArgumentError{"Bad name in def (symbol required)"}
 	}
 
-	val, err := val.Eval(env)
+	val, err := Eval(val, env)
 	if err != nil {
 		return nil, err
 	}

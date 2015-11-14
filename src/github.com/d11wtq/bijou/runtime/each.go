@@ -5,7 +5,7 @@ package runtime
 func EvalEach(env Env, s Sequence) (Sequence, error) {
 	acc := EmptyList
 	for !s.Empty() {
-		v, err := s.Head().Eval(env)
+		v, err := Eval(s.Head(), env)
 		if err != nil {
 			return nil, err
 		}

@@ -9,7 +9,7 @@ func EvalProcCall(env Env, proc Value, args Sequence) (Value, error) {
 
 	switch proc.(type) {
 	case Callable:
-		return EvalCall(env, proc.(Callable), args)
+		return EvalFnCall(env, proc.(Callable), args)
 	case Expandable:
 		return EvalExpansion(env, proc.(Expandable), args)
 	default:

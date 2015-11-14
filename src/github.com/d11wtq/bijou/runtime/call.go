@@ -1,15 +1,27 @@
 package runtime
 
-// Process the elements of a function call form
-func EvalCall(env Env, fn Callable, args Sequence) (Value, error) {
-	args, err := EvalEach(env, args)
-	if err != nil {
-		return nil, err
+// Tail calls are handled by a trampoline
+type Call struct {
+	*NilObj
+	// The function that was invoked
+	Fn Callable
+	// The arguments it was invoked in
+	Args Sequence
+	// The environment it was invoked in
+	Env Env
+}
+
+// Resolve the trampoline down to a final return value
+func (c *Call) Return() (acc Value, err error) {
+	var ok bool
+
+	for {
+		acc, err = c.Fn.Call(c.Env, c.Args)
+		c, ok = acc.(*Call)
+		if ok == false {
+			break
+		}
 	}
 
-	return &Trampoline{
-		Fn:   fn,
-		Args: args,
-		Env:  env,
-	}, nil
+	return
 }

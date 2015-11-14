@@ -11,7 +11,7 @@ func EvalIf(env Env, s Sequence) (Value, error) {
 		return nil, &RuntimeError{"Missing body in if"}
 	}
 
-	success, err := cond.Head().Eval(env)
+	success, err := Eval(cond.Head(), env)
 
 	if err != nil {
 		return nil, err
