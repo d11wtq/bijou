@@ -24,6 +24,8 @@ const (
 	FuncType
 	// Macros
 	MacroType
+	// Input/output ports
+	PortType
 )
 
 // Program runtime value
@@ -40,26 +42,6 @@ type Value interface {
 	Gt(Value) bool
 	// < comparison
 	Lt(Value) bool
-}
-
-// Value that can be invoked
-type Callable interface {
-	Value
-	// Invoke this value with the given arguments
-	Call(env Env, args Sequence) (Value, error)
-}
-
-// Value that can be expanded with arguments
-type Expandable interface {
-	Value
-	// Transform this value into another syntactic element
-	Expand(env Env, args Sequence) (Value, error)
-}
-
-// Funcation calls are emitted as deferred procedures
-type TailCall interface {
-	// Resolve the tail call to its value
-	Return() (Value, error)
 }
 
 // Data structures that can be looped over
@@ -86,4 +68,31 @@ type Env interface {
 	Get(string) (Value, bool)
 	// Introduce a new scope
 	Extend() Env
+}
+
+// Value that can be invoked
+type Callable interface {
+	Value
+	// Invoke this value with the given arguments
+	Call(env Env, args Sequence) (Value, error)
+}
+
+// Value that can be expanded with arguments
+type Expandable interface {
+	Value
+	// Transform this value into another syntactic element
+	Expand(env Env, args Sequence) (Value, error)
+}
+
+// Function calls are emitted as deferred procedures
+type TailCall interface {
+	// Resolve the tail call to its value
+	Return() (Value, error)
+}
+
+// Ports are effectively streams of I/O, not limited to characters.
+type Port interface {
+	Value
+	// Write a value to the port. Semantics are port-specific.
+	Write(Value) (Value, error)
 }

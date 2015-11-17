@@ -28,7 +28,7 @@ func Eval(env runtime.Env, args runtime.Sequence) (runtime.Value, error) {
 	if err := runtime.ReadArgs(args, &v); err != nil {
 		return nil, err
 	}
-	return v.Eval(env)
+	return runtime.Eval(v, env)
 }
 
 // Return the string representation of form.

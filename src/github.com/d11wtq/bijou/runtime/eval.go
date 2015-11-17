@@ -16,7 +16,10 @@ func EvalForms(forms Sequence, env Env) (acc Value, err error) {
 	acc = Nil
 	for !forms.Empty() {
 		acc, err = Eval(forms.Head(), env)
+		if err != nil {
+			break
+		}
 		forms = forms.Tail()
 	}
-	return acc, err
+	return
 }

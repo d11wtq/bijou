@@ -16,6 +16,7 @@ var TypeNameMap = map[Type]string{
 	ListType:     "list",
 	FuncType:     "function",
 	MacroType:    "macro",
+	PortType:     "port",
 }
 
 // Get the name of a given Type

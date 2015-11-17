@@ -2,6 +2,7 @@ package core
 
 import (
 	"github.com/d11wtq/bijou/runtime"
+	"os"
 )
 
 var root runtime.Env
@@ -9,6 +10,10 @@ var root runtime.Env
 // Initialize the root environment
 func init() {
 	root = runtime.NewScope(nil)
+
+	// builtin ports
+	root.Def("stdout", GoIoPort(nil, os.Stdout))
+	root.Def("stderr", GoIoPort(nil, os.Stderr))
 
 	// runtime functions
 	root.Def("read", GoFunc(Read))
@@ -39,6 +44,9 @@ func init() {
 	root.Def("tail", GoFunc(Tail))
 	root.Def("put", GoFunc(Put))
 	root.Def("empty?", GoFunc(Empty))
+
+	// port functions
+	root.Def("write", GoFunc(Write))
 }
 
 // Get the initial root scope
