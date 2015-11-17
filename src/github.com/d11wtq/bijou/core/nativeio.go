@@ -9,13 +9,13 @@ import (
 // A wrapper around an I/O stream
 type IoPortWrapper struct {
 	// The Reader end of the port, if available
-	Reader io.Reader
+	Reader io.ReadCloser
 	// The writer end of the port, if available
-	Writer io.Writer
+	Writer io.WriteCloser
 }
 
 // Create a wrapper around Go's io built-ins for a runtime-compatible port.
-func GoIoPort(r io.Reader, w io.Writer) runtime.Port {
+func GoIoPort(r io.ReadCloser, w io.WriteCloser) runtime.Port {
 	return &IoPortWrapper{r, w}
 }
 
@@ -60,9 +60,9 @@ func (w *IoPortWrapper) Lt(other runtime.Value) bool {
 }
 
 // (Port interface)
-func (w *IoPortWrapper) Write(v runtime.Value) (runtime.Value, error) {
+func (w *IoPortWrapper) Write(v runtime.Value) error {
 	if w.Writer == nil {
-		return nil, &runtime.RuntimeError{"Port is not open for writing"}
+		return &runtime.RuntimeError{"Port is not open for writing"}
 	}
 
 	var s string
@@ -76,8 +76,27 @@ func (w *IoPortWrapper) Write(v runtime.Value) (runtime.Value, error) {
 
 	_, err := w.Writer.Write([]byte(s))
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	return w, nil
+	return nil
+}
+
+// (Port interface)
+func (w *IoPortWrapper) Close() error {
+	if w.Writer != nil {
+		err := w.Writer.Close()
+		if err != nil {
+			return err
+		}
+	}
+
+	if w.Reader != nil {
+		err := w.Reader.Close()
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
 }

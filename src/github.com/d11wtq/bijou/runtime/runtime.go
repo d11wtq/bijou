@@ -94,5 +94,7 @@ type TailCall interface {
 type Port interface {
 	Value
 	// Write a value to the port. Semantics are port-specific.
-	Write(Value) (Value, error)
+	Write(Value) error
+	// Close the port so no further I/O can occur
+	Close() error
 }

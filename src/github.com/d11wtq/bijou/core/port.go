@@ -16,5 +16,10 @@ func Write(env runtime.Env, args runtime.Sequence) (runtime.Value, error) {
 		return nil, runtime.BadType(runtime.PortType, port.Type())
 	}
 
-	return p.Write(value)
+	err := p.Write(value)
+	if err != nil {
+		return nil, err
+	}
+
+	return p, nil
 }

@@ -47,6 +47,9 @@ func init() {
 
 	// port functions
 	root.Def("write", GoFunc(Write))
+
+	// concurrency functions
+	root.Def("spawn", GoFunc(Spawn))
 }
 
 // Get the initial root scope
