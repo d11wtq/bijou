@@ -197,3 +197,39 @@ func TestIfWithMultipleFailValues(t *testing.T) {
 		t.Fatalf(`expected f3.Evaluated == true, got false`)
 	}
 }
+
+func TestIfWithPassViaCallCondition(t *testing.T) {
+	call := &Call{
+		Fn:   test.FakeFn(True),
+		Args: EmptyList,
+		Env:  test.FakeEnv(),
+	}
+	form := test.NewList(Symbol("if"), call, Int(42), Int(7))
+
+	v, err := form.Eval(test.FakeEnv())
+	if err != nil {
+		t.Fatalf(`expected err == nil, got %s`, err)
+	}
+
+	if v != Int(42) {
+		t.Fatalf(`expected v == Int(42), got %s`, v)
+	}
+}
+
+func TestIfWithFailViaCallCondition(t *testing.T) {
+	call := &Call{
+		Fn:   test.FakeFn(False),
+		Args: EmptyList,
+		Env:  test.FakeEnv(),
+	}
+	form := test.NewList(Symbol("if"), call, Int(42), Int(7))
+
+	v, err := form.Eval(test.FakeEnv())
+	if err != nil {
+		t.Fatalf(`expected err == nil, got %s`, err)
+	}
+
+	if v != Int(7) {
+		t.Fatalf(`expected v == Int(7), got %s`, v)
+	}
+}

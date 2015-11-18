@@ -106,3 +106,23 @@ func TestDefWithDocString(t *testing.T) {
 		t.Fatalf(`expected v == Int(42), got %s`, v)
 	}
 }
+
+func TestDefWithValueViaCall(t *testing.T) {
+	call := &Call{
+		Fn:   test.FakeFn(Int(42)),
+		Args: EmptyList,
+		Env:  test.FakeEnv(),
+	}
+
+	form := test.NewList(Symbol("def"), Symbol("x"), call)
+
+	v, err := form.Eval(test.FakeEnv())
+
+	if err != nil {
+		t.Fatalf(`expected err == nil, got %s`, err)
+	}
+
+	if v != Int(42) {
+		t.Fatalf(`expected v == Int(42), got %s`, v)
+	}
+}

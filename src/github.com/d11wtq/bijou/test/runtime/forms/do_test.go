@@ -86,3 +86,46 @@ func TestDoWithNilInTheBody(t *testing.T) {
 		t.Fatalf(`expected v == Nil, got %s`, v)
 	}
 }
+
+func TestDoEmitsTailCalls(t *testing.T) {
+	call := &Call{
+		Fn:   test.FakeFn(Nil),
+		Args: EmptyList,
+		Env:  test.FakeEnv(),
+	}
+	form := test.NewList(Symbol("do"), Int(42), call)
+
+	v, err := form.Eval(test.FakeEnv())
+
+	if err != nil {
+		t.Fatalf(`expected err == nil, got %s`, err)
+	}
+
+	if v != call {
+		t.Fatalf(`expected v == call, got %s`, v)
+	}
+}
+
+func TestDoReturnsFromNonTailCalls(t *testing.T) {
+	call := &Call{
+		Fn:   test.FakeFn(Int(99)),
+		Args: EmptyList,
+		Env:  test.FakeEnv(),
+	}
+
+	form := test.NewList(
+		Symbol("do"),
+		test.NewList(Symbol("def"), Symbol("x"), call),
+		Symbol("x"),
+	)
+
+	v, err := form.Eval(test.FakeEnv())
+
+	if err != nil {
+		t.Fatalf(`expected err == nil, got %s`, err)
+	}
+
+	if v != Int(99) {
+		t.Fatalf(`expected v == Int(99), got %s`, v)
+	}
+}
