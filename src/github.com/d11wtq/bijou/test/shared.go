@@ -1,6 +1,7 @@
 package test
 
 import (
+	"bytes"
 	. "github.com/d11wtq/bijou/runtime"
 )
 
@@ -59,4 +60,22 @@ func NewList(vs ...Value) *List {
 		acc = acc.Append(v)
 	}
 	return acc
+}
+
+// A buffer for fake IO handling
+type Buffer struct {
+	*bytes.Buffer
+	// Flag when the buffer is closed
+	Closed bool
+}
+
+// Return a new fake IO Buffer.
+func FakeIO(buf []byte) *Buffer {
+	return &Buffer{bytes.NewBuffer(buf), false}
+}
+
+// Set the closed flag on the buffer.
+func (buf *Buffer) Close() error {
+	buf.Closed = true
+	return nil
 }

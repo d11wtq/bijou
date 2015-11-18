@@ -1,7 +1,6 @@
 package core_test
 
 import (
-	"bytes"
 	"github.com/d11wtq/bijou/core"
 	"github.com/d11wtq/bijou/runtime"
 	"github.com/d11wtq/bijou/test"
@@ -9,7 +8,7 @@ import (
 )
 
 func TestWriteToPort(t *testing.T) {
-	buf := bytes.NewBuffer(nil)
+	buf := test.FakeIO(nil)
 	port := core.GoIoPort(nil, buf)
 
 	args := runtime.EmptyList.
