@@ -5,9 +5,34 @@ import (
 	. "github.com/d11wtq/bijou/runtime"
 )
 
+// A special scope for use in testing
+type FakeScope struct {
+	*Scope
+}
+
 // Return an implementation of Env, suitable for testing
 func FakeEnv() Env {
-	return NewScope(nil)
+	scope := &FakeScope{
+		&Scope{
+			Parent: nil,
+			Values: make(map[string]Value),
+		},
+	}
+	scope.Def("*stack-depth*", Int(1))
+	return scope
+}
+
+// Extend, but set a special var *stack-depth*.
+func (s *FakeScope) Extend() Env {
+	scope := &FakeScope{
+		&Scope{
+			Parent: s,
+			Values: make(map[string]Value),
+		},
+	}
+	depth, _ := s.Get("*stack-depth*")
+	scope.Def("*stack-depth*", Int(1)+depth.(Int))
+	return scope
 }
 
 // A Fake Value tracking evaluation for testing
@@ -51,6 +76,15 @@ func (v *FakeValue) Eval(env Env) (Value, error) {
 
 func (v *FakeValue) String() string {
 	return v.Delegate.String()
+}
+
+// A fake function, ignoring args and evaluating tail.
+func FakeFn(tail Value) Callable {
+	return &Func{
+		Env:    FakeEnv(),
+		Params: EmptyList.Append(Symbol("&")),
+		Body:   EmptyList.Append(tail),
+	}
 }
 
 // Helper to construct lists for testing

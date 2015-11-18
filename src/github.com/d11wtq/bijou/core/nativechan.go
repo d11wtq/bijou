@@ -69,8 +69,23 @@ func (p *ChanPort) Write(v runtime.Value) error {
 }
 
 // (Port interface)
-func (p *ChanPort) Close() error {
+func (p *ChanPort) Close() (err error) {
+	if p.Closed {
+		return
+	}
+
 	p.Closed = true
+	p.Flush()
 	close(p.Channel)
-	return nil
+	return
+}
+
+// Consume all messages on the channel.
+func (p *ChanPort) Flush() {
+	for {
+		_, ok := <-p.Channel
+		if ok == false {
+			break
+		}
+	}
 }

@@ -11,6 +11,15 @@ type Call struct {
 	Env Env
 }
 
+func (c *Call) Eval(env Env) (Value, error) {
+	return c, nil
+}
+
+// These should never actually be seen
+func (c *Call) String() string {
+	return "#<invalid>"
+}
+
 // Resolve the trampoline down to a final return value
 func (c *Call) Return() (acc Value, err error) {
 	var ok bool
