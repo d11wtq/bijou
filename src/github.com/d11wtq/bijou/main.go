@@ -44,8 +44,7 @@ func readIo(s io.Reader) string {
 // Command line entry point.
 // Usage: ./bin/bijou source.bjx
 func main() {
-	res, err := runtime.Run(readSrc(), core.RootEnv())
+	_, err := runtime.Run(readSrc(), core.RootEnv())
 	haltIf(err)
-	fmt.Fprintln(os.Stdout, res)
 	os.Exit(ExitOK)
 }
