@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/d11wtq/bijou/core"
 	"github.com/d11wtq/bijou/runtime"
+	"io"
 	"io/ioutil"
 	"os"
 )
@@ -22,12 +23,28 @@ func haltIf(err error) {
 	}
 }
 
-// Command line entry point.
-// Usage: ./bin/bijou < source.bjx
-func main() {
-	src, err := ioutil.ReadAll(os.Stdin)
+// Return the source string of the input
+func readSrc() string {
+	if len(os.Args) > 1 {
+		file, err := os.Open(os.Args[1])
+		haltIf(err)
+		return readIo(file)
+	} else {
+		return readIo(os.Stdin)
+	}
+}
+
+// Return a source string from an io.Reader
+func readIo(s io.Reader) string {
+	src, err := ioutil.ReadAll(s)
 	haltIf(err)
-	res, err := runtime.Run(string(src), core.RootEnv())
+	return string(src)
+}
+
+// Command line entry point.
+// Usage: ./bin/bijou source.bjx
+func main() {
+	res, err := runtime.Run(readSrc(), core.RootEnv())
 	haltIf(err)
 	fmt.Fprintln(os.Stdout, res)
 	os.Exit(ExitOK)
