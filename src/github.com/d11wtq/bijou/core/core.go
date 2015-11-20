@@ -47,8 +47,12 @@ func init() {
 	root.Def("empty?", GoFunc(Empty))
 
 	// port functions
-	root.Def("write", GoFunc(Write))
-	root.Def("accept", GoFunc(Accept))
+	write := GoFunc(Write)
+	root.Def("write", write)
+	root.Def("->", write)
+	accept := GoFunc(Accept)
+	root.Def("accept", accept)
+	root.Def("<-", accept)
 
 	// concurrency functions
 	root.Def("spawn", GoFunc(Spawn))
