@@ -12,6 +12,7 @@ func init() {
 	root = runtime.NewScope(nil)
 
 	// builtin ports
+	root.Def("stdin", GoIoPort(os.Stdin, nil))
 	root.Def("stdout", GoIoPort(nil, os.Stdout))
 	root.Def("stderr", GoIoPort(nil, os.Stderr))
 
@@ -47,6 +48,7 @@ func init() {
 
 	// port functions
 	root.Def("write", GoFunc(Write))
+	root.Def("accept", GoFunc(Accept))
 
 	// concurrency functions
 	root.Def("spawn", GoFunc(Spawn))

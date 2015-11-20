@@ -61,11 +61,21 @@ func (p *ChanPort) Lt(other runtime.Value) bool {
 // (Port interface)
 func (p *ChanPort) Write(v runtime.Value) error {
 	if p.Closed {
-		return &runtime.RuntimeError{"Port is not open for writing"}
+		// writes to closed ports are silently droppped
+		return nil
 	}
 
 	p.Channel <- v
 	return nil
+}
+
+// (Port interface)
+func (p *ChanPort) Accept() (runtime.Value, error) {
+	if p.Closed {
+		return nil, &runtime.RuntimeError{"Port is not open for reading"}
+	}
+
+	return <-p.Channel, nil
 }
 
 // (Port interface)

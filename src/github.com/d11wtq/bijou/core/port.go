@@ -23,3 +23,18 @@ func Write(env runtime.Env, args runtime.Sequence) (runtime.Value, error) {
 
 	return p, nil
 }
+
+// Accept a value from an open port.
+// Usage: (accept port)
+func Accept(env runtime.Env, args runtime.Sequence) (runtime.Value, error) {
+	var port runtime.Value
+	if err := runtime.ReadArgs(args, &port); err != nil {
+		return nil, err
+	}
+	p, ok := port.(runtime.Port)
+	if ok == false {
+		return nil, runtime.BadType(runtime.PortType, port.Type())
+	}
+
+	return p.Accept()
+}

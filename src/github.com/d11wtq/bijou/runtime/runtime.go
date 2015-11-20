@@ -95,6 +95,8 @@ type Port interface {
 	Value
 	// Write a value to the port. Semantics are port-specific.
 	Write(Value) error
+	// Take one item from the port. If at EOF, return Nil.
+	Accept() (Value, error)
 	// Close the port so no further I/O can occur
 	Close() error
 }

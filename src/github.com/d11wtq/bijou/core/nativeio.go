@@ -83,6 +83,20 @@ func (w *IoPortWrapper) Write(v runtime.Value) error {
 }
 
 // (Port interface)
+func (w *IoPortWrapper) Accept() (runtime.Value, error) {
+	if w.Reader == nil {
+		return nil, &runtime.RuntimeError{"Port is not open for reading"}
+	}
+
+	buf := make([]byte, 1)
+	if _, err := w.Reader.Read(buf); err != nil {
+		return nil, err
+	}
+
+	return runtime.Int(buf[0]), nil
+}
+
+// (Port interface)
 func (w *IoPortWrapper) Close() error {
 	if w.Writer != nil {
 		err := w.Writer.Close()
