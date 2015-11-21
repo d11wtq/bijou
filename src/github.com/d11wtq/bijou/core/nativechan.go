@@ -5,17 +5,20 @@ import (
 	"github.com/d11wtq/bijou/runtime"
 )
 
+// Typed channel for Value objects
+type ValueChannel chan runtime.Value
+
 // A Go channel for communicating with Values
 type ChanPort struct {
 	// The channel to communicate on
-	Channel chan runtime.Value
+	Channel ValueChannel
 	// True once this channel is closed
 	Closed bool
 }
 
 // Create a wrapper around Go's chans as a runtime-compatible port.
 func GoChanPort() runtime.Port {
-	return &ChanPort{make(chan runtime.Value), false}
+	return &ChanPort{make(ValueChannel), false}
 }
 
 // (Value interface)
@@ -30,7 +33,7 @@ func (p *ChanPort) Eval(env runtime.Env) (runtime.Value, error) {
 
 // (Value interface)
 func (p *ChanPort) String() string {
-	return "#<port:channel>"
+	return "#<port:proc>"
 }
 
 // (Value interface)
