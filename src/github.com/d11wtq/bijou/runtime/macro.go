@@ -42,6 +42,12 @@ func (mc *Macro) String() string {
 }
 
 // Call this macro with the given arguments
-func (mc *Macro) Expand(env Env, args Sequence) (Value, error) {
-	return (*Proc)(mc).Call(env, args)
+func (mc *Macro) Expand(env Env, args Sequence) (res Value, err error) {
+	res, err = (*Proc)(mc).Call(env, args)
+	t, ok := res.(TailCall)
+	if ok == true {
+		res, err = t.Return()
+	}
+
+	return
 }
