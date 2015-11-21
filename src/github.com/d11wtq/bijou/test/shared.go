@@ -82,7 +82,7 @@ func (v *FakeValue) String() string {
 func FakeFn(tail Value) Callable {
 	return &Func{
 		Env:    FakeEnv(),
-		Params: EmptyList.Append(Symbol("&")),
+		Params: EmptyList.Append(Symbol("&")).Append(Symbol("args")),
 		Body:   EmptyList.Append(tail),
 	}
 }
