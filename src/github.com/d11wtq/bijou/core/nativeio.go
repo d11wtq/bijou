@@ -89,11 +89,16 @@ func (w *IoPortWrapper) Accept() (runtime.Value, error) {
 	}
 
 	buf := make([]byte, 1)
-	if _, err := w.Reader.Read(buf); err != nil {
+	_, err := w.Reader.Read(buf)
+
+	switch err {
+	case nil:
+		return runtime.Int(buf[0]), nil
+	case io.EOF:
+		return runtime.Nil, nil
+	default:
 		return nil, err
 	}
-
-	return runtime.Int(buf[0]), nil
 }
 
 // (Port interface)

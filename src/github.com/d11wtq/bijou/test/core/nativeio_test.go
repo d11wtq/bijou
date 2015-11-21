@@ -55,3 +55,51 @@ func TestGoIoPortFailsWritesOnNilWriter(t *testing.T) {
 		t.Fatalf(`expected err != nil, got nil`)
 	}
 }
+
+func TestGoIoPortAcceptsInts(t *testing.T) {
+	buf := test.FakeIO([]byte("foo"))
+	port := core.GoIoPort(buf, nil)
+
+	for _, wanted := range []runtime.Value{
+		runtime.Int(102),
+		runtime.Int(111),
+		runtime.Int(111),
+		runtime.Nil,
+	} {
+		actual, err := port.Accept()
+		if err != nil {
+			t.Fatalf(`expected err == nil, got %s`, err)
+		}
+		if actual != wanted {
+			t.Fatalf(`expected v == %s, got %s`, wanted, actual)
+		}
+	}
+}
+
+func TestGoIoPortFailsAcceptOnNilReader(t *testing.T) {
+	port := core.GoIoPort(nil, nil)
+	_, err := port.Accept()
+
+	if err == nil {
+		t.Fatalf(`expected err != nil, got nil`)
+	}
+}
+
+func TestGoIoPortClosesBothReaderAndWriter(t *testing.T) {
+	bufr := test.FakeIO(nil)
+	bufw := test.FakeIO(nil)
+	port := core.GoIoPort(bufr, bufw)
+
+	err := port.Close()
+
+	if err != nil {
+		t.Fatalf(`expected err == nil, got %s`, err)
+	}
+
+	if bufr.Closed == false {
+		t.Fatalf(`expected bufr.Closed, got false`)
+	}
+	if bufw.Closed == false {
+		t.Fatalf(`expected bufw.Closed, got false`)
+	}
+}
