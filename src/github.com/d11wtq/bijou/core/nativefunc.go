@@ -24,11 +24,17 @@ func (w *FuncWrapper) Eq(other runtime.Value) bool {
 
 // Greater than comparison (Value interface method)
 func (w *FuncWrapper) Gt(other runtime.Value) bool {
+	if w.Type() == other.Type() {
+		return runtime.PtrGt(w, other)
+	}
 	return w.Type() > other.Type()
 }
 
 // Less than comparison (Value interface method)
 func (w *FuncWrapper) Lt(other runtime.Value) bool {
+	if w.Type() == other.Type() {
+		return runtime.PtrLt(w, other)
+	}
 	return w.Type() < other.Type()
 }
 

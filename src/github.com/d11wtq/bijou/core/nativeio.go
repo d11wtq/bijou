@@ -1,7 +1,6 @@
 package core
 
 import (
-	"fmt"
 	"github.com/d11wtq/bijou/runtime"
 	"io"
 )
@@ -45,8 +44,7 @@ func (w *IoPortWrapper) Gt(other runtime.Value) bool {
 	if ok == false {
 		return w.Type() > other.Type()
 	}
-
-	return fmt.Sprintf("%p", w) > fmt.Sprintf("%p", y)
+	return runtime.PtrGt(w, y)
 }
 
 // (Value interface)
@@ -55,8 +53,7 @@ func (w *IoPortWrapper) Lt(other runtime.Value) bool {
 	if ok == false {
 		return w.Type() < other.Type()
 	}
-
-	return fmt.Sprintf("%p", w) < fmt.Sprintf("%p", y)
+	return runtime.PtrLt(w, y)
 }
 
 // (Port interface)

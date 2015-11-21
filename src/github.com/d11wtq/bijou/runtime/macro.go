@@ -1,9 +1,5 @@
 package runtime
 
-import (
-	"fmt"
-)
-
 // Macro data type
 type Macro Proc
 
@@ -16,8 +12,7 @@ func (mc *Macro) Gt(other Value) bool {
 	if ok == false {
 		return mc.Type() > other.Type()
 	}
-
-	return fmt.Sprintf("%p", mc) > fmt.Sprintf("%p", y)
+	return PtrGt(mc, y)
 }
 
 func (mc *Macro) Lt(other Value) bool {
@@ -25,8 +20,7 @@ func (mc *Macro) Lt(other Value) bool {
 	if ok == false {
 		return mc.Type() < other.Type()
 	}
-
-	return fmt.Sprintf("%p", mc) < fmt.Sprintf("%p", y)
+	return PtrLt(mc, y)
 }
 
 func (mc *Macro) Type() Type {

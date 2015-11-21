@@ -1,7 +1,6 @@
 package core
 
 import (
-	"fmt"
 	"github.com/d11wtq/bijou/runtime"
 )
 
@@ -47,8 +46,7 @@ func (p *ChanPort) Gt(other runtime.Value) bool {
 	if ok == false {
 		return p.Type() > other.Type()
 	}
-
-	return fmt.Sprintf("%p", p) > fmt.Sprintf("%p", y)
+	return runtime.PtrGt(p, y)
 }
 
 // (Value interface)
@@ -57,8 +55,7 @@ func (p *ChanPort) Lt(other runtime.Value) bool {
 	if ok == false {
 		return p.Type() < other.Type()
 	}
-
-	return fmt.Sprintf("%p", p) < fmt.Sprintf("%p", y)
+	return runtime.PtrLt(p, y)
 }
 
 // (Port interface)
@@ -74,11 +71,12 @@ func (p *ChanPort) Write(v runtime.Value) error {
 
 // (Port interface)
 func (p *ChanPort) Accept() (runtime.Value, error) {
-	if p.Closed {
-		return nil, &runtime.RuntimeError{"Port is not open for reading"}
+	v, ok := <-p.Channel
+	if ok == false {
+		return nil, p.ReadError()
 	}
 
-	return <-p.Channel, nil
+	return v, nil
 }
 
 // (Port interface)
@@ -101,4 +99,9 @@ func (p *ChanPort) Flush() {
 			break
 		}
 	}
+}
+
+// Error returned in the case we try to read from a closed port.
+func (p *ChanPort) ReadError() error {
+	return &runtime.RuntimeError{"Port is not open for reading"}
 }

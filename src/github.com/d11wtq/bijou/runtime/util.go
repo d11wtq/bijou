@@ -53,3 +53,13 @@ func Length(s Sequence) int {
 	}
 	return acc
 }
+
+// Check if the address if a > b.
+func PtrGt(a, b interface{}) bool {
+	return fmt.Sprintf("%p", a) > fmt.Sprintf("%p", b)
+}
+
+// Check if the address if a < b.
+func PtrLt(a, b interface{}) bool {
+	return fmt.Sprintf("%p", a) < fmt.Sprintf("%p", b)
+}

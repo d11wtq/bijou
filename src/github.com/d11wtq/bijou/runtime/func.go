@@ -1,9 +1,5 @@
 package runtime
 
-import (
-	"fmt"
-)
-
 // Function data type
 type Func Proc
 
@@ -16,8 +12,7 @@ func (fn *Func) Gt(other Value) bool {
 	if ok == false {
 		return fn.Type() > other.Type()
 	}
-
-	return fmt.Sprintf("%p", fn) > fmt.Sprintf("%p", y)
+	return PtrGt(fn, y)
 }
 
 func (fn *Func) Lt(other Value) bool {
@@ -25,8 +20,7 @@ func (fn *Func) Lt(other Value) bool {
 	if ok == false {
 		return fn.Type() < other.Type()
 	}
-
-	return fmt.Sprintf("%p", fn) < fmt.Sprintf("%p", y)
+	return PtrLt(fn, y)
 }
 
 func (fn *Func) Type() Type {
