@@ -19,6 +19,7 @@ func init() {
 	// runtime functions
 	root.Def("read", GoFunc(Read))
 	root.Def("eval", GoFunc(Eval))
+	root.Def("apply", GoFunc(Apply))
 	root.Def("inspect", GoFunc(Inspect))
 
 	// logical functions
