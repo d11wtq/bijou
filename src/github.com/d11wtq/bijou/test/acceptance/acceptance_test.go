@@ -12,6 +12,12 @@ func AssertRunEqual(t *testing.T, src string, wanted runtime.Value) {
 	AssertRunEqualWithEnv(t, src, wanted, core.RootEnv())
 }
 
+// Within running test t, execute string src and compare the result type.
+// If an error is returned, or the result is not what was expected, fail.
+func AssertRunType(t *testing.T, src string, wanted runtime.Type) {
+	AssertRunTypeWithEnv(t, src, wanted, core.RootEnv())
+}
+
 // Within running test t, execute string src and expect an error.
 // If no error is returned, fail.
 func AssertRunError(t *testing.T, src string) {
@@ -32,6 +38,28 @@ func AssertRunEqualWithEnv(
 
 	if !actual.Eq(wanted) {
 		t.Fatalf(`expected %s => %s, got %s`, src, wanted, actual)
+	}
+}
+
+func AssertRunTypeWithEnv(
+	t *testing.T,
+	src string,
+	wanted runtime.Type,
+	env runtime.Env,
+) {
+	actual, err := runtime.Run(src, env)
+
+	if err != nil {
+		t.Fatalf(`expected err == nil, got %s`, err)
+	}
+
+	if actual.Type() != wanted {
+		t.Fatalf(
+			`expected %s => <%s>, got <%s>`,
+			src,
+			runtime.TypeName(wanted),
+			runtime.TypeName(actual.Type()),
+		)
 	}
 }
 

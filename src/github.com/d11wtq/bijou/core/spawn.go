@@ -20,10 +20,15 @@ func Spawn(env runtime.Env, args runtime.Sequence) (runtime.Value, error) {
 		return nil, runtime.BadType(runtime.FuncType, v.Type())
 	}
 
-	port := GoChanPort()
+	this, that := GoChanPortPair()
+
 	go func() {
-		runtime.Apply(fun, env, runtime.Cons(port, args))
-		port.Close()
+		runtime.Apply(
+			fun,
+			env,
+			runtime.Cons(that, args),
+		)
 	}()
-	return port, nil
+
+	return this, nil
 }

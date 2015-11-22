@@ -9,15 +9,23 @@ type ValueChannel chan runtime.Value
 
 // A Go channel for communicating with Values
 type ChanPort struct {
-	// The channel to communicate on
-	Channel ValueChannel
+	// The channel to read on
+	Reader <-chan runtime.Value
+	// The channel to write on
+	Writer chan<- runtime.Value
 	// True once this channel is closed
 	Closed bool
 }
 
+// Return a pair of CanPorts, for bi-directional communication.
+func GoChanPortPair() (runtime.Port, runtime.Port) {
+	a, b := make(ValueChannel), make(ValueChannel)
+	return GoChanPort(a, b), GoChanPort(b, a)
+}
+
 // Create a wrapper around Go's chans as a runtime-compatible port.
-func GoChanPort() runtime.Port {
-	return &ChanPort{make(ValueChannel), false}
+func GoChanPort(reader, writer ValueChannel) runtime.Port {
+	return &ChanPort{reader, writer, false}
 }
 
 // (Value interface)
@@ -61,17 +69,16 @@ func (p *ChanPort) Lt(other runtime.Value) bool {
 // (Port interface)
 func (p *ChanPort) Write(v runtime.Value) error {
 	if p.Closed {
-		// writes to closed ports are silently droppped
-		return nil
+		return nil // dropped
 	}
 
-	p.Channel <- v
+	p.Writer <- v
 	return nil
 }
 
 // (Port interface)
 func (p *ChanPort) Accept() (runtime.Value, error) {
-	v, ok := <-p.Channel
+	v, ok := <-p.Reader
 	if ok == false {
 		return nil, p.ReadError()
 	}
@@ -87,17 +94,14 @@ func (p *ChanPort) Close() (err error) {
 
 	p.Closed = true
 	p.Flush()
-	close(p.Channel)
+	close(p.Writer)
 	return
 }
 
 // Consume all messages on the channel.
 func (p *ChanPort) Flush() {
-	for {
-		_, ok := <-p.Channel
-		if ok == false {
-			break
-		}
+	for range p.Reader {
+		// drop
 	}
 }
 

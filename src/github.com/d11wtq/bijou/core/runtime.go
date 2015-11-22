@@ -31,7 +31,7 @@ func Eval(env runtime.Env, args runtime.Sequence) (runtime.Value, error) {
 	return runtime.Eval(v, env)
 }
 
-// Apply a function with some arguments.
+// Dynamically apply a function with some arguments.
 // Usage: (apply f args)
 func Apply(env runtime.Env, args runtime.Sequence) (runtime.Value, error) {
 	var fn, argv runtime.Value
