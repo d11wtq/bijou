@@ -2,7 +2,7 @@ GOBIN   ?= `which go`
 PACKAGE ?= github.com/d11wtq/bijou
 GOPATH  ?= $(PWD)
 
-all: test install
+all: fmt test install
 
 install:
 	$(GOBIN) install $(PACKAGE)
@@ -12,5 +12,8 @@ test:
 
 clean:
 	$(GOBIN) clean $(PACKAGE)
-	rm -rv $(GOPATH)/pkg/*
-	rm -rv $(GOPATH)/bin/*
+	rm -rv ./pkg/*
+	rm -rv ./bin/*
+
+fmt:
+	$(GOBIN) fmt $(PACKAGE)/...
