@@ -88,7 +88,20 @@ func (p *ChanPort) Accept() (runtime.Value, error) {
 
 // (Port interface)
 func (p *ChanPort) Read(n int) (runtime.Sequence, error) {
-	return runtime.EmptyCons, nil
+	var (
+		val runtime.Value
+		err error
+	)
+
+	acc := runtime.EmptyList
+	for i := 0; i < n; i += 1 {
+		val, err = p.Accept()
+		if err != nil {
+			return nil, err
+		}
+		acc = acc.Append(val)
+	}
+	return acc, nil
 }
 
 // (Port interface)
