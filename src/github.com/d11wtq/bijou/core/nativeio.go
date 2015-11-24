@@ -86,12 +86,14 @@ func (w *IoPortWrapper) Accept() (runtime.Value, error) {
 	}
 
 	buf := make([]byte, 1)
-	_, err := w.Reader.Read(buf)
+	_, err := io.ReadAtLeast(w.Reader, buf, 1)
 
 	switch err {
 	case nil:
 		return runtime.Int(buf[0]), nil
 	case io.EOF:
+		fallthrough
+	case io.ErrUnexpectedEOF:
 		return runtime.Nil, nil
 	default:
 		return nil, err
@@ -104,35 +106,19 @@ func (w *IoPortWrapper) Read(n int) (runtime.Sequence, error) {
 		return nil, w.ReadError()
 	}
 
-	var (
-		got int
-		pos int
-		err error
-	)
-
 	buf := make([]byte, n)
+	pos, err := io.ReadAtLeast(w.Reader, buf, n)
 
-Loop:
-	for {
-		got, err = w.Reader.Read(buf[pos:])
-		pos += got
-
-		if got < n {
-			switch err {
-			case nil:
-				// no error, get some more
-				n -= got
-				continue Loop
-			case io.EOF:
-				// ok, done
-			default:
-				return nil, err
-			}
-		}
-		break
+	switch err {
+	case nil:
+		fallthrough
+	case io.EOF:
+		fallthrough
+	case io.ErrUnexpectedEOF:
+		return runtime.String(buf[:pos]), nil
+	default:
+		return nil, err
 	}
-
-	return runtime.String(buf[0:pos]), nil
 }
 
 // (Port interface)
