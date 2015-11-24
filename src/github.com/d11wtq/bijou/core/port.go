@@ -6,7 +6,7 @@ import (
 
 // Write a value to an open port.
 // Usage: (write port value)
-func Write(env runtime.Env, args runtime.Sequence) (runtime.Value, error) {
+func PortWrite(env runtime.Env, args runtime.Sequence) (runtime.Value, error) {
 	var port, value runtime.Value
 	if err := runtime.ReadArgs(args, &port, &value); err != nil {
 		return nil, err
@@ -26,7 +26,7 @@ func Write(env runtime.Env, args runtime.Sequence) (runtime.Value, error) {
 
 // Accept a value from an open port.
 // Usage: (accept port)
-func Accept(env runtime.Env, args runtime.Sequence) (runtime.Value, error) {
+func PortAccept(env runtime.Env, args runtime.Sequence) (runtime.Value, error) {
 	var port runtime.Value
 	if err := runtime.ReadArgs(args, &port); err != nil {
 		return nil, err
@@ -37,4 +37,23 @@ func Accept(env runtime.Env, args runtime.Sequence) (runtime.Value, error) {
 	}
 
 	return p.Accept()
+}
+
+// Read a sequence from an open port.
+// Usage: (read port n)
+func PortRead(env runtime.Env, args runtime.Sequence) (runtime.Value, error) {
+	var port, n runtime.Value
+	if err := runtime.ReadArgs(args, &port, &n); err != nil {
+		return nil, err
+	}
+	p, ok := port.(runtime.Port)
+	if ok == false {
+		return nil, runtime.BadType(runtime.PortType, port.Type())
+	}
+	n2, ok := n.(runtime.Int)
+	if ok == false {
+		return nil, runtime.BadType(runtime.IntType, n.Type())
+	}
+
+	return p.Read(int(n2))
 }

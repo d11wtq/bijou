@@ -82,7 +82,7 @@ func (w *IoPortWrapper) Write(v runtime.Value) error {
 // (Port interface)
 func (w *IoPortWrapper) Accept() (runtime.Value, error) {
 	if w.Reader == nil {
-		return nil, &runtime.RuntimeError{"Port is not open for reading"}
+		return nil, w.ReadError()
 	}
 
 	buf := make([]byte, 1)
@@ -96,6 +96,43 @@ func (w *IoPortWrapper) Accept() (runtime.Value, error) {
 	default:
 		return nil, err
 	}
+}
+
+// (Port interface)
+func (w *IoPortWrapper) Read(n int) (runtime.Sequence, error) {
+	if w.Reader == nil {
+		return nil, w.ReadError()
+	}
+
+	var (
+		got int
+		pos int
+		err error
+	)
+
+	buf := make([]byte, n)
+
+Loop:
+	for {
+		got, err = w.Reader.Read(buf[pos:])
+		pos += got
+
+		if got < n {
+			switch err {
+			case nil:
+				// no error, get some more
+				n -= got
+				continue Loop
+			case io.EOF:
+				// ok, done
+			default:
+				return nil, err
+			}
+		}
+		break
+	}
+
+	return runtime.String(buf[0:pos]), nil
 }
 
 // (Port interface)
@@ -115,4 +152,9 @@ func (w *IoPortWrapper) Close() error {
 	}
 
 	return nil
+}
+
+// Error returned in the case we try to read from a non-read port.
+func (w *IoPortWrapper) ReadError() error {
+	return &runtime.RuntimeError{"Port is not open for reading"}
 }

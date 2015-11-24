@@ -85,6 +85,26 @@ func TestGoIoPortFailsAcceptOnNilReader(t *testing.T) {
 	}
 }
 
+func TestGoIoPortReadsStrings(t *testing.T) {
+	buf := test.FakeIO([]byte("Hello, World!"))
+	port := core.GoIoPort(buf, nil)
+
+	for _, wanted := range []runtime.Value{
+		runtime.String("Hello"),
+		runtime.String(", Wor"),
+		runtime.String("ld!"),
+		runtime.String(""),
+	} {
+		actual, err := port.Read(5)
+		if err != nil {
+			t.Fatalf(`expected err == nil, got %s`, err)
+		}
+		if actual != wanted {
+			t.Fatalf(`expected v == %s, got %s`, wanted, actual)
+		}
+	}
+}
+
 func TestGoIoPortClosesBothReaderAndWriter(t *testing.T) {
 	bufr := test.FakeIO(nil)
 	bufw := test.FakeIO(nil)

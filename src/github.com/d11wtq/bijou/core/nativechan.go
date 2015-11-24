@@ -87,6 +87,11 @@ func (p *ChanPort) Accept() (runtime.Value, error) {
 }
 
 // (Port interface)
+func (p *ChanPort) Read(n int) (runtime.Sequence, error) {
+	return runtime.EmptyCons, nil
+}
+
+// (Port interface)
 func (p *ChanPort) Close() (err error) {
 	if p.Closed {
 		return
