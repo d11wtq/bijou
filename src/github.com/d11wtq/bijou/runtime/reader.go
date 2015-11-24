@@ -9,7 +9,9 @@ import (
 // Unicode RangeTable definining the delimiters
 var Delim = &unicode.RangeTable{
 	R16: []unicode.Range16{
+		{'"', '"', 1},
 		{'(', ')', 1},
+		{';', ';', 1},
 	},
 }
 
@@ -27,10 +29,9 @@ func UnexpectedChar(s string) (Value, string, error) {
 
 // Read an input string and convert it to an internal Value type
 func Read(s string) (Value, string, error) {
+	s = SkipBlank(s)
 	for i, r := range s {
 		switch {
-		case unicode.IsSpace(r):
-			// ignore
 		case (r == '+'), (r == '-'):
 			return ReadMaybeInt(s[i:])
 		case unicode.IsDigit(r):
@@ -100,7 +101,7 @@ func ReadString(s1 string) (Value, string, error) {
 
 	escaped := false
 
-OuterLoop:
+Loop:
 	for i, r := range s2 {
 		if escaped {
 			escaped = false
@@ -117,7 +118,7 @@ OuterLoop:
 			switch r {
 			case '\\':
 				escaped = true
-				continue OuterLoop
+				continue Loop
 			case '"':
 				// skip over the '"'
 				return String(buf), s2[i+1:], nil
@@ -138,10 +139,9 @@ func ReadList(s1 string) (Value, string, error) {
 
 OuterLoop:
 	for {
+		s2 = SkipBlank(s2)
 		for i, r := range s2 {
 			switch {
-			case unicode.IsSpace(r):
-				// ignore
 			case (r == ')'):
 				// skip over the ')'
 				return acc, s2[i+1:], nil
@@ -184,27 +184,63 @@ func ReadAtom(s string) (string, string) {
 	return acc, rem
 }
 
+// Skip over a comment, returning the remainder
+func SkipComment(s string) string {
+	rem := s[len(s):]
+	for i, r := range s {
+		if r == '\n' || r == '\r' {
+			rem = s[i:]
+			break
+		}
+	}
+	return rem
+}
+
+// Skip over whitespace, returning the remainder
+func SkipSpace(s string) string {
+	rem := s[len(s):]
+	for i, r := range s {
+		if !unicode.IsSpace(r) {
+			rem = s[i:]
+			break
+		}
+	}
+	return rem
+}
+
+// Skip over all whitespace and comments
+func SkipBlank(s string) string {
+	for _, r := range s {
+		switch {
+		case unicode.IsSpace(r):
+			return SkipBlank(SkipSpace(s))
+		case (r == ';'):
+			return SkipBlank(SkipComment(s))
+		}
+		break
+	}
+	return s
+}
+
 // Read all forms in the input string and return a list of Values
 func ReadSrc(s string) (*List, error) {
 	acc := EmptyList
 
-OuterLoop:
-	for s != "" {
-		for i, r := range s {
-			switch {
-			case unicode.IsSpace(r):
-				// ignore
-			default:
-				v, rem, err := Read(s[i:])
-				if err != nil {
-					return nil, err
-				}
-				acc = acc.Append(v)
-				s = rem
-				continue OuterLoop
-			}
+Loop:
+	for {
+		s = SkipBlank(s)
+		if s == "" {
+			break
 		}
-		break
+
+		v, rem, err := Read(s)
+		if err != nil {
+			return nil, err
+		}
+		acc = acc.Append(v)
+		s = rem
+		continue Loop
 	}
+
 	return acc, nil
 }

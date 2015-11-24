@@ -34,6 +34,20 @@ func TestReadWithAnIntFollowedByWhitespace(t *testing.T) {
 	}
 }
 
+func TestReadWithAnIntFollowedByAComment(t *testing.T) {
+	v, s, err := Read("42;comment")
+	if err != nil {
+		t.Fatalf(`expected err == nil, got %s`, err)
+	}
+	if s != ";comment" {
+		t.Fatalf(`expected s == ';comment', got %s`, s)
+	}
+
+	if v != Int(42) {
+		t.Fatalf(`expected v == Int(42), got %s`, v)
+	}
+}
+
 func TestReadWithAnIntPrecededByWhitespace(t *testing.T) {
 	v, s, err := Read("   42")
 	if err != nil {
@@ -208,6 +222,60 @@ func TestReadWithAnEmptyListFollowedByWhitespace(t *testing.T) {
 
 func TestReadWithAnIntList(t *testing.T) {
 	v, s, err := Read("(42 7)")
+	if err != nil {
+		t.Fatalf(`expected err == nil, got %s`, err)
+	}
+	if s != "" {
+		t.Fatalf(`expected s == '', got %s`, s)
+	}
+
+	lst, ok := v.(*List)
+	if ok == false {
+		t.Fatalf(`expected v.(*List), but not v.(*List)`)
+	}
+
+	if lst.Head() != Int(42) {
+		t.Fatalf(`expected lst.Head() == Int(42), got %s`, lst.Head())
+	}
+	if lst.Tail().Head() != Int(7) {
+		t.Fatalf(
+			`expected lst.Tail().Head() == Int(7), got %s`,
+			lst.Tail().Head(),
+		)
+	}
+}
+
+func TestReadWithAnIntListPaddedWithSpace(t *testing.T) {
+	v, s, err := Read("( 42 7 )")
+	if err != nil {
+		t.Fatalf(`expected err == nil, got %s`, err)
+	}
+	if s != "" {
+		t.Fatalf(`expected s == '', got %s`, s)
+	}
+
+	lst, ok := v.(*List)
+	if ok == false {
+		t.Fatalf(`expected v.(*List), but not v.(*List)`)
+	}
+
+	if lst.Head() != Int(42) {
+		t.Fatalf(`expected lst.Head() == Int(42), got %s`, lst.Head())
+	}
+	if lst.Tail().Head() != Int(7) {
+		t.Fatalf(
+			`expected lst.Tail().Head() == Int(7), got %s`,
+			lst.Tail().Head(),
+		)
+	}
+}
+
+func TestReadWithAnIntListContainingComments(t *testing.T) {
+	v, s, err := Read(
+		`(42
+		 ; comment
+		 7)`,
+	)
 	if err != nil {
 		t.Fatalf(`expected err == nil, got %s`, err)
 	}
