@@ -40,6 +40,15 @@ func (e *TypeError) Error() string {
 	return e.Message
 }
 
+// Runtime error caused by a failing pattern match
+type PatternError struct {
+	Message string
+}
+
+func (e *PatternError) Error() string {
+	return e.Message
+}
+
 // Return a TypeError for incorrect data types
 func BadType(wanted, received Type) error {
 	return &TypeError{
@@ -75,5 +84,12 @@ func BadOperation(op string, t Type) error {
 			TypeName(t),
 			op,
 		),
+	}
+}
+
+// Return a PatternError when a pattern match fails.
+func BadPattern(pattern, value Value) error {
+	return &PatternError{
+		fmt.Sprintf("No match for %s with %s", pattern, value),
 	}
 }

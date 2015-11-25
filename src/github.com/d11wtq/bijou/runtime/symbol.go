@@ -44,3 +44,12 @@ func (s Symbol) Type() Type {
 func (s Symbol) String() string {
 	return string(s)
 }
+
+func (s Symbol) Bind(env Env, value Value) error {
+	v, ok := env.Get(string(s))
+	if ok == true {
+		return Bind(v, value, env)
+	} else {
+		return env.Def(string(s), value)
+	}
+}

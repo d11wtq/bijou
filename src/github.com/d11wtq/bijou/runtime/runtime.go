@@ -44,6 +44,9 @@ type Env interface {
 	Def(string, Value) error
 	// Lookup a variable
 	Get(string) (Value, bool)
+	// Perform a pattern matching bind.
+	// On failure, an error is returned and the environment is unchanged.
+	Bind(Value, Value) error
 	// Introduce a new scope
 	Extend() Env
 }

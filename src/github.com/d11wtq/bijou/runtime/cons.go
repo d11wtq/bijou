@@ -132,6 +132,8 @@ func (cons *ConsCell) Eval(env Env) (Value, error) {
 		return EvalMacro(env, cons.Next)
 	case Symbol("def"):
 		return EvalDef(env, cons.Next)
+	case Symbol("bind"):
+		return EvalBind(env, cons.Next)
 	default:
 		return EvalProcCall(env, cons.Data, cons.Next)
 	}
@@ -169,4 +171,29 @@ func (cons *ConsCell) Empty() bool {
 
 func (cons *ConsCell) Put(v Value) (Sequence, error) {
 	return &ConsCell{v, cons}, nil
+}
+
+func (cons *ConsCell) Bind(env Env, value Value) error {
+	if v, ok := IsList(value); ok == true {
+		a, b := Sequence(cons), Sequence(v)
+
+		for {
+			if a.Empty() && b.Empty() {
+				return nil
+			}
+
+			if a.Empty() || b.Empty() {
+				return BadPattern(cons, value)
+			}
+
+			err := Bind(a.Head(), b.Head(), env)
+			if err != nil {
+				return err
+			}
+
+			a, b = a.Tail(), b.Tail()
+		}
+	} else {
+		return BadPattern(cons, value)
+	}
 }

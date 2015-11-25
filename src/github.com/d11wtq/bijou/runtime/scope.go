@@ -33,6 +33,11 @@ func (s *Scope) Def(k string, v Value) error {
 	return nil
 }
 
+// Perform a pattern matching bind
+func (s *Scope) Bind(binding, data Value) error {
+	return Bind(binding, data, s)
+}
+
 // Retrieve a symbol from the current scope, or any parent scope
 func (s *Scope) Get(k string) (Value, bool) {
 	v, ok := s.Values[k]
