@@ -19,33 +19,6 @@ func TestFuncType(t *testing.T) {
 	}
 }
 
-func TestFuncEq(t *testing.T) {
-	a := &Func{
-		Params: test.NewList(),
-		Body:   test.NewList(),
-		Env:    test.FakeEnv(),
-	}
-	b := &Func{
-		Params: test.NewList(),
-		Body:   test.NewList(),
-		Env:    test.FakeEnv(),
-	}
-
-	if a.Eq(b) { // operationally equivalent functions are not the same
-		t.Fatalf(`expected !a.Eq(b), got true`)
-	}
-	if b.Eq(a) {
-		t.Fatalf(`expected !b.Eq(a), got true`)
-	}
-
-	if !a.Eq(a) {
-		t.Fatalf(`expected a.Eq(a), got false`)
-	}
-	if !b.Eq(b) {
-		t.Fatalf(`expected b.Eq(b), got false`)
-	}
-}
-
 func TestFuncEvalToSelf(t *testing.T) {
 	fn := &Func{
 		Params: test.NewList(),

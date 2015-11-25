@@ -12,7 +12,7 @@ func TestApplyInvokesFnWithArgs(t *testing.T) {
 	if err != nil {
 		t.Fatalf(`expected err == nil, got %s`, err)
 	}
-	if !res.Eq(EmptyList.Append(Int(42))) {
+	if !Eq(res, EmptyList.Append(Int(42))) {
 		t.Fatalf(`expected res == (42), got %s`, res)
 	}
 }
@@ -29,7 +29,7 @@ func TestApplyReturnsFromTailCalls(t *testing.T) {
 	if err != nil {
 		t.Fatalf(`expected err == nil, got %s`, err)
 	}
-	if !res.Eq(Int(7)) {
+	if !Eq(res, Int(7)) {
 		t.Fatalf(`expected res == 7, got %s`, res)
 	}
 }

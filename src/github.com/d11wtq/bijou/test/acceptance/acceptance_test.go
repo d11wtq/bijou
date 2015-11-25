@@ -36,7 +36,7 @@ func AssertRunEqualWithEnv(
 		t.Fatalf(`expected err == nil, got %s`, err)
 	}
 
-	if !actual.Eq(wanted) {
+	if !runtime.Eq(actual, wanted) {
 		t.Fatalf(`expected %s => %s, got %s`, src, wanted, actual)
 	}
 }

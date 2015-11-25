@@ -19,33 +19,6 @@ func TestMacroType(t *testing.T) {
 	}
 }
 
-func TestMacroEq(t *testing.T) {
-	a := &Macro{
-		Params: test.NewList(),
-		Body:   test.NewList(),
-		Env:    test.FakeEnv(),
-	}
-	b := &Macro{
-		Params: test.NewList(),
-		Body:   test.NewList(),
-		Env:    test.FakeEnv(),
-	}
-
-	if a.Eq(b) { // operationally equivalent macros are not the same
-		t.Fatalf(`expected !a.Eq(b), got true`)
-	}
-	if b.Eq(a) {
-		t.Fatalf(`expected !b.Eq(a), got true`)
-	}
-
-	if !a.Eq(a) {
-		t.Fatalf(`expected a.Eq(a), got false`)
-	}
-	if !b.Eq(b) {
-		t.Fatalf(`expected b.Eq(b), got false`)
-	}
-}
-
 func TestMacroEvalToSelf(t *testing.T) {
 	mc := &Macro{
 		Params: test.NewList(),

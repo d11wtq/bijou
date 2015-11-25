@@ -23,7 +23,7 @@ func NewScope(parent Env) Env {
 // Define a new symbol in the current scope
 func (s *Scope) Def(k string, v Value) error {
 	x, ok := s.Values[k]
-	if ok && !x.Eq(v) {
+	if ok && !Eq(x, v) {
 		return &RuntimeError{
 			fmt.Sprintf("Attempted to def %s more than once", k),
 		}

@@ -52,18 +52,6 @@ func NewFakeValue(v Value) *FakeValue {
 	return &FakeValue{Delegate: v}
 }
 
-func (v *FakeValue) Eq(other Value) bool {
-	return v.Delegate.Eq(other)
-}
-
-func (v *FakeValue) Gt(other Value) bool {
-	return v.Delegate.Gt(other)
-}
-
-func (v *FakeValue) Lt(other Value) bool {
-	return v.Delegate.Lt(other)
-}
-
 func (v *FakeValue) Type() Type {
 	return v.Delegate.Type()
 }

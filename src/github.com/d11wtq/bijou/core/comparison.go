@@ -9,7 +9,7 @@ import (
 func Eq(env runtime.Env, args runtime.Sequence) (runtime.Value, error) {
 	if !args.Empty() {
 		for !args.Tail().Empty() {
-			if !args.Head().Eq(args.Tail().Head()) {
+			if !runtime.Eq(args.Head(), args.Tail().Head()) {
 				return runtime.False, nil
 			}
 			args = args.Tail()
@@ -24,7 +24,7 @@ func Eq(env runtime.Env, args runtime.Sequence) (runtime.Value, error) {
 func Gt(env runtime.Env, args runtime.Sequence) (runtime.Value, error) {
 	if !args.Empty() {
 		for !args.Tail().Empty() {
-			if !args.Head().Gt(args.Tail().Head()) {
+			if !runtime.Gt(args.Head(), args.Tail().Head()) {
 				return runtime.False, nil
 			}
 			args = args.Tail()
@@ -39,7 +39,7 @@ func Gt(env runtime.Env, args runtime.Sequence) (runtime.Value, error) {
 func Lt(env runtime.Env, args runtime.Sequence) (runtime.Value, error) {
 	if !args.Empty() {
 		for !args.Tail().Empty() {
-			if !args.Head().Lt(args.Tail().Head()) {
+			if !runtime.Lt(args.Head(), args.Tail().Head()) {
 				return runtime.False, nil
 			}
 			args = args.Tail()

@@ -3,26 +3,6 @@ package runtime
 // Macro data type
 type Macro Proc
 
-func (mc *Macro) Eq(other Value) bool {
-	return mc == other
-}
-
-func (mc *Macro) Gt(other Value) bool {
-	y, ok := other.(*Macro)
-	if ok == false {
-		return mc.Type() > other.Type()
-	}
-	return PtrGt(mc, y)
-}
-
-func (mc *Macro) Lt(other Value) bool {
-	y, ok := other.(*Macro)
-	if ok == false {
-		return mc.Type() < other.Type()
-	}
-	return PtrLt(mc, y)
-}
-
 func (mc *Macro) Type() Type {
 	return MacroType
 }

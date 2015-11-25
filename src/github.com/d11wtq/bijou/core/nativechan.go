@@ -43,29 +43,6 @@ func (p *ChanPort) String() string {
 	return "#<port:proc>"
 }
 
-// (Value interface)
-func (p *ChanPort) Eq(other runtime.Value) bool {
-	return p == other
-}
-
-// (Value interface)
-func (p *ChanPort) Gt(other runtime.Value) bool {
-	y, ok := other.(runtime.Port)
-	if ok == false {
-		return p.Type() > other.Type()
-	}
-	return runtime.PtrGt(p, y)
-}
-
-// (Value interface)
-func (p *ChanPort) Lt(other runtime.Value) bool {
-	y, ok := other.(runtime.Port)
-	if ok == false {
-		return p.Type() < other.Type()
-	}
-	return runtime.PtrLt(p, y)
-}
-
 // (Port interface)
 func (p *ChanPort) Write(v runtime.Value) error {
 	if p.Closed {

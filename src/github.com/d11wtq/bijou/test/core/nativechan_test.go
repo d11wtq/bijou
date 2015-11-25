@@ -42,7 +42,7 @@ func TestGoChanPortWriteAcceptAribtraryValues(t *testing.T) {
 			t.Fatalf(`expected err == nil, got %s`, err)
 		}
 
-		if !res.Eq(v) {
+		if !runtime.Eq(res, v) {
 			t.Fatalf(`expected res == %s, got %s`, v, res)
 		}
 	}

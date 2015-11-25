@@ -33,29 +33,6 @@ func (w *IoPortWrapper) String() string {
 	return "#<port:io>"
 }
 
-// (Value interface)
-func (w *IoPortWrapper) Eq(other runtime.Value) bool {
-	return w == other
-}
-
-// (Value interface)
-func (w *IoPortWrapper) Gt(other runtime.Value) bool {
-	y, ok := other.(runtime.Port)
-	if ok == false {
-		return w.Type() > other.Type()
-	}
-	return runtime.PtrGt(w, y)
-}
-
-// (Value interface)
-func (w *IoPortWrapper) Lt(other runtime.Value) bool {
-	y, ok := other.(runtime.Port)
-	if ok == false {
-		return w.Type() < other.Type()
-	}
-	return runtime.PtrLt(w, y)
-}
-
 // (Port interface)
 func (w *IoPortWrapper) Write(v runtime.Value) error {
 	if w.Writer == nil {

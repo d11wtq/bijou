@@ -13,8 +13,8 @@ func TestConsType(t *testing.T) {
 }
 
 func TestConsEqWithEmptyCons(t *testing.T) {
-	if !EmptyCons.Eq(EmptyCons) {
-		t.Fatalf(`expected EmptyCons.Eq(EmptyCons), got false`)
+	if !Eq(EmptyCons, EmptyCons) {
+		t.Fatalf(`expected Eq(EmptyCons, EmptyCons), got false`)
 	}
 }
 
@@ -22,11 +22,11 @@ func TestConsEqWithOneEmptyCons(t *testing.T) {
 	a := EmptyCons
 	b := Cons(Int(42), EmptyCons)
 
-	if a.Eq(b) {
-		t.Fatalf(`expected !a.Eq(b), got true`)
+	if Eq(a, b) {
+		t.Fatalf(`expected !Eq(a, b), got true`)
 	}
-	if b.Eq(a) {
-		t.Fatalf(`expected !b.Eq(a), got true`)
+	if Eq(b, a) {
+		t.Fatalf(`expected !Eq(b, a), got true`)
 	}
 }
 
@@ -34,11 +34,11 @@ func TestConsEqWithEquivalentCons(t *testing.T) {
 	a := Cons(Int(7), Cons(Int(42), Nil))
 	b := Cons(Int(7), Cons(Int(42), Nil))
 
-	if !a.Eq(b) {
-		t.Fatalf(`expected a.Eq(b), got false`)
+	if !Eq(a, b) {
+		t.Fatalf(`expected Eq(a, b), got false`)
 	}
-	if !b.Eq(a) {
-		t.Fatalf(`expected b.Eq(a), got false`)
+	if !Eq(b, a) {
+		t.Fatalf(`expected Eq(b, a), got false`)
 	}
 }
 
@@ -46,11 +46,11 @@ func TestConsEqWithEquivalentConsRecursive(t *testing.T) {
 	a := Cons(Int(7), Cons(Cons(Int(1), Nil), Cons(Int(42), Nil)))
 	b := Cons(Int(7), Cons(Cons(Int(1), Nil), Cons(Int(42), Nil)))
 
-	if !a.Eq(b) {
-		t.Fatalf(`expected a.Eq(b), got false`)
+	if !Eq(a, b) {
+		t.Fatalf(`expected Eq(a, b), got false`)
 	}
-	if !b.Eq(a) {
-		t.Fatalf(`expected b.Eq(a), got false`)
+	if !Eq(b, a) {
+		t.Fatalf(`expected Eq(b, a), got false`)
 	}
 }
 
@@ -58,17 +58,17 @@ func TestConsEqWithDifferentLengths(t *testing.T) {
 	a := Cons(Int(42), Cons(Int(7), Nil))
 	b := Cons(Int(42), Nil)
 
-	if a.Eq(b) {
-		t.Fatalf(`expected !a.Eq(b), got true`)
+	if Eq(a, b) {
+		t.Fatalf(`expected !Eq(a, b), got true`)
 	}
-	if b.Eq(a) {
-		t.Fatalf(`expected !b.Eq(a), got true`)
+	if Eq(b, a) {
+		t.Fatalf(`expected !Eq(b, a), got true`)
 	}
 }
 
 func TestConsGtWithEmptyCons(t *testing.T) {
-	if EmptyCons.Gt(EmptyCons) {
-		t.Fatalf(`expected !EmptyCons.Gt(EmptyCons), got false`)
+	if Gt(EmptyCons, EmptyCons) {
+		t.Fatalf(`expected !Gt(EmptyCons, EmptyCons), got false`)
 	}
 }
 
@@ -76,11 +76,11 @@ func TestConsGtWithOneEmptyCons(t *testing.T) {
 	a := EmptyCons
 	b := Cons(Int(42), EmptyCons)
 
-	if a.Gt(b) {
-		t.Fatalf(`expected !a.Gt(b), got true`)
+	if Gt(a, b) {
+		t.Fatalf(`expected !Gt(a, b), got true`)
 	}
-	if !b.Gt(a) {
-		t.Fatalf(`expected b.Gt(a), got false`)
+	if !Gt(b, a) {
+		t.Fatalf(`expected Gt(b, a), got false`)
 	}
 }
 
@@ -88,11 +88,11 @@ func TestConsGtWithEquivalentCons(t *testing.T) {
 	a := Cons(Int(7), Cons(Int(42), Nil))
 	b := Cons(Int(7), Cons(Int(42), Nil))
 
-	if a.Gt(b) {
-		t.Fatalf(`expected !a.Gt(b), got true`)
+	if Gt(a, b) {
+		t.Fatalf(`expected !Gt(a, b), got true`)
 	}
-	if b.Gt(a) {
-		t.Fatalf(`expected !b.Gt(a), got true`)
+	if Gt(b, a) {
+		t.Fatalf(`expected !Gt(b, a), got true`)
 	}
 }
 
@@ -100,11 +100,11 @@ func TestConsGtWithDifferentConsRecursive(t *testing.T) {
 	a := Cons(Int(7), Cons(Cons(Int(2), Nil), Cons(Int(42), Nil)))
 	b := Cons(Int(7), Cons(Cons(Int(1), Nil), Cons(Int(42), Nil)))
 
-	if !a.Gt(b) {
-		t.Fatalf(`expected a.Gt(b), got false`)
+	if !Gt(a, b) {
+		t.Fatalf(`expected Gt(a, b), got false`)
 	}
-	if b.Gt(a) {
-		t.Fatalf(`expected !b.Gt(a), got true`)
+	if Gt(b, a) {
+		t.Fatalf(`expected !Gt(b, a), got true`)
 	}
 }
 
@@ -112,17 +112,17 @@ func TestConsGtWithDifferentLengths(t *testing.T) {
 	a := Cons(Int(42), Cons(Int(7), Nil))
 	b := Cons(Int(42), Nil)
 
-	if !a.Gt(b) {
-		t.Fatalf(`expected a.Gt(b), got false`)
+	if !Gt(a, b) {
+		t.Fatalf(`expected Gt(a, b), got false`)
 	}
-	if b.Gt(a) {
-		t.Fatalf(`expected !b.Gt(a), got true`)
+	if Gt(b, a) {
+		t.Fatalf(`expected !Gt(b, a), got true`)
 	}
 }
 
 func TestConsLtWithEmptyCons(t *testing.T) {
-	if EmptyCons.Lt(EmptyCons) {
-		t.Fatalf(`expected !EmptyCons.Lt(EmptyCons), got false`)
+	if Lt(EmptyCons, EmptyCons) {
+		t.Fatalf(`expected !Lt(EmptyCons, EmptyCons), got false`)
 	}
 }
 
@@ -130,11 +130,11 @@ func TestConsLtWithOneEmptyCons(t *testing.T) {
 	a := EmptyCons
 	b := Cons(Int(42), EmptyCons)
 
-	if !a.Lt(b) {
-		t.Fatalf(`expected a.Lt(b), got false`)
+	if !Lt(a, b) {
+		t.Fatalf(`expected Lt(a, b), got false`)
 	}
-	if b.Lt(a) {
-		t.Fatalf(`expected !b.Lt(a), got true`)
+	if Lt(b, a) {
+		t.Fatalf(`expected !Lt(b, a), got true`)
 	}
 }
 
@@ -142,11 +142,11 @@ func TestConsLtWithEquivalentCons(t *testing.T) {
 	a := Cons(Int(7), Cons(Int(42), Nil))
 	b := Cons(Int(7), Cons(Int(42), Nil))
 
-	if a.Lt(b) {
-		t.Fatalf(`expected !a.Lt(b), got true`)
+	if Lt(a, b) {
+		t.Fatalf(`expected !Lt(a, b), got true`)
 	}
-	if b.Lt(a) {
-		t.Fatalf(`expected !b.Lt(a), got true`)
+	if Lt(b, a) {
+		t.Fatalf(`expected !Lt(b, a), got true`)
 	}
 }
 
@@ -154,11 +154,11 @@ func TestConsLtWithDifferentConsRecursive(t *testing.T) {
 	a := Cons(Int(7), Cons(Cons(Int(2), Nil), Cons(Int(42), Nil)))
 	b := Cons(Int(7), Cons(Cons(Int(1), Nil), Cons(Int(42), Nil)))
 
-	if a.Lt(b) {
-		t.Fatalf(`expected !a.Lt(b), got true`)
+	if Lt(a, b) {
+		t.Fatalf(`expected !Lt(a, b), got true`)
 	}
-	if !b.Lt(a) {
-		t.Fatalf(`expected b.Lt(a), got false`)
+	if !Lt(b, a) {
+		t.Fatalf(`expected Lt(b, a), got false`)
 	}
 }
 
@@ -166,11 +166,11 @@ func TestConsLtWithDifferentLengths(t *testing.T) {
 	a := Cons(Int(42), Cons(Int(7), Nil))
 	b := Cons(Int(42), Nil)
 
-	if a.Lt(b) {
-		t.Fatalf(`expected !a.Lt(b), got true`)
+	if Lt(a, b) {
+		t.Fatalf(`expected !Lt(a, b), got true`)
 	}
-	if !b.Lt(a) {
-		t.Fatalf(`expected b.Lt(a), got false`)
+	if !Lt(b, a) {
+		t.Fatalf(`expected Lt(b, a), got false`)
 	}
 }
 

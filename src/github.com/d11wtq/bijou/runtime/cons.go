@@ -33,7 +33,7 @@ func (cons *ConsCell) Eq(other Value) bool {
 				return false
 			}
 
-			if !a.Head().Eq(b.Head()) {
+			if !Eq(a.Head(), b.Head()) {
 				return false
 			}
 
@@ -65,11 +65,11 @@ func (cons *ConsCell) Gt(other Value) bool {
 			return false
 		}
 
-		if a.Head().Gt(b.Head()) {
+		if Gt(a.Head(), b.Head()) {
 			return true
 		}
 
-		if a.Head().Lt(b.Head()) {
+		if Lt(a.Head(), b.Head()) {
 			return false
 		}
 
@@ -98,11 +98,11 @@ func (cons *ConsCell) Lt(other Value) bool {
 			return false
 		}
 
-		if a.Head().Lt(b.Head()) {
+		if Lt(a.Head(), b.Head()) {
 			return true
 		}
 
-		if a.Head().Gt(b.Head()) {
+		if Gt(a.Head(), b.Head()) {
 			return false
 		}
 

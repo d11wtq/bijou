@@ -17,27 +17,6 @@ func GoFunc(fn CallableFunc) runtime.Callable {
 	return &FuncWrapper{fn}
 }
 
-// Equality comparison (Value interface method)
-func (w *FuncWrapper) Eq(other runtime.Value) bool {
-	return w == other
-}
-
-// Greater than comparison (Value interface method)
-func (w *FuncWrapper) Gt(other runtime.Value) bool {
-	if w.Type() == other.Type() {
-		return runtime.PtrGt(w, other)
-	}
-	return w.Type() > other.Type()
-}
-
-// Less than comparison (Value interface method)
-func (w *FuncWrapper) Lt(other runtime.Value) bool {
-	if w.Type() == other.Type() {
-		return runtime.PtrLt(w, other)
-	}
-	return w.Type() < other.Type()
-}
-
 // Return the runtime Type (Value interface method)
 func (w *FuncWrapper) Type() runtime.Type {
 	return runtime.FuncType
