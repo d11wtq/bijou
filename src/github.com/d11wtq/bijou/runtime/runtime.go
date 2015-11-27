@@ -46,9 +46,6 @@ type Env interface {
 	Get(string) (Value, bool)
 	// Resolve a symbol in the entire environment
 	Resolve(string) (Value, bool)
-	// Perform a pattern matching bind.
-	// On failure, an error is returned and the environment is unchanged.
-	Bind(Value, Value) error
 	// Introduce a new scope
 	Extend() Env
 }

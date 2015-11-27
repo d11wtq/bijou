@@ -27,7 +27,7 @@ func EvalBind(env Env, s Sequence) (Value, error) {
 		return nil, err
 	}
 
-	err = env.Bind(pattern, value)
+	err = Bind(pattern, value, env)
 	if err != nil {
 		return nil, &PatternError{
 			fmt.Sprintf(
