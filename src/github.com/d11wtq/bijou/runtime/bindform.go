@@ -1,5 +1,9 @@
 package runtime
 
+import (
+	"fmt"
+)
+
 // Process the elements of a bind form
 func EvalBind(env Env, s Sequence) (Value, error) {
 	var err error
@@ -25,7 +29,13 @@ func EvalBind(env Env, s Sequence) (Value, error) {
 
 	err = env.Bind(pattern, value)
 	if err != nil {
-		return nil, err
+		return nil, &PatternError{
+			fmt.Sprintf(
+				"%s: %s",
+				BadPattern(pattern, value),
+				err,
+			),
+		}
 	}
 
 	return value, nil
