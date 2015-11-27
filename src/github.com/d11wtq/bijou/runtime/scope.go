@@ -38,12 +38,18 @@ func (s *Scope) Bind(binding, data Value) error {
 	return Bind(binding, data, s)
 }
 
-// Retrieve a symbol from the current scope, or any parent scope
+// Lookup this symbol in the current scope (non recursive)
 func (s *Scope) Get(k string) (Value, bool) {
+	v, ok := s.Values[k]
+	return v, ok
+}
+
+// Resolve a symbol within the current scope, or any parent scope
+func (s *Scope) Resolve(k string) (Value, bool) {
 	v, ok := s.Values[k]
 	if !ok {
 		if s.Parent != nil {
-			return s.Parent.Get(k)
+			return s.Parent.Resolve(k)
 		}
 	}
 	return v, ok

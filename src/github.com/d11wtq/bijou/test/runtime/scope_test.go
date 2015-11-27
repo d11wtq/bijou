@@ -5,9 +5,20 @@ import (
 	"testing"
 )
 
-func TestScopeGetUndefined(t *testing.T) {
+func TestScopeGetUnbound(t *testing.T) {
 	env := NewScope(nil)
 	v, ok := env.Get("test")
+	if ok == true {
+		t.Fatalf(`expected ok == false, got true`)
+	}
+	if v != nil {
+		t.Fatalf(`expected v == nil, got %s`, v)
+	}
+}
+
+func TestScopeResolveUnbound(t *testing.T) {
+	env := NewScope(nil)
+	v, ok := env.Resolve("test")
 	if ok == true {
 		t.Fatalf(`expected ok == false, got true`)
 	}
@@ -32,11 +43,14 @@ func TestScopeDefAndGet(t *testing.T) {
 	}
 }
 
-func TestScopeDefAndGetViaParent(t *testing.T) {
-	parent := NewScope(nil)
-	parent.Def("test", Symbol("example"))
-	env := NewScope(parent)
-	v, ok := env.Get("test")
+func TestScopeDefAndResolve(t *testing.T) {
+	env := NewScope(nil)
+	err := env.Def("test", Symbol("example"))
+	if err != nil {
+		t.Fatalf(`expected err == nil, got %s`, err)
+	}
+
+	v, ok := env.Resolve("test")
 	if ok == false {
 		t.Fatalf(`expected ok == true, got false`)
 	}
@@ -45,7 +59,33 @@ func TestScopeDefAndGetViaParent(t *testing.T) {
 	}
 }
 
-func TestScopeDefAndGetExtendMasking(t *testing.T) {
+func TestScopeDefAndGetNonRecursing(t *testing.T) {
+	parent := NewScope(nil)
+	parent.Def("test", Symbol("example"))
+	env := NewScope(parent)
+	v, ok := env.Get("test")
+	if ok == true {
+		t.Fatalf(`expected ok == false, got true`)
+	}
+	if v != nil {
+		t.Fatalf(`expected v == nil, got %s`, v)
+	}
+}
+
+func TestScopeDefAndResolveViaParent(t *testing.T) {
+	parent := NewScope(nil)
+	parent.Def("test", Symbol("example"))
+	env := NewScope(parent)
+	v, ok := env.Resolve("test")
+	if ok == false {
+		t.Fatalf(`expected ok == true, got false`)
+	}
+	if v != Symbol("example") {
+		t.Fatalf(`expected v == Symbol("example"), got %s`, v)
+	}
+}
+
+func TestScopeDefAndResolveExtendMasking(t *testing.T) {
 	parent := NewScope(nil)
 	parent.Def("test", Symbol("example"))
 	env := parent.Extend()
@@ -54,7 +94,7 @@ func TestScopeDefAndGetExtendMasking(t *testing.T) {
 		t.Fatalf(`expected err == nil, got %s`, err)
 	}
 
-	v, ok := env.Get("test")
+	v, ok := env.Resolve("test")
 	if ok == false {
 		t.Fatalf(`expected ok == true, got false`)
 	}
@@ -63,13 +103,13 @@ func TestScopeDefAndGetExtendMasking(t *testing.T) {
 	}
 }
 
-func TestScopeDefAndGetExtendImmutable(t *testing.T) {
+func TestScopeDefAndResolveExtendImmutable(t *testing.T) {
 	parent := NewScope(nil)
 	parent.Def("test", Symbol("example"))
 	env := parent.Extend()
 	env.Def("test", Symbol("other"))
 
-	v, ok := parent.Get("test")
+	v, ok := parent.Resolve("test")
 	if ok == false {
 		t.Fatalf(`expected ok == true, got false`)
 	}

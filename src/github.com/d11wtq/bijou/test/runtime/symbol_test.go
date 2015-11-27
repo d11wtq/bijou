@@ -13,13 +13,13 @@ func TestSymbolType(t *testing.T) {
 	}
 }
 
-func TestSymbolEvalUndefined(t *testing.T) {
+func TestSymbolEvalUnbound(t *testing.T) {
 	sym := Symbol("test")
 	env := FakeEnv()
 	if v, err := sym.Eval(env); err == nil {
 		t.Fatalf(`expected err != nil, got nil`)
-	} else if !strings.Contains(strings.ToLower(err.Error()), "undefined") {
-		t.Fatalf(`expected err to match "undefined", got: %s`, err)
+	} else if !strings.Contains(strings.ToLower(err.Error()), "unbound") {
+		t.Fatalf(`expected err to match "unbound", got: %s`, err)
 	} else if v != nil {
 		t.Fatalf(`expected v == nil, got %s`, v)
 	}

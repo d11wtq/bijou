@@ -30,10 +30,10 @@ func (v Symbol) Lt(other Value) bool {
 }
 
 func (s Symbol) Eval(env Env) (Value, error) {
-	if v, ok := env.Get(string(s)); ok {
+	if v, ok := env.Resolve(string(s)); ok {
 		return v, nil
 	} else {
-		return v, &RuntimeError{fmt.Sprintf("Undefined variable %s", s)}
+		return v, &RuntimeError{fmt.Sprintf("Unbound symbol %s", s)}
 	}
 }
 
