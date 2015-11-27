@@ -173,7 +173,7 @@ func (cons *ConsCell) Put(v Value) (Sequence, error) {
 	return &ConsCell{v, cons}, nil
 }
 
-func (cons *ConsCell) Bind(env Env, value Value) error {
+func (cons *ConsCell) Bind(env Env, value Value) (err error) {
 	if v, ok := IsList(value); ok == true {
 		a, b := Sequence(cons), Sequence(v)
 
@@ -186,7 +186,22 @@ func (cons *ConsCell) Bind(env Env, value Value) error {
 				return BadPattern(cons, value)
 			}
 
-			err := Bind(a.Head(), b.Head(), env)
+			pattern, value := a.Head(), b.Head()
+
+			if pattern == Symbol("&") {
+				if a.Tail().Empty() {
+					return nil
+				}
+
+				a = a.Tail()
+				pattern, value = a.Head(), b
+				b = EmptyList
+				if !a.Tail().Empty() {
+					return &ArgumentError{"invalid pattern"}
+				}
+			}
+
+			err = Bind(pattern, value, env)
 			if err != nil {
 				return err
 			}

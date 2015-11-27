@@ -36,6 +36,75 @@ func TestSymbolEvalToValue(t *testing.T) {
 	}
 }
 
+func TestSymbolBindUnbound(t *testing.T) {
+	sym := Symbol("x")
+	env := NewScope(nil)
+	value := Int(42)
+	err := sym.Bind(env, value)
+	if err != nil {
+		t.Fatalf(`expected err == nil, got %s`, err)
+	}
+	x, ok := env.Get("x")
+	if ok == false {
+		t.Fatalf(`expected env.Get("x"), but not bound`)
+	}
+	if x != Int(42) {
+		t.Fatalf(`expected x == Int(42), got %s`, x)
+	}
+}
+
+func TestSymbolBindSameValue(t *testing.T) {
+	sym := Symbol("x")
+	env := NewScope(nil)
+	env.Def("x", Int(42))
+	value := Int(42)
+	err := sym.Bind(env, value)
+	if err != nil {
+		t.Fatalf(`expected err == nil, got %s`, err)
+	}
+	x, ok := env.Get("x")
+	if ok == false {
+		t.Fatalf(`expected env.Get("x"), but not bound`)
+	}
+	if x != Int(42) {
+		t.Fatalf(`expected x == Int(42), got %s`, x)
+	}
+}
+
+func TestSymbolBindWrongValue(t *testing.T) {
+	sym := Symbol("x")
+	env := NewScope(nil)
+	env.Def("x", Int(42))
+	value := Int(43)
+	err := sym.Bind(env, value)
+	if err == nil {
+		t.Fatalf(`expected err != nil, got nil`)
+	}
+	x, _ := env.Get("x")
+	if x != Int(42) {
+		t.Fatalf(`expected x == Int(42), got %s`, x)
+	}
+}
+
+func TestSymbolShadowParentValue(t *testing.T) {
+	sym := Symbol("x")
+	parent := NewScope(nil)
+	parent.Def("x", Int(42))
+	env := NewScope(parent)
+	value := Int(43)
+	err := sym.Bind(env, value)
+	if err != nil {
+		t.Fatalf(`expected err == nil, got %s`, err)
+	}
+	x, ok := env.Get("x")
+	if ok == false {
+		t.Fatalf(`expected env.Get("x"), but not bound`)
+	}
+	if x != Int(43) {
+		t.Fatalf(`expected x == Int(43), got %s`, x)
+	}
+}
+
 func TestSymbolEq(t *testing.T) {
 	if !Symbol("a").Eq(Symbol("a")) {
 		t.Fatalf(`expected Symbol("a").Eq(Symbol("a")), got false`)

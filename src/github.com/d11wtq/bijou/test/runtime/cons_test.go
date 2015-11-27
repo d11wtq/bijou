@@ -186,6 +186,123 @@ func TestEmptyConsEvalItself(t *testing.T) {
 	}
 }
 
+func TestConsBindWithNonList(t *testing.T) {
+	env := NewScope(nil)
+	cons := Cons(Int(42), EmptyCons)
+	value := Int(42)
+	err := cons.(*ConsCell).Bind(env, value)
+	if err == nil {
+		t.Fatalf(`expected err != nil, got nil`)
+	}
+}
+
+func TestConsBindWithListOfInts(t *testing.T) {
+	env := NewScope(nil)
+	cons := Cons(Int(7), Cons(Int(42), EmptyCons))
+	value := Cons(Int(7), Cons(Int(42), EmptyCons))
+	err := cons.(*ConsCell).Bind(env, value)
+	if err != nil {
+		t.Fatalf(`expected err == nil, got %s`, err)
+	}
+}
+
+func TestConsBindWithMismatchedListOfInts(t *testing.T) {
+	env := NewScope(nil)
+	cons := Cons(Int(7), EmptyCons)
+	value := Cons(Int(7), Cons(Int(42), EmptyCons))
+	err := cons.(*ConsCell).Bind(env, value)
+	if err == nil {
+		t.Fatalf(`expected err != nil, got nil`)
+	}
+
+	cons = Cons(Int(7), Cons(Int(42), Cons(Int(3), EmptyCons)))
+	err = cons.(*ConsCell).Bind(env, value)
+	if err == nil {
+		t.Fatalf(`expected err != nil, got nil`)
+	}
+}
+
+func TestConsBindWithListOfUnboundSymbols(t *testing.T) {
+	env := NewScope(nil)
+	cons := Cons(Symbol("x"), Cons(Symbol("y"), EmptyCons))
+	value := Cons(Int(7), Cons(Int(42), EmptyCons))
+	err := cons.(*ConsCell).Bind(env, value)
+	if err != nil {
+		t.Fatalf(`expected err == nil, got %s`, err)
+	}
+	x, ok := env.Get("x")
+	if ok == false {
+		t.Fatalf(`expected env.Get("x"), but not bound`)
+	}
+	if x != Int(7) {
+		t.Fatalf(`expected x == Int(7), but got %s`, x)
+	}
+	y, ok := env.Get("y")
+	if ok == false {
+		t.Fatalf(`expected env.Get("y"), but not bound`)
+	}
+	if y != Int(42) {
+		t.Fatalf(`expected y == Int(42), but got %s`, y)
+	}
+}
+
+func TestConsBindWithVariadicSymbol(t *testing.T) {
+	env := NewScope(nil)
+	cons := Cons(Symbol("x"), Cons(Symbol("&"), Cons(Symbol("y"), EmptyCons)))
+	value := Cons(Int(7), Cons(Int(33), Cons(Int(42), EmptyCons)))
+	err := cons.(*ConsCell).Bind(env, value)
+	if err != nil {
+		t.Fatalf(`expected err == nil, got %s`, err)
+	}
+	x, ok := env.Get("x")
+	if ok == false {
+		t.Fatalf(`expected env.Get("x"), but not bound`)
+	}
+	if x != Int(7) {
+		t.Fatalf(`expected x == Int(7), but got %s`, x)
+	}
+	y, ok := env.Get("y")
+	if ok == false {
+		t.Fatalf(`expected env.Get("y"), but not bound`)
+	}
+	if !Eq(y, Cons(Int(33), Cons(Int(42), EmptyCons))) {
+		t.Fatalf(`expected y == (33 42), but got %s`, y)
+	}
+}
+
+func TestConsBindWithIgnoredVariadicSymbol(t *testing.T) {
+	env := NewScope(nil)
+	cons := Cons(Symbol("x"), Cons(Symbol("&"), EmptyCons))
+	value := Cons(Int(7), Cons(Int(33), Cons(Int(42), EmptyCons)))
+	err := cons.(*ConsCell).Bind(env, value)
+	if err != nil {
+		t.Fatalf(`expected err == nil, got %s`, err)
+	}
+	x, ok := env.Get("x")
+	if ok == false {
+		t.Fatalf(`expected env.Get("x"), but not bound`)
+	}
+	if x != Int(7) {
+		t.Fatalf(`expected x == Int(7), but got %s`, x)
+	}
+}
+
+func TestConsBindWithBadVariadicSymbols(t *testing.T) {
+	env := NewScope(nil)
+	cons := Cons(
+		Symbol("a"),
+		Cons(
+			Symbol("&"),
+			Cons(Symbol("x"), Cons(Symbol("y"), EmptyCons)),
+		),
+	)
+	value := Cons(Int(7), Cons(Int(33), Cons(Int(42), EmptyCons)))
+	err := cons.(*ConsCell).Bind(env, value)
+	if err == nil {
+		t.Fatalf(`expected err != nil, got nil`)
+	}
+}
+
 func TestEmptyConsHasNoTailOrHead(t *testing.T) {
 	if EmptyCons.Head() != Nil {
 		t.Fatalf(`expected EmptyCons.Head() == Nil, got %s`, EmptyCons.Head())

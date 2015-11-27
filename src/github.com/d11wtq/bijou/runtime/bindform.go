@@ -28,14 +28,15 @@ func EvalBind(env Env, s Sequence) (Value, error) {
 	}
 
 	err = Bind(pattern, value, env)
+
 	if err != nil {
-		return nil, &PatternError{
-			fmt.Sprintf(
-				"%s: %s",
-				BadPattern(pattern, value),
-				err,
-			),
+		top := BadPattern(pattern, value)
+
+		if top.Error() != err.Error() {
+			return nil, &PatternError{fmt.Sprintf("%s: %s", top, err)}
 		}
+
+		return nil, err
 	}
 
 	return value, nil
