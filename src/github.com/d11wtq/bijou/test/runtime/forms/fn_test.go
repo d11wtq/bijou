@@ -59,21 +59,6 @@ func TestFnValidatesParameterListType(t *testing.T) {
 	}
 }
 
-func TestFnValidatesParameterTypes(t *testing.T) {
-	form := test.NewList(Symbol("fn"), test.NewList(Int(1)))
-	v, err := form.Eval(test.FakeEnv())
-	errmsg := "invalid param"
-	if err == nil {
-		t.Fatalf(`expected err != nil, got nil`)
-	}
-	if !strings.Contains(strings.ToLower(err.Error()), errmsg) {
-		t.Fatalf(`expected err to match "%s", got %s`, errmsg, err)
-	}
-	if v != nil {
-		t.Fatalf(`expected v == nil, got %s`, v)
-	}
-}
-
 func TestFnValidatesVariadicIsLastParameter(t *testing.T) {
 	form := test.NewList(
 		Symbol("fn"),

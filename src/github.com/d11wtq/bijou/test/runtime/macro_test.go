@@ -3,7 +3,6 @@ package runtime_test
 import (
 	. "github.com/d11wtq/bijou/runtime"
 	"github.com/d11wtq/bijou/test"
-	"strings"
 	"testing"
 )
 
@@ -118,11 +117,6 @@ func TestMacroExpandValidatesTooFewArgs(t *testing.T) {
 		t.Fatalf(`expected err.(*ArgumentError), got %s`, err)
 	}
 
-	match := "wanted 2, got 1"
-	if !strings.Contains(strings.ToLower(err.Error()), match) {
-		t.Fatalf(`expected err to match "%s", got %s`, match, err)
-	}
-
 	if v != nil {
 		t.Fatalf(`expected v == nil, got %s`, v)
 	}
@@ -146,11 +140,6 @@ func TestMacroExpandValidatesTooManyArgs(t *testing.T) {
 
 	if _, ok := err.(*ArgumentError); !ok {
 		t.Fatalf(`expected err.(*ArgumentError), got %s`, err)
-	}
-
-	match := "wanted 2, got 3"
-	if !strings.Contains(strings.ToLower(err.Error()), match) {
-		t.Fatalf(`expected err to match "%s", got %s`, match, err)
 	}
 
 	if v != nil {

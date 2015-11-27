@@ -177,28 +177,38 @@ func (cons *ConsCell) Bind(env Env, value Value) (err error) {
 	if v, ok := IsList(value); ok == true {
 		a, b := Sequence(cons), Sequence(v)
 
+		var (
+			pattern Value
+			value   Value
+		)
+
 		for {
 			if a.Empty() && b.Empty() {
 				return nil
 			}
 
-			if a.Empty() || b.Empty() {
+			if a.Empty() { // pattern empty, but values remain
 				return BadPattern(cons, value)
 			}
 
-			pattern, value := a.Head(), b.Head()
+			pattern = a.Head()
 
 			if pattern == Symbol("&") {
-				if a.Tail().Empty() {
+				if a.Tail().Empty() { // ignored values
 					return nil
 				}
 
 				a = a.Tail()
+				// consume everything into next part of pattern
 				pattern, value = a.Head(), b
 				b = EmptyList
 				if !a.Tail().Empty() {
 					return &ArgumentError{"invalid pattern"}
 				}
+			} else if b.Empty() { // more pattern to match, but no values
+				return BadPattern(cons, value)
+			} else {
+				value = b.Head()
 			}
 
 			err = Bind(pattern, value, env)

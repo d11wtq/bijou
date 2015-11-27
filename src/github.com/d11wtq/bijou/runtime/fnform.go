@@ -27,13 +27,7 @@ func ValidateParams(s Value) (Sequence, error) {
 
 	p := params
 	for !p.Empty() {
-		k, ok := p.Head().(Symbol)
-
-		if ok == false {
-			return nil, &RuntimeError{"Invalid parameter: not a symbol"}
-		}
-
-		if k == Symbol("&") && Length(p) > 2 {
+		if p.Head() == Symbol("&") && Length(p) > 2 {
 			return nil, &RuntimeError{
 				"Positional parameters cannot follow variadic parameters",
 			}

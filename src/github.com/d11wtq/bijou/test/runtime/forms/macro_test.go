@@ -59,21 +59,6 @@ func TestMacroValidatesParameterListType(t *testing.T) {
 	}
 }
 
-func TestMacroValidatesParameterTypes(t *testing.T) {
-	form := test.NewList(Symbol("macro"), test.NewList(Int(1)))
-	v, err := form.Eval(test.FakeEnv())
-	errmsg := "invalid param"
-	if err == nil {
-		t.Fatalf(`expected err != nil, got nil`)
-	}
-	if !strings.Contains(strings.ToLower(err.Error()), errmsg) {
-		t.Fatalf(`expected err to match "%s", got %s`, errmsg, err)
-	}
-	if v != nil {
-		t.Fatalf(`expected v == nil, got %s`, v)
-	}
-}
-
 func TestMacroValidatesVariadicIsLastParameter(t *testing.T) {
 	form := test.NewList(
 		Symbol("macro"),

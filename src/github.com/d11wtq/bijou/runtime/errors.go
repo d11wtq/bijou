@@ -73,7 +73,7 @@ func BadArity(wanted, received int) error {
 
 // Return an ArithmeticError for division by zero
 func DivisionByZero() error {
-	return &ArithmeticError{"Divide by zero"}
+	return &ArithmeticError{"divide by zero"}
 }
 
 // Return a TypeError when calculation is not implemented
@@ -90,6 +90,6 @@ func BadOperation(op string, t Type) error {
 // Return a PatternError when a pattern match fails.
 func BadPattern(pattern, value Value) error {
 	return &PatternError{
-		fmt.Sprintf("No match for %s with %s", pattern, value),
+		fmt.Sprintf("no match for %s with %s", pattern, value),
 	}
 }

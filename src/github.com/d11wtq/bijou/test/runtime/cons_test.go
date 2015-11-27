@@ -270,6 +270,23 @@ func TestConsBindWithVariadicSymbol(t *testing.T) {
 	}
 }
 
+func TestConsBindWithEmptyVariadicSymbol(t *testing.T) {
+	env := NewScope(nil)
+	cons := Cons(Symbol("&"), Cons(Symbol("x"), EmptyCons))
+	value := EmptyCons
+	err := cons.(*ConsCell).Bind(env, value)
+	if err != nil {
+		t.Fatalf(`expected err == nil, got %s`, err)
+	}
+	x, ok := env.Get("x")
+	if ok == false {
+		t.Fatalf(`expected env.Get("x"), but not bound`)
+	}
+	if x != EmptyCons {
+		t.Fatalf(`expected x == (), but got %s`, x)
+	}
+}
+
 func TestConsBindWithIgnoredVariadicSymbol(t *testing.T) {
 	env := NewScope(nil)
 	cons := Cons(Symbol("x"), Cons(Symbol("&"), EmptyCons))

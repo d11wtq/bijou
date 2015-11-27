@@ -1,5 +1,9 @@
 package runtime
 
+import (
+	"fmt"
+)
+
 // Procedure data type
 type Proc struct {
 	// Parameter list
@@ -13,33 +17,17 @@ type Proc struct {
 // Call this procedure with the given arguments
 func (proc *Proc) Call(envc Env, args Sequence) (Value, error) {
 	env := proc.Env.Extend()
+	err := Bind(proc.Params, args, env)
+	if err != nil {
+		top := BadPattern(proc.Params, args)
 
-	seen := 0
-	a, p := args, proc.Params
-	for !p.Empty() {
-		key := p.Head().(Symbol)
-
-		if key == Symbol("&") {
-			// variadic; consume everything
-			if !p.Tail().Empty() {
-				key = p.Tail().Head().(Symbol)
-				env.Def(string(key), a)
-			}
-
-			return EvalDo(env, proc.Body)
+		if top.Error() != err.Error() {
+			err = &PatternError{fmt.Sprintf("%s: %s", top, err)}
 		}
 
-		if a.Empty() {
-			return nil, BadArity(seen+Length(p), seen)
+		return nil, &ArgumentError{
+			fmt.Sprintf("wrong arguments: %s", err),
 		}
-
-		env.Def(string(key), a.Head())
-		a, p = a.Tail(), p.Tail()
-		seen += 1
-	}
-
-	if !a.Empty() {
-		return nil, BadArity(seen, seen+Length(a))
 	}
 
 	return EvalDo(env, proc.Body)
