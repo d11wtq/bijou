@@ -128,6 +128,8 @@ func (cons *ConsCell) Eval(env Env) (Value, error) {
 		return EvalDo(env, cons.Next)
 	case Symbol("fn"):
 		return EvalFn(env, cons.Next)
+	case Symbol("match"):
+		return EvalMatch(env, cons.Next)
 	case Symbol("macro"):
 		return EvalMacro(env, cons.Next)
 	case Symbol("def"):

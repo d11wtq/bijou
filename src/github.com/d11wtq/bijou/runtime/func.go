@@ -15,7 +15,14 @@ func (fn *Func) String() string {
 	return "#<function>"
 }
 
-// Call this function with the given arguments
-func (fn *Func) Call(env Env, args Sequence) (Value, error) {
-	return (*Proc)(fn).Call(env, args)
+func (fn *Func) BindEnv(site Env, args Sequence) (Env, error) {
+	return (*Proc)(fn).BindEnv(site, args)
+}
+
+func (fn *Func) DoBody(env Env) (Value, error) {
+	return (*Proc)(fn).DoBody(env)
+}
+
+func (fn *Func) Call(site Env, args Sequence) (Value, error) {
+	return (*Proc)(fn).Call(site, args)
 }
