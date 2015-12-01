@@ -28,6 +28,8 @@ func Spawn(env runtime.Env, args runtime.Sequence) (runtime.Value, error) {
 			env,
 			runtime.Cons(that, args),
 		)
+		this.Close()
+		that.Close()
 	}()
 
 	return this, nil

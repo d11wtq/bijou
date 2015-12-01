@@ -6,22 +6,15 @@ func EvalMatch(env Env, s Sequence) (Value, error) {
 		return nil, &ArgumentError{"missing cases in match"}
 	}
 
-	cases := make([]*Func, 0, Length(s))
-
-	for !s.Empty() {
-		fn, err := Eval(s.Head(), env)
-		if err != nil {
-			return nil, err
-		}
-
-		if fn, ok := fn.(*Func); ok == true {
-			cases = append(cases, fn)
-			s = s.Tail()
-			continue
-		}
-
-		return nil, &ArgumentError{"non-function case in match"}
+	head, err := Eval(s.Head(), env)
+	if err != nil {
+		return nil, err
 	}
 
-	return &MatchFunc{cases}, nil
+	switch head.(type) {
+	case *Func:
+		return EvalMatchFunc(env, Cons(head, s.Tail()))
+	default:
+		return EvalMatchCase(env, head, s.Tail())
+	}
 }

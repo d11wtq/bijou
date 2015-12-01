@@ -49,5 +49,42 @@ func TestGoChanPortWriteAcceptAribtraryValues(t *testing.T) {
 }
 
 func TestGoChanPortWritesIgnoredWhenClosed(t *testing.T) {
-	/* FIXME: Not sure how to test */
+	var wg sync.WaitGroup
+
+	this, that := core.GoChanPortPair()
+
+	wg.Add(1)
+	go func() {
+		this.Close()
+		that.Close()
+		wg.Done()
+	}()
+	wg.Wait()
+	err := this.Write(runtime.True)
+
+	if err != nil {
+		t.Fatalf(`expected err == nil, got %s`, err)
+	}
+}
+
+func TestGoChanPortReturnsNilOnReadsWhenClosed(t *testing.T) {
+	var wg sync.WaitGroup
+
+	this, that := core.GoChanPortPair()
+
+	wg.Add(1)
+	go func() {
+		this.Close()
+		wg.Done()
+	}()
+	wg.Wait()
+	res, err := that.Accept()
+
+	if err != nil {
+		t.Fatalf(`expected err == nil, got %s`, err)
+	}
+
+	if res != runtime.Nil {
+		t.Fatalf(`expected res == Nil, got %s`, res)
+	}
 }

@@ -10,14 +10,14 @@ type ValueChannel chan runtime.Value
 // A Go channel for communicating with Values
 type ChanPort struct {
 	// The channel to read on
-	Reader <-chan runtime.Value
+	Reader ValueChannel
 	// The channel to write on
-	Writer chan<- runtime.Value
+	Writer ValueChannel
 	// True once this channel is closed
 	Closed bool
 }
 
-// Return a pair of CanPorts, for bi-directional communication.
+// Return a pair of ChanPorts, for bi-directional communication.
 func GoChanPortPair() (runtime.Port, runtime.Port) {
 	a, b := make(ValueChannel), make(ValueChannel)
 	return GoChanPort(a, b), GoChanPort(b, a)
@@ -57,7 +57,7 @@ func (p *ChanPort) Write(v runtime.Value) error {
 func (p *ChanPort) Accept() (runtime.Value, error) {
 	v, ok := <-p.Reader
 	if ok == false {
-		return nil, p.ReadError()
+		return runtime.Nil, nil
 	}
 
 	return v, nil
@@ -95,12 +95,12 @@ func (p *ChanPort) Close() (err error) {
 
 // Consume all messages on the channel.
 func (p *ChanPort) Flush() {
-	for range p.Reader {
-		// drop
+	for {
+		select {
+		case <-p.Writer:
+			// drop
+		default:
+			return
+		}
 	}
-}
-
-// Error returned in the case we try to read from a closed port.
-func (p *ChanPort) ReadError() error {
-	return &runtime.RuntimeError{"Port is not open for reading"}
 }
