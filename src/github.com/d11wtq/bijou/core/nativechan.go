@@ -55,6 +55,10 @@ func (p *ChanPort) Write(v runtime.Value) error {
 
 // (Port interface)
 func (p *ChanPort) Accept() (runtime.Value, error) {
+	if p.Closed {
+		return runtime.Nil, nil
+	}
+
 	v, ok := <-p.Reader
 	if ok == false {
 		return runtime.Nil, nil
@@ -66,17 +70,17 @@ func (p *ChanPort) Accept() (runtime.Value, error) {
 // (Port interface)
 func (p *ChanPort) Read(n int) (runtime.Sequence, error) {
 	var (
-		val runtime.Value
-		err error
+		v  runtime.Value
+		ok bool
 	)
 
 	acc := runtime.EmptyList
 	for i := 0; i < n; i += 1 {
-		val, err = p.Accept()
-		if err != nil {
-			return nil, err
+		v, ok = <-p.Reader
+		if ok == false {
+			break
 		}
-		acc = acc.Append(val)
+		acc = acc.Append(v)
 	}
 	return acc, nil
 }

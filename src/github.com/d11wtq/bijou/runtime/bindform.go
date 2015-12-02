@@ -22,7 +22,7 @@ func EvalBind(env Env, s Sequence) (Value, error) {
 		return nil, &ArgumentError{"Too many arguments to bind"}
 	}
 
-	value, err = value.Eval(env)
+	value, err = Eval(value, env)
 	if err != nil {
 		return nil, err
 	}

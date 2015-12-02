@@ -10,9 +10,16 @@ type Binding interface {
 // This has the side-effect of defining variables in env.
 // If a match can't be made, returns a PatternError.
 func Bind(pattern, value Value, env Env) error {
+	tx := env.Transaction()
+
 	binding, ok := pattern.(Binding)
 	if ok == true {
-		return binding.Bind(env, value)
+		err := binding.Bind(tx, value)
+		if err != nil {
+			return err
+		}
+		tx.Commit()
+		return nil
 	}
 
 	if !Eq(pattern, value) {

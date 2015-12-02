@@ -48,4 +48,15 @@ type Env interface {
 	Resolve(string) (Value, bool)
 	// Introduce a new scope
 	Extend() Env
+	// Start a transaction within this environment
+	Transaction() EnvTransaction
+}
+
+// A transaction allows many values be defined atomically and in isolation.
+// On commit, the values are atomically set into Env.
+// There is no rollback; the transaction is simply discarded.
+type EnvTransaction interface {
+	Env
+	// Commit all values defined in this transaction.
+	Commit()
 }
