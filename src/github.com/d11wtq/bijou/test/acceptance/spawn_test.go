@@ -21,22 +21,23 @@ func TestSpawn(t *testing.T) {
 		`
 		(def ping-pong
 		  (fn (p)
-		    (if (= (<- p) 'ping)
-			  (-> p 'pong)
-			  (-> p 'ping))
+		    (if (= (receive! p) 'ping)
+			  (send! p 'pong)
+			  (send! p 'ping))
 		    (ping-pong p)))
 
 		(def p (spawn ping-pong))
 
+		(def message!
+		  (fn (p msg)
+		    (send! p msg)
+			(receive! p)))
+
 		(def ping
-		  (fn (p)
-		    (-> p 'ping)
-			(<- p)))
+		  (fn (p) (message! p 'ping)))
 
 		(def pong
-		  (fn (p)
-		    (-> p 'pong)
-			(<- p)))
+		  (fn (p) (message! p 'pong)))
 
 		(list (ping p) (pong p))
 		`,
