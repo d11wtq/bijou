@@ -176,13 +176,14 @@ func (cons *ConsCell) Put(v Value) (Sequence, error) {
 }
 
 func (cons *ConsCell) Bind(env Env, value Value) (err error) {
-	if v, ok := IsList(value); ok == true {
-		a, b := Sequence(cons), Sequence(v)
+	if cons.Head() == Symbol("quote") {
+		return EqPattern(cons.Tail().Head(), value)
+	}
 
-		var (
-			pattern Value
-			value   Value
-		)
+	if v, ok := IsList(value); ok == true {
+		var pattern Value
+
+		a, b := Sequence(cons), Sequence(v)
 
 		for {
 			if a.Empty() && b.Empty() {

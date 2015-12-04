@@ -22,6 +22,10 @@ func Bind(pattern, value Value, env Env) error {
 		return nil
 	}
 
+	return EqPattern(pattern, value)
+}
+
+func EqPattern(pattern, value Value) error {
 	if !Eq(pattern, value) {
 		return BadPattern(pattern, value)
 	}
