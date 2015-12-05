@@ -14,6 +14,8 @@ const (
 	SymbolType
 	// Generic sequences
 	SequenceType
+	// Generic associations
+	AssocType
 	// Strings
 	StringType
 	// Cons sequences
@@ -26,6 +28,8 @@ const (
 	MacroType
 	// Input/output ports
 	PortType
+	// Modules
+	ModuleType
 )
 
 // Program runtime value

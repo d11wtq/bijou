@@ -47,6 +47,9 @@ func init() {
 	root.Def("put", GoFunc(Put))
 	root.Def("empty?", GoFunc(Empty))
 
+	// assoc functions
+	root.Def("lookup", GoFunc(Lookup))
+
 	// port functions
 	root.Def("send!", GoFunc(PortWrite))
 	root.Def("receive!", GoFunc(PortAccept))
@@ -54,6 +57,9 @@ func init() {
 
 	// concurrency functions
 	root.Def("spawn", GoFunc(Spawn))
+
+	// core is implictly imported
+	root.Def("core", runtime.ModuleFrom(root))
 }
 
 // Get the initial root scope

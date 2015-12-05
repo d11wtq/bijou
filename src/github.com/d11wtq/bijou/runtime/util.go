@@ -11,12 +11,14 @@ var TypeNameMap = map[Type]string{
 	IntType:      "integer",
 	SymbolType:   "symbol",
 	SequenceType: "sequence",
+	AssocType:    "associative",
 	StringType:   "string",
 	ConsType:     "cons",
 	ListType:     "list",
 	FuncType:     "function",
 	MacroType:    "macro",
 	PortType:     "port",
+	ModuleType:   "module",
 }
 
 // Get the name of a given Type
