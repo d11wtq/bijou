@@ -22,6 +22,8 @@ const (
 	ConsType
 	// Linked lists
 	ListType
+	// Persistent vectors
+	VectorType
 	// Functions
 	FuncType
 	// Macros

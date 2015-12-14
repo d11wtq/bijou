@@ -21,93 +21,15 @@ type ConsCell struct {
 var EmptyCons = (*ConsCell)(nil)
 
 func (cons *ConsCell) Eq(other Value) bool {
-	if other, ok := IsList(other); ok == true {
-		a, b := Sequence(cons), Sequence(other)
-
-		for {
-			if a.Empty() && b.Empty() {
-				return true
-			}
-
-			if a.Empty() || b.Empty() {
-				return false
-			}
-
-			if !Eq(a.Head(), b.Head()) {
-				return false
-			}
-
-			a, b = a.Tail(), b.Tail()
-		}
-	} else {
-		return false
-	}
+	return ListEq(cons, other)
 }
 
 func (cons *ConsCell) Gt(other Value) bool {
-	y, ok := IsList(other)
-	if ok == false {
-		return cons.Type() > other.Type()
-	}
-
-	a, b := Sequence(cons), Sequence(y)
-
-	for {
-		if a.Empty() && b.Empty() {
-			return false
-		}
-
-		if b.Empty() {
-			return true
-		}
-
-		if a.Empty() {
-			return false
-		}
-
-		if Gt(a.Head(), b.Head()) {
-			return true
-		}
-
-		if Lt(a.Head(), b.Head()) {
-			return false
-		}
-
-		a, b = a.Tail(), b.Tail()
-	}
+	return ListGt(cons, other)
 }
 
 func (cons *ConsCell) Lt(other Value) bool {
-	y, ok := IsList(other)
-	if ok == false {
-		return cons.Type() < other.Type()
-	}
-
-	a, b := Sequence(cons), Sequence(y)
-
-	for {
-		if a.Empty() && b.Empty() {
-			return false
-		}
-
-		if a.Empty() {
-			return true
-		}
-
-		if b.Empty() {
-			return false
-		}
-
-		if Lt(a.Head(), b.Head()) {
-			return true
-		}
-
-		if Gt(a.Head(), b.Head()) {
-			return false
-		}
-
-		a, b = a.Tail(), b.Tail()
-	}
+	return ListLt(cons, other)
 }
 
 func (cons *ConsCell) Type() Type {
@@ -175,53 +97,10 @@ func (cons *ConsCell) Put(v Value) (Sequence, error) {
 	return &ConsCell{v, cons}, nil
 }
 
-func (cons *ConsCell) Bind(env Env, value Value) (err error) {
+func (cons *ConsCell) Bind(env Env, value Value) error {
 	if cons.Head() == Symbol("quote") {
 		return EqPattern(cons.Tail().Head(), value)
 	}
 
-	if v, ok := IsList(value); ok == true {
-		var pattern Value
-
-		a, b := Sequence(cons), Sequence(v)
-
-		for {
-			if a.Empty() && b.Empty() {
-				return nil
-			}
-
-			if a.Empty() { // pattern empty, but values remain
-				return BadPattern(cons, value)
-			}
-
-			pattern = a.Head()
-
-			if pattern == Symbol("&") {
-				if a.Tail().Empty() { // ignored values
-					return nil
-				}
-
-				a = a.Tail()
-				// consume everything into next part of pattern
-				pattern, value = a.Head(), b
-				b = EmptyList
-				if !a.Tail().Empty() {
-					return &ArgumentError{"invalid pattern"}
-				}
-			} else if b.Empty() { // more pattern to match, but no values
-				return BadPattern(cons, value)
-			} else {
-				value = b.Head()
-			}
-
-			err = Bind(pattern, value, env)
-			if err != nil {
-				return err
-			}
-
-			a, b = a.Tail(), b.Tail()
-		}
-	} else {
-		return BadPattern(cons, value)
-	}
+	return ListBind(env, cons, value)
 }

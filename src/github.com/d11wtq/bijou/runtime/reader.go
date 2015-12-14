@@ -12,6 +12,7 @@ var Delim = &unicode.RangeTable{
 		{'"', '"', 1},
 		{'(', ')', 1},
 		{';', ';', 1},
+		{'[', ']', 1},
 	},
 }
 
@@ -38,6 +39,8 @@ func Read(s string) (Value, string, error) {
 			return ReadInt(s[i:])
 		case (r == '('):
 			return ReadList(s[i:])
+		case (r == '['):
+			return ReadVector(s[i:])
 		case (r == '"'):
 			return ReadString(s[i:])
 		case (r == '\''):
@@ -144,6 +147,35 @@ OuterLoop:
 			switch {
 			case (r == ')'):
 				// skip over the ')'
+				return acc, s2[i+1:], nil
+			default:
+				v, rem, err := Read(s2[i:])
+				if err != nil {
+					return nil, s1, err
+				}
+				acc = acc.Append(v)
+				s2 = rem
+				continue OuterLoop
+			}
+		}
+
+		return UnexpectedEOF(s1)
+	}
+}
+
+// Read an input string and convert it to a *Vector type
+func ReadVector(s1 string) (Value, string, error) {
+	acc := EmptyVector
+	// skip over the '['
+	s2 := s1[1:]
+
+OuterLoop:
+	for {
+		s2 = SkipBlank(s2)
+		for i, r := range s2 {
+			switch {
+			case (r == ']'):
+				// skip over the ']'
 				return acc, s2[i+1:], nil
 			default:
 				v, rem, err := Read(s2[i:])

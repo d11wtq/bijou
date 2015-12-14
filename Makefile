@@ -1,6 +1,7 @@
 GOBIN   ?= `which go`
 PACKAGE ?= github.com/d11wtq/bijou
 GOPATH  ?= $(PWD)
+export GOPATH
 
 all: fmt test install
 
