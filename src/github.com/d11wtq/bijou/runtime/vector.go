@@ -3,6 +3,7 @@ package runtime
 import (
 	"fmt"
 	"github.com/d11wtq/persistent/vector"
+	"strings"
 )
 
 // Persistent vector based on github.com/d11wtq/persistent/vector
@@ -28,7 +29,13 @@ func (vec *Vector) Eval(env Env) (Value, error) {
 }
 
 func (vec *Vector) String() string {
-	return "#<vector>"
+	strs := make([]string, 0, vec.Length())
+	s := Sequence(vec)
+	for !s.Empty() {
+		strs = append(strs, s.Head().String())
+		s = s.Tail()
+	}
+	return fmt.Sprintf("[%s]", strings.Join(strs, " "))
 }
 
 func (vec *Vector) Head() Value {
@@ -95,4 +102,8 @@ func (vec *Vector) Append(v Value) *Vector {
 		Vec:    vec.Vec.Append(v),
 		Offset: vec.Offset,
 	}
+}
+
+func (vec *Vector) Length() int {
+	return int(vec.Vec.Count())
 }
