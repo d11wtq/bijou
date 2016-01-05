@@ -23,12 +23,26 @@ func Read(env runtime.Env, args runtime.Sequence) (runtime.Value, error) {
 
 // Evaluate runtime data as executable data.
 // Usage: (eval data)
+// Usage: (eval data module)
 func Eval(env runtime.Env, args runtime.Sequence) (runtime.Value, error) {
-	var v runtime.Value
-	if err := runtime.ReadArgs(args, &v); err != nil {
+	var val, mod runtime.Value
+
+	err := runtime.ReadArgs(args, &val, &mod)
+	if err == nil {
+		m, ok := mod.(*runtime.Module)
+		if ok == false {
+			return nil, runtime.BadType(runtime.ModuleType, mod.Type())
+		}
+		env = m.Env
+	} else {
+		err = runtime.ReadArgs(args, &val)
+	}
+
+	if err != nil {
 		return nil, err
 	}
-	return runtime.Eval(v, env)
+
+	return runtime.Eval(val, env)
 }
 
 // Dynamically apply a function with some arguments.

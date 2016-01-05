@@ -5,7 +5,7 @@ import (
 )
 
 // Write a value to an open port.
-// Usage: (write port value)
+// Usage: (send! port value)
 func PortWrite(env runtime.Env, args runtime.Sequence) (runtime.Value, error) {
 	var port, value runtime.Value
 	if err := runtime.ReadArgs(args, &port, &value); err != nil {
@@ -25,7 +25,7 @@ func PortWrite(env runtime.Env, args runtime.Sequence) (runtime.Value, error) {
 }
 
 // Accept a value from an open port.
-// Usage: (accept port)
+// Usage: (receive! port)
 func PortAccept(env runtime.Env, args runtime.Sequence) (runtime.Value, error) {
 	var port runtime.Value
 	if err := runtime.ReadArgs(args, &port); err != nil {
@@ -40,7 +40,7 @@ func PortAccept(env runtime.Env, args runtime.Sequence) (runtime.Value, error) {
 }
 
 // Read a sequence from an open port.
-// Usage: (read port n)
+// Usage: (read! port n)
 func PortRead(env runtime.Env, args runtime.Sequence) (runtime.Value, error) {
 	var port, n runtime.Value
 	if err := runtime.ReadArgs(args, &port, &n); err != nil {
