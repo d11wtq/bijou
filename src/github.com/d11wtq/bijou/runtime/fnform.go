@@ -6,6 +6,12 @@ func EvalFn(env Env, s Sequence) (Value, error) {
 		return nil, &RuntimeError{"Missing parameter list in fn"}
 	}
 
+	name := "self"
+	if t, ok := s.Head().(Symbol); ok == true {
+		name = string(t)
+		s = s.Tail()
+	}
+
 	params, err := ValidateParams(s.Head())
 	if err != nil {
 		return nil, err
@@ -15,6 +21,7 @@ func EvalFn(env Env, s Sequence) (Value, error) {
 		Params: params,
 		Body:   s.Tail(),
 		Env:    env,
+		Name:   name,
 	}, nil
 }
 

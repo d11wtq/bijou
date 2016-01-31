@@ -16,7 +16,19 @@ func (fn *Func) String() string {
 }
 
 func (fn *Func) BindEnv(site Env, args Sequence) (Env, error) {
-	return (*Proc)(fn).BindEnv(site, args)
+	if fn.Name == "" {
+		return (*Proc)(fn).BindEnv(site, args)
+	}
+
+	env, err := (*Proc)(fn).BindEnv(site, args)
+	if err != nil {
+		return env, err
+	}
+	err = env.Def(fn.Name, fn)
+	if err != nil {
+		return nil, err
+	}
+	return env, nil
 }
 
 func (fn *Func) DoBody(env Env) (Value, error) {
@@ -24,5 +36,9 @@ func (fn *Func) DoBody(env Env) (Value, error) {
 }
 
 func (fn *Func) Call(site Env, args Sequence) (Value, error) {
-	return (*Proc)(fn).Call(site, args)
+	env, err := fn.BindEnv(site, args)
+	if err != nil {
+		return nil, err
+	}
+	return fn.DoBody(env)
 }

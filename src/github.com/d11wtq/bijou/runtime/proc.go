@@ -12,6 +12,8 @@ type Proc struct {
 	Body Sequence
 	// Closed environment
 	Env Env
+	// The name to use for internal referencing
+	Name string
 }
 
 // Perform a pattern match to bind args into an Env
